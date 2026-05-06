@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import HeroCard from '@/components/HeroCard';
 import StreakCard from '@/components/StreakCard';
 import RuletaCard from '@/components/RuletaCard';
@@ -11,8 +12,33 @@ import StreakModal from '@/components/StreakModal';
 import MisionesModal from '@/components/MisionesModal';
 import BottomNav from '@/components/BottomNav';
 
-/* ─── Mock data ─── */
-const USER = {
+/* ─── Helpers de nivel ─── */
+function calcProgressPct(nivel: string, puntos: number): number {
+  const ranges: Record<string, [number, number]> = {
+    bronce: [0, 500], plata: [500, 1000], oro: [1000, 2000], platino: [2000, 2000],
+  };
+  const [min, max] = ranges[nivel] ?? [0, 500];
+  if (max === min) return 100;
+  return Math.min(100, Math.round(((puntos - min) / (max - min)) * 100));
+}
+
+function calcPtsToNextLevel(nivel: string, puntos: number): number {
+  const next: Record<string, number> = { bronce: 500, plata: 1000, oro: 2000, platino: 0 };
+  return Math.max(0, (next[nivel] ?? 500) - puntos);
+}
+
+/* ─── Forma del estado de usuario ─── */
+interface UserState {
+  name: string;
+  lastName: string;
+  points: number;
+  level: string;
+  streak: number;
+  progressPct: number;
+  ptsToNextLevel: number;
+}
+
+const DEFAULT_USER: UserState = {
   name: 'Carlos',
   lastName: 'Morales',
   points: 1207,
@@ -38,7 +64,32 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function HomePage() {
+  const router           = useRouter();
   const [modal, setModal] = useState<Modal>(null);
+  const [USER,  setUser]  = useState<UserState>(DEFAULT_USER);
+
+  useEffect(() => {
+    const userId = localStorage.getItem('cfiel_user_id');
+    if (!userId) { router.replace('/'); return; }
+
+    fetch(`/api/usuarios/${userId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data?.usuario) return;
+        const u = data.usuario;
+        const nivel = (u.nivel as string) ?? 'bronce';
+        setUser({
+          name:          u.nombre.split(' ')[0],
+          lastName:      u.nombre.split(' ')[1] ?? '',
+          points:        u.puntos_total,
+          level:         nivel.charAt(0).toUpperCase() + nivel.slice(1),
+          streak:        u.racha_dias,
+          progressPct:   calcProgressPct(nivel, u.puntos_total),
+          ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
+        });
+      })
+      .catch(() => {}); // mantiene DEFAULT_USER si hay error
+  }, [router]);
 
   return (
     <div style={{

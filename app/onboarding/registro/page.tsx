@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 const STEP_BTN_LABELS = [
   'Continuar →',
@@ -21,8 +22,9 @@ function segColor(index: number, step: number): string {
 export default function RegistroPage() {
   const router = useRouter();
 
-  const [step, setStep] = useState(0);
-  const [dir,  setDir]  = useState(1);
+  const [step,        setStep]        = useState(0);
+  const [dir,         setDir]         = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   /* Campos de formulario */
   const [nombre,   setNombre]   = useState('');
@@ -44,16 +46,52 @@ export default function RegistroPage() {
   };
 
   /* ── Avanzar paso ── */
-  const goNext = () => {
-    if (!canContinue()) return;
+  const goNext = async () => {
+    if (!canContinue() || isSubmitting) return;
     if (step < 3) {
       setDir(1);
       setStep(step + 1);
       if (step + 1 === 3) {
         setTimeout(() => codeInputRef.current?.focus(), 380);
       }
-    } else {
+      return;
+    }
+
+    // Paso final: registrar usuario
+    setIsSubmitting(true);
+    try {
+      const email    = `${telefono}@cfiel.app`;
+      const password = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+
+      const { data: authData } = await supabase.auth.signUp({ email, password });
+      const authUserId = authData.user?.id;
+
+      const fechaNacimiento =
+        anio && mes && dia
+          ? `${anio}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
+          : null;
+
+      const res = await fetch('/api/usuarios/crear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre:          nombre.trim(),
+          telefono,
+          fecha_nacimiento: fechaNacimiento,
+          auth_user_id:    authUserId,
+        }),
+      });
+
+      const data = await res.json();
+      const userId = data.usuario?.id ?? authUserId ?? '';
+
+      localStorage.setItem('cfiel_nombre',  nombre.trim().split(' ')[0]);
+      localStorage.setItem('cfiel_user_id', userId);
+    } catch {
+      // Demo mode: continuar sin datos reales
       localStorage.setItem('cfiel_nombre', nombre.trim().split(' ')[0]);
+    } finally {
+      setIsSubmitting(false);
       router.push('/onboarding/bienvenida');
     }
   };
@@ -316,22 +354,22 @@ export default function RegistroPage() {
       <div style={{ padding: '20px 24px 28px', flexShrink: 0 }}>
         <button
           onClick={goNext}
-          disabled={!canContinue()}
+          disabled={!canContinue() || isSubmitting}
           style={{
-            background: canContinue() ? '#fff' : 'rgba(255,255,255,0.08)',
-            color: canContinue() ? '#0a0a0a' : 'rgba(255,255,255,0.28)',
+            background: canContinue() && !isSubmitting ? '#fff' : 'rgba(255,255,255,0.08)',
+            color: canContinue() && !isSubmitting ? '#0a0a0a' : 'rgba(255,255,255,0.28)',
             border: 'none',
             borderRadius: 28,
             padding: 15,
             fontSize: 15,
             fontWeight: 700,
-            cursor: canContinue() ? 'pointer' : 'not-allowed',
+            cursor: canContinue() && !isSubmitting ? 'pointer' : 'not-allowed',
             width: '100%',
             fontFamily: 'inherit',
             transition: 'all 0.2s',
           }}
         >
-          {STEP_BTN_LABELS[step]}
+          {isSubmitting ? 'Creando cuenta...' : STEP_BTN_LABELS[step]}
         </button>
         <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', textAlign: 'center', marginTop: 12 }}>
           Al continuar aceptas los{' '}
