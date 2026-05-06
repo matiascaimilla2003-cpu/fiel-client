@@ -56,3 +56,13 @@ html, body {
   30%  { opacity: 1; transform: translateY(-16px) scale(1.1); }
   100% { opacity: 0; transform: translateY(-42px) scale(0.9); }
 }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Remove number input spinners */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; appearance: textfield; }
