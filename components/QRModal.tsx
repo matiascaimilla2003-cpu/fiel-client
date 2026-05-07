@@ -1,12 +1,30 @@
 'use client';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { QRCodeSVG } from 'qrcode.react';
+
+const NIVEL_EMOJI: Record<string, string> = {
+  bronce: '🥉', plata: '🥈', oro: '⭐', platino: '👑',
+};
 
 interface Props {
   open: boolean;
   onClose: () => void;
+  userName?: string;
+  userLevel?: string;
 }
 
-export default function QRModal({ open, onClose }: Props) {
+export default function QRModal({ open, onClose, userName, userLevel }: Props) {
+  const [userId, setUserId] = useState('');
+
+  useEffect(() => {
+    setUserId(localStorage.getItem('cfiel_user_id') ?? '');
+  }, [open]);
+
+  const levelKey = (userLevel ?? '').toLowerCase();
+  const levelEmoji = NIVEL_EMOJI[levelKey] ?? '';
+  const displayName = userName ?? 'Tu QR Personal';
+
   return (
     <AnimatePresence>
       {open && (
@@ -47,34 +65,38 @@ export default function QRModal({ open, onClose }: Props) {
               Tu QR Personal
             </div>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 16 }}>
-              Carlos Morales
+              {displayName}
             </div>
 
-            {/* QR SVG inline idéntico al HTML */}
+            {/* QR real */}
             <div style={{
               background: '#fff', borderRadius: 16, padding: 18,
               display: 'inline-block', marginBottom: 14,
             }}>
-              <svg viewBox="0 0 100 100" width={150} height={150} fill="black">
-                <rect x="5" y="5" width="38" height="38" rx="4" fill="none" stroke="black" strokeWidth="5"/>
-                <rect x="14" y="14" width="20" height="20"/>
-                <rect x="57" y="5" width="38" height="38" rx="4" fill="none" stroke="black" strokeWidth="5"/>
-                <rect x="66" y="14" width="20" height="20"/>
-                <rect x="5" y="57" width="38" height="38" rx="4" fill="none" stroke="black" strokeWidth="5"/>
-                <rect x="14" y="66" width="20" height="20"/>
-                <rect x="57" y="57" width="12" height="12"/>
-                <rect x="72" y="57" width="12" height="12"/>
-                <rect x="57" y="72" width="12" height="12"/>
-                <rect x="72" y="72" width="12" height="12"/>
-                <rect x="87" y="57" width="8" height="8"/>
-                <rect x="87" y="87" width="8" height="8"/>
-                <rect x="57" y="87" width="8" height="8"/>
-              </svg>
+              {userId ? (
+                <QRCodeSVG
+                  value={userId}
+                  size={150}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="M"
+                />
+              ) : (
+                <div style={{
+                  width: 150, height: 150,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#aaa', fontSize: 12,
+                }}>
+                  Cargando...
+                </div>
+              )}
             </div>
 
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginBottom: 5 }}>
-              Cliente #00847 · Nivel ORO ⭐
-            </div>
+            {userLevel && (
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginBottom: 5 }}>
+                Nivel {userLevel} {levelEmoji}
+              </div>
+            )}
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 18 }}>
               Muéstralo en caja para acumular puntos
             </div>

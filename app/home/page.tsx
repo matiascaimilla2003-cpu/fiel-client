@@ -374,7 +374,7 @@ export default function HomePage() {
       </div>
 
       {/* ── Modales ── */}
-      <QRModal      open={modal === 'qr'}       onClose={() => setModal(null)} />
+      <QRModal      open={modal === 'qr'}       onClose={() => setModal(null)} userName={`${USER.name} ${USER.lastName}`.trim()} userLevel={USER.level} />
       <StreakModal   open={modal === 'streak'}   onClose={() => setModal(null)} streak={USER.streak} />
       <MisionesModal open={modal === 'misiones'} onClose={() => setModal(null)} />
 
