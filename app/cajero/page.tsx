@@ -34,6 +34,9 @@ const NIVEL_EMOJI: Record<string, string> = {
 
 const TENANT_SLUG = 'tio-polo';
 
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export default function CajeroPage() {
   const router = useRouter();
   const [phase,    setPhase]   = useState<Phase>('idle');
@@ -63,26 +66,64 @@ export default function CajeroPage() {
   };
 
   const handleQrScan = async (scannedId: string) => {
-    setPhase('client-loading');
-    setErrorMsg('');
     try {
-      const res = await fetch(`/api/usuarios/${scannedId.trim()}`);
-      if (!res.ok) {
-        setErrorMsg('Cliente no encontrado. Verifica que el QR sea válido.');
+      console.log('[Cajero] QR leído:', scannedId);
+
+      const trimmedId = scannedId.trim();
+
+      if (!UUID_REGEX.test(trimmedId)) {
+        console.warn('[Cajero] QR inválido (no es UUID):', trimmedId);
+        setErrorMsg('El QR escaneado no es válido. Pide al cliente que muestre su código CFIEL.');
         setPhase('error');
         return;
       }
-      const data = await res.json();
-      const u = data.usuario;
+
+      setPhase('client-loading');
+      setErrorMsg('');
+
+      console.log('[Cajero] Consultando usuario:', trimmedId);
+      const res = await fetch(`/api/usuarios/${trimmedId}`);
+
+      let data: Record<string, unknown> = {};
+      try {
+        data = (await res.json()) as Record<string, unknown>;
+      } catch {
+        // Respuesta sin cuerpo JSON válido
+      }
+      console.log('[Cajero] Respuesta API:', data);
+
+      if (!res.ok) {
+        const apiMsg = typeof data.error === 'string' ? data.error : null;
+        setErrorMsg(
+          res.status === 404
+            ? 'Cliente no encontrado. Verifica que el QR sea válido.'
+            : (apiMsg ?? 'Error al consultar el cliente.'),
+        );
+        setPhase('error');
+        return;
+      }
+
+      const u = data.usuario as
+        | { nombre?: string; puntos_total?: number; nivel?: string }
+        | undefined;
+
+      if (!u || typeof u.nombre !== 'string') {
+        console.error('[Cajero] Estructura inesperada en respuesta API:', data);
+        setErrorMsg('Respuesta inesperada del servidor. Intenta de nuevo.');
+        setPhase('error');
+        return;
+      }
+
       setClient({
-        id: scannedId.trim(),
+        id: trimmedId,
         nombre: u.nombre,
-        puntos_total: u.puntos_total,
+        puntos_total: u.puntos_total ?? 0,
         nivel: u.nivel ?? 'bronce',
       });
       setPhase('ready');
-    } catch {
-      setErrorMsg('Error de conexión. Verifica la red.');
+    } catch (err) {
+      console.error('[Cajero] Error en handleQrScan:', err);
+      setErrorMsg('Error de conexión. Verifica la red e intenta de nuevo.');
       setPhase('error');
     }
   };

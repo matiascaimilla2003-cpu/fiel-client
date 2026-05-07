@@ -8,13 +8,17 @@ export async function GET(
   try {
     const { id } = await params;
 
+    if (!id || typeof id !== 'string' || !id.trim()) {
+      return NextResponse.json({ error: 'ID de usuario requerido' }, { status: 400 });
+    }
+
     const { data: usuario, error } = await supabaseAdmin
       .from('usuarios')
       .select('*')
-      .eq('id', id)
+      .eq('id', id.trim())
       .single();
 
-    if (error) {
+    if (error || !usuario) {
       return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
     }
 

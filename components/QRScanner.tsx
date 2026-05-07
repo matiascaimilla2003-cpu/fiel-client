@@ -26,26 +26,40 @@ export default function QRScanner({ onScan, onCancel }: Props) {
   useEffect(() => {
     stopped.current = false;
 
-    import('html5-qrcode').then(({ Html5Qrcode }) => {
-      if (stopped.current) return;
-      const scanner = new Html5Qrcode(SCANNER_ID);
-      scannerRef.current = scanner;
+    import('html5-qrcode')
+      .then(({ Html5Qrcode }) => {
+        if (stopped.current) return;
+        const scanner = new Html5Qrcode(SCANNER_ID);
+        scannerRef.current = scanner;
 
-      scanner
-        .start(
-          { facingMode: 'environment' },
-          { fps: 10, qrbox: { width: 240, height: 240 } },
-          (decoded: string) => {
-            if (stopped.current) return;
-            stopped.current = true;
-            scanner.stop().catch(() => {}).finally(() => onScan(decoded));
-          },
-          () => {}
-        )
-        .catch(() => {
-          if (!stopped.current) setPermError(true);
-        });
-    });
+        scanner
+          .start(
+            { facingMode: 'environment' },
+            { fps: 10, qrbox: { width: 240, height: 240 } },
+            (decoded: string) => {
+              if (stopped.current) return;
+              stopped.current = true;
+              scanner
+                .stop()
+                .catch(() => {})
+                .finally(() => {
+                  try {
+                    onScan(decoded);
+                  } catch (err) {
+                    console.error('[QRScanner] onScan lanzó un error:', err);
+                  }
+                });
+            },
+            () => {},
+          )
+          .catch(() => {
+            if (!stopped.current) setPermError(true);
+          });
+      })
+      .catch((err) => {
+        console.error('[QRScanner] No se pudo cargar html5-qrcode:', err);
+        if (!stopped.current) setPermError(true);
+      });
 
     return () => {
       stopped.current = true;
