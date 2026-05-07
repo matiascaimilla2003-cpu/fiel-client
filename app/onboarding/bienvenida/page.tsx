@@ -178,7 +178,13 @@ export default function BienvenidaPage() {
         style={{ padding: '0 16px 32px', width: '100%', position: 'relative', zIndex: 20 }}
       >
         <button
-          onClick={() => router.push('/home')}
+          onClick={async () => {
+            // Verificar que cfiel_user_id ya está escrito antes de navegar
+            if (!localStorage.getItem('cfiel_user_id')) {
+              await new Promise(r => setTimeout(r, 500));
+            }
+            router.push('/home');
+          }}
           style={{
             background: '#D4A847',
             color: '#0a0a0a',

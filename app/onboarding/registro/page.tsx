@@ -83,13 +83,18 @@ export default function RegistroPage() {
       });
 
       const data = await res.json();
-      const userId = data.usuario?.id ?? authUserId ?? '';
+      // Garantizar que userId nunca sea string vacío (falsy en el check de home)
+      const userId = data.usuario?.id ?? authUserId ?? `demo_${Date.now()}`;
 
+      console.log('[CFIEL] Registro: guardando cfiel_user_id:', userId);
       localStorage.setItem('cfiel_nombre',  nombre.trim().split(' ')[0]);
       localStorage.setItem('cfiel_user_id', userId);
     } catch {
-      // Demo mode: continuar sin datos reales
-      localStorage.setItem('cfiel_nombre', nombre.trim().split(' ')[0]);
+      // Demo mode: continuar sin datos reales, igual necesita un ID
+      const demoId = `demo_${Date.now()}`;
+      console.log('[CFIEL] Registro demo: guardando cfiel_user_id:', demoId);
+      localStorage.setItem('cfiel_nombre',  nombre.trim().split(' ')[0]);
+      localStorage.setItem('cfiel_user_id', demoId);
     } finally {
       setIsSubmitting(false);
       router.push('/onboarding/bienvenida');

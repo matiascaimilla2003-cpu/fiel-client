@@ -69,26 +69,44 @@ export default function HomePage() {
   const [USER,  setUser]  = useState<UserState>(DEFAULT_USER);
 
   useEffect(() => {
-    const userId = localStorage.getItem('cfiel_user_id');
-    if (!userId) { router.replace('/'); return; }
+    let cancelled = false;
 
-    fetch(`/api/usuarios/${userId}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (!data?.usuario) return;
-        const u = data.usuario;
-        const nivel = (u.nivel as string) ?? 'bronce';
-        setUser({
-          name:          u.nombre.split(' ')[0],
-          lastName:      u.nombre.split(' ')[1] ?? '',
-          points:        u.puntos_total,
-          level:         nivel.charAt(0).toUpperCase() + nivel.slice(1),
-          streak:        u.racha_dias,
-          progressPct:   calcProgressPct(nivel, u.puntos_total),
-          ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
-        });
-      })
-      .catch(() => {}); // mantiene DEFAULT_USER si hay error
+    const init = async () => {
+      let userId = localStorage.getItem('cfiel_user_id');
+
+      // Retry una vez si localStorage aún no tiene el ID (race condition post-registro)
+      if (!userId) {
+        await new Promise(r => setTimeout(r, 1000));
+        if (cancelled) return;
+        userId = localStorage.getItem('cfiel_user_id');
+      }
+
+      if (!userId) {
+        if (!cancelled) router.replace('/');
+        return;
+      }
+
+      fetch(`/api/usuarios/${userId}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (cancelled || !data?.usuario) return;
+          const u = data.usuario;
+          const nivel = (u.nivel as string) ?? 'bronce';
+          setUser({
+            name:           u.nombre.split(' ')[0],
+            lastName:       u.nombre.split(' ')[1] ?? '',
+            points:         u.puntos_total,
+            level:          nivel.charAt(0).toUpperCase() + nivel.slice(1),
+            streak:         u.racha_dias,
+            progressPct:    calcProgressPct(nivel, u.puntos_total),
+            ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
+          });
+        })
+        .catch(() => {}); // mantiene DEFAULT_USER si hay error
+    };
+
+    init();
+    return () => { cancelled = true; };
   }, [router]);
 
   return (
