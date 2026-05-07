@@ -1,77 +1,119 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import type { Html5Qrcode as Html5QrcodeType } from 'html5-qrcode';
 
 interface Props {
   onScan: (result: string) => void;
   onCancel: () => void;
 }
 
-const SCANNER_ID = 'cfiel-qr-scanner';
-
-function Corner({
-  style,
-}: {
-  style: React.CSSProperties;
-}) {
+function Corner({ style }: { style: React.CSSProperties }) {
   return <div style={{ position: 'absolute', width: 28, height: 28, ...style }} />;
 }
 
 export default function QRScanner({ onScan, onCancel }: Props) {
-  const stopped = useRef(false);
-  const scannerRef = useRef<Html5QrcodeType | null>(null);
+  const videoRef  = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const rafRef    = useRef<number | null>(null);
+  const doneRef   = useRef(false);
   const [permError, setPermError] = useState(false);
 
+  // Stable across renders — only touches refs
+  const releaseCamera = useCallback(() => {
+    doneRef.current = true;
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  }, []);
+
   useEffect(() => {
-    stopped.current = false;
+    doneRef.current = false;
 
-    import('html5-qrcode')
-      .then(({ Html5Qrcode }) => {
-        if (stopped.current) return;
-        const scanner = new Html5Qrcode(SCANNER_ID);
-        scannerRef.current = scanner;
+    (async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' } },
+          audio: false,
+        });
 
-        scanner
-          .start(
-            { facingMode: 'environment' },
-            { fps: 10, qrbox: { width: 240, height: 240 } },
-            (decoded: string) => {
-              if (stopped.current) return;
-              stopped.current = true;
-              scanner
-                .stop()
-                .catch(() => {})
-                .finally(() => {
-                  try {
-                    onScan(decoded);
-                  } catch (err) {
-                    console.error('[QRScanner] onScan lanzó un error:', err);
-                  }
-                });
-            },
-            () => {},
-          )
-          .catch(() => {
-            if (!stopped.current) setPermError(true);
+        if (doneRef.current) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+
+        streamRef.current = stream;
+        const video = videoRef.current;
+        if (!video) { releaseCamera(); return; }
+
+        video.srcObject = stream;
+        await video.play();
+
+        // Import once, then scan every frame
+        const { default: jsQR } = await import('jsqr');
+        if (doneRef.current) return;
+
+        const tick = () => {
+          if (doneRef.current) return;
+
+          const canvas = canvasRef.current;
+          const vid    = videoRef.current;
+
+          if (!canvas || !vid || vid.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
+            rafRef.current = requestAnimationFrame(tick);
+            return;
+          }
+
+          const w = vid.videoWidth;
+          const h = vid.videoHeight;
+          if (!w || !h) {
+            rafRef.current = requestAnimationFrame(tick);
+            return;
+          }
+
+          canvas.width  = w;
+          canvas.height = h;
+
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          if (!ctx) {
+            rafRef.current = requestAnimationFrame(tick);
+            return;
+          }
+
+          ctx.drawImage(vid, 0, 0, w, h);
+          const img  = ctx.getImageData(0, 0, w, h);
+          const code = jsQR(img.data, img.width, img.height, {
+            inversionAttempts: 'dontInvert',
           });
-      })
-      .catch((err) => {
-        console.error('[QRScanner] No se pudo cargar html5-qrcode:', err);
-        if (!stopped.current) setPermError(true);
-      });
 
-    return () => {
-      stopped.current = true;
-      scannerRef.current?.stop().catch(() => {});
-    };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+          if (code?.data) {
+            releaseCamera();
+            try {
+              onScan(code.data);
+            } catch (e) {
+              console.error('[QRScanner] onScan error:', e);
+            }
+          } else {
+            rafRef.current = requestAnimationFrame(tick);
+          }
+        };
+
+        rafRef.current = requestAnimationFrame(tick);
+      } catch (e) {
+        console.error('[QRScanner] Camera error:', e);
+        if (!doneRef.current) setPermError(true);
+      }
+    })();
+
+    return releaseCamera;
+  }, [releaseCamera]);
 
   const handleCancel = () => {
-    stopped.current = true;
-    (scannerRef.current?.stop() ?? Promise.resolve())
-      .catch(() => {})
-      .finally(() => onCancel());
+    releaseCamera();
+    onCancel();
   };
 
   return (
@@ -81,8 +123,12 @@ export default function QRScanner({ onScan, onCancel }: Props) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
       style={{
-        position: 'fixed', inset: 0, background: '#000', zIndex: 100,
-        display: 'flex', flexDirection: 'column',
+        position: 'fixed',
+        inset: 0,
+        background: '#000',
+        zIndex: 100,
+        display: 'flex',
+        flexDirection: 'column',
         fontFamily: 'inherit',
       }}
     >
@@ -102,7 +148,7 @@ export default function QRScanner({ onScan, onCancel }: Props) {
       </div>
 
       {permError ? (
-        /* ── Permission denied ── */
+        /* ── Sin permiso de cámara ── */
         <div style={{
           flex: 1, display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
@@ -118,10 +164,24 @@ export default function QRScanner({ onScan, onCancel }: Props) {
         </div>
       ) : (
         <>
-          {/* Camera feed */}
-          <div id={SCANNER_ID} style={{ flex: 1, width: '100%' }} />
+          {/* Feed de cámara en vivo */}
+          <video
+            ref={videoRef}
+            playsInline
+            muted
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
 
-          {/* Animated corners overlay */}
+          {/* Canvas oculto — solo para procesamiento de frames */}
+          <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+          {/* Overlay de apuntado */}
           <div style={{
             position: 'absolute', inset: 0, pointerEvents: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -132,13 +192,16 @@ export default function QRScanner({ onScan, onCancel }: Props) {
               <Corner style={{ bottom: 0, left: 0, borderBottom: '3px solid #D4A847', borderLeft: '3px solid #D4A847' }} />
               <Corner style={{ bottom: 0, right: 0, borderBottom: '3px solid #D4A847', borderRight: '3px solid #D4A847' }} />
 
-              {/* Scan line */}
               <motion.div
                 animate={{ y: [0, 218, 0] }}
                 transition={{ duration: 2.2, repeat: Infinity, ease: 'linear' }}
                 style={{
-                  position: 'absolute', left: 4, right: 4, height: 2,
-                  background: 'linear-gradient(90deg, transparent, #D4A847 30%, #F0C96A 50%, #D4A847 70%, transparent)',
+                  position: 'absolute',
+                  left: 4,
+                  right: 4,
+                  height: 2,
+                  background:
+                    'linear-gradient(90deg, transparent, #D4A847 30%, #F0C96A 50%, #D4A847 70%, transparent)',
                   boxShadow: '0 0 10px rgba(212,168,71,0.7)',
                 }}
               />
@@ -162,18 +225,15 @@ export default function QRScanner({ onScan, onCancel }: Props) {
             border: '0.5px solid rgba(255,255,255,0.25)',
             borderRadius: 28,
             padding: '14px 52px',
-            fontSize: 15, fontWeight: 600,
-            cursor: 'pointer', fontFamily: 'inherit',
+            fontSize: 15,
+            fontWeight: 600,
+            cursor: 'pointer',
+            fontFamily: 'inherit',
           }}
         >
           Cancelar
         </button>
       </div>
-
-      <style>{`
-        #${SCANNER_ID} video { object-fit: cover; }
-        #${SCANNER_ID} img { display: none !important; }
-      `}</style>
     </motion.div>
   );
 }
