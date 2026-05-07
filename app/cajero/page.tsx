@@ -1,6 +1,7 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 type Phase = 'form' | 'loading' | 'success' | 'error';
 
@@ -19,6 +20,7 @@ const NIVEL_EMOJI: Record<string, string> = {
 const TENANT_SLUG = 'tio-polo';
 
 export default function CajeroPage() {
+  const router = useRouter();
   const [monto,       setMonto]       = useState('');
   const [userId,      setUserId]      = useState('');
   const [showQrInput, setShowQrInput] = useState(false);
@@ -26,6 +28,19 @@ export default function CajeroPage() {
   const [result,      setResult]      = useState<AcreditarResult | null>(null);
   const [errorMsg,    setErrorMsg]    = useState('');
   const userInputRef = useRef<HTMLInputElement>(null);
+
+  // Verificar sesión de cajero en el cliente (segunda capa de protección)
+  useEffect(() => {
+    if (localStorage.getItem('cfiel_cajero') !== 'true') {
+      router.replace('/cajero/login');
+    }
+  }, [router]);
+
+  const handleLogout = async () => {
+    await fetch('/api/cajero/auth', { method: 'DELETE' }).catch(() => {});
+    localStorage.removeItem('cfiel_cajero');
+    router.replace('/cajero/login');
+  };
 
   const montoNum   = parseInt(monto.replace(/\D/g, '')) || 0;
   const canSubmit  = montoNum >= 100 && userId.trim().length > 10;
@@ -96,25 +111,52 @@ export default function CajeroPage() {
       <div style={{
         padding: '22px 24px 16px',
         borderBottom: '0.5px solid rgba(255,255,255,0.07)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <div style={{
-          fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
-          fontSize: 28, letterSpacing: 1, lineHeight: 1,
-        }}>
-          <span style={{ color: '#D4A847' }}>C</span>
-          <span style={{ color: '#fff' }}>FIEL</span>
-          <span style={{
-            fontSize: 13, fontWeight: 500, letterSpacing: '2px',
-            color: 'rgba(255,255,255,0.35)', marginLeft: 10,
-            fontFamily: 'inherit',
-            textTransform: 'uppercase',
+        <div>
+          <div style={{
+            fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
+            fontSize: 28, letterSpacing: 1, lineHeight: 1,
           }}>
-            · Cajero
-          </span>
+            <span style={{ color: '#D4A847' }}>C</span>
+            <span style={{ color: '#fff' }}>FIEL</span>
+            <span style={{
+              fontSize: 13, fontWeight: 500, letterSpacing: '2px',
+              color: 'rgba(255,255,255,0.35)', marginLeft: 10,
+              fontFamily: 'inherit',
+              textTransform: 'uppercase',
+            }}>
+              · Cajero
+            </span>
+          </div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginTop: 4 }}>
+            Tío Polo — Panel de acreditación
+          </div>
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginTop: 4 }}>
-          Tío Polo — Panel de acreditación
-        </div>
+
+        <button
+          onClick={handleLogout}
+          style={{
+            background: 'transparent',
+            border: '0.5px solid rgba(255,255,255,0.13)',
+            borderRadius: 20,
+            padding: '7px 13px',
+            fontSize: 11,
+            fontWeight: 500,
+            color: 'rgba(255,255,255,0.4)',
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+            display: 'flex', alignItems: 'center', gap: 5,
+          }}
+        >
+          <svg width={12} height={12} viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2.5}>
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Salir
+        </button>
       </div>
 
       {/* ── Body ── */}
