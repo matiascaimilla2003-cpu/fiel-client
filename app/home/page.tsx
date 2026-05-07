@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import HeroCard from '@/components/HeroCard';
+import TarjetasCarousel from '@/components/TarjetasCarousel';
 import StreakCard from '@/components/StreakCard';
 import RuletaCard from '@/components/RuletaCard';
 import MisionCard from '@/components/MisionCard';
@@ -160,13 +160,8 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        {/* ── Hero: puntos + nivel + progreso ── */}
-        <HeroCard
-          points={USER.points}
-          level={USER.level}
-          progressPct={USER.progressPct}
-          ptsToNextLevel={USER.ptsToNextLevel}
-        />
+        {/* ── Hero: carrusel de tarjetas por empresa ── */}
+        <TarjetasCarousel />
 
         {/* ── Duo grid: streak + ruleta ── */}
         <motion.div
