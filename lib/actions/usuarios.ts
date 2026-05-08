@@ -7,23 +7,27 @@ export async function crearUsuario(
   fechaNacimiento: string | null,
   tenantId: string,
 ) {
+  console.log('[USUARIOS] Buscando teléfono:', telefono, '| Tenant ID:', tenantId);
+
   // Buscar por teléfono + tenant: misma persona → devolver su perfil sin modificar puntos
-  const { data: existente } = await supabaseAdmin
+  const { data: existente, error: buscarError } = await supabaseAdmin
     .from('usuarios')
-    .select()
+    .select('*')
     .eq('telefono', telefono)
     .eq('tenant_id', tenantId)
     .maybeSingle();
 
+  if (buscarError) {
+    console.error('[USUARIOS] Error Supabase al buscar:', JSON.stringify(buscarError));
+  }
+
   if (existente) {
-    console.log('[CFIEL] Usuario existente:', existente.id, 'puntos:', existente.puntos_total);
+    console.log('[USUARIOS] Usuario existente:', existente.id, 'puntos:', existente.puntos_total);
     return existente;
   }
 
-  // No existe → crear perfil nuevo desde cero
-  const newId = crypto.randomUUID();
-  const payload: Record<string, unknown> = {
-    id:           newId,
+  // No existe → INSERT sin id explícito, Supabase genera el UUID automáticamente
+  const insertPayload: Record<string, unknown> = {
     nombre,
     telefono,
     tenant_id:    tenantId,
@@ -31,18 +35,22 @@ export async function crearUsuario(
     nivel:        'bronce',
     racha_dias:   0,
   };
-  if (fechaNacimiento) payload.fecha_nacimiento = fechaNacimiento;
+  if (fechaNacimiento) insertPayload.fecha_nacimiento = fechaNacimiento;
 
-  console.log('[CFIEL] Creando usuario nuevo:', newId, nombre);
+  console.log('[USUARIOS] Insertando payload:', JSON.stringify(insertPayload));
 
   const { data, error } = await supabaseAdmin
     .from('usuarios')
-    .insert(payload)
+    .insert(insertPayload)
     .select()
     .single();
 
-  if (error) throw error;
-  console.log('[CFIEL] Usuario creado:', data.id, 'puntos:', data.puntos_total);
+  if (error) {
+    console.error('[USUARIOS] Error Supabase al insertar:', JSON.stringify(error));
+    throw error;
+  }
+
+  console.log('[USUARIOS] Usuario creado:', data.id, 'puntos:', data.puntos_total);
   return data;
 }
 
