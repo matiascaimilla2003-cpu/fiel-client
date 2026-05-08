@@ -67,47 +67,50 @@ export default function HomePage() {
     let cancelled = false;
 
     const init = async () => {
-      // Supabase Auth tiene prioridad: garantiza que usamos el ID real de esta persona
+      // Auth es la fuente de verdad; localStorage solo es caché
       const session = await getSession();
       const sessionId = session?.user?.id ?? null;
 
-      // Si hay sesión activa, sincronizarla a localStorage
+      console.log('[CFIEL] Home: sesión de Auth:', sessionId ?? 'sin sesión');
+
+      // Sincronizar sesión a localStorage
       if (sessionId) {
         localStorage.setItem('cfiel_user_id', sessionId);
       }
 
-      let userId = sessionId ?? localStorage.getItem('cfiel_user_id');
-
-      // Retry si todavía no hay nada (race condition post-registro)
-      if (!userId) {
-        await new Promise(r => setTimeout(r, 1000));
-        if (cancelled) return;
-        const session2 = await getSession();
-        userId = session2?.user?.id ?? localStorage.getItem('cfiel_user_id');
-      }
+      // Auth tiene prioridad; localStorage es fallback para usuarios existentes
+      const userId = sessionId ?? localStorage.getItem('cfiel_user_id');
 
       if (!userId) {
-        if (!cancelled) router.replace('/');
+        if (!cancelled) router.replace('/onboarding/registro');
         return;
       }
 
-      fetch(`/api/usuarios/${userId}`)
-        .then((r) => (r.ok ? r.json() : null))
-        .then((data) => {
-          if (cancelled || !data?.usuario) return;
-          const u = data.usuario;
-          const nivel = (u.nivel as string) ?? 'bronce';
-          setUser({
-            name:           u.nombre.split(' ')[0],
-            lastName:       u.nombre.split(' ')[1] ?? '',
-            points:         u.puntos_total,
-            level:          nivel.charAt(0).toUpperCase() + nivel.slice(1),
-            streak:         u.racha_dias,
-            progressPct:    calcProgressPct(nivel, u.puntos_total),
-            ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
-          });
-        })
-        .catch(() => {}); // mantiene DEFAULT_USER si hay error
+      let res: Response | null = null;
+      try { res = await fetch(`/api/usuarios/${userId}`); } catch { /* red no disponible */ }
+
+      if (!res || !res.ok) {
+        console.log('[CFIEL] Home: sin perfil en BD para', userId, '— redirigiendo a registro');
+        if (!cancelled) router.replace('/onboarding/registro');
+        return;
+      }
+
+      const data = await res.json().catch(() => null);
+      if (cancelled || !data?.usuario) return;
+
+      const u = data.usuario;
+      console.log('[CFIEL] Home: usuario cargado:', u.id, '— puntos:', u.puntos_total, '— nivel:', u.nivel);
+
+      const nivel = (u.nivel as string) ?? 'bronce';
+      setUser({
+        name:           u.nombre.split(' ')[0],
+        lastName:       u.nombre.split(' ')[1] ?? '',
+        points:         u.puntos_total,
+        level:          nivel.charAt(0).toUpperCase() + nivel.slice(1),
+        streak:         u.racha_dias,
+        progressPct:    calcProgressPct(nivel, u.puntos_total),
+        ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
+      });
     };
 
     init();

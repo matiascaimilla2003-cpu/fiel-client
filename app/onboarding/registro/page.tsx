@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -36,6 +36,13 @@ export default function RegistroPage() {
 
   const codeInputRef = useRef<HTMLInputElement>(null);
 
+  /* Limpiar identidad previa al iniciar un nuevo registro */
+  useEffect(() => {
+    localStorage.removeItem('cfiel_user_id');
+    localStorage.removeItem('cfiel_nombre');
+    localStorage.removeItem('cfiel_cajero');
+  }, []);
+
   /* ── Validación del paso actual ── */
   const canContinue = (): boolean => {
     if (step === 0) return nombre.trim().length >= 2;
@@ -59,27 +66,26 @@ export default function RegistroPage() {
 
     // Paso final: registrar usuario
     setIsSubmitting(true);
+    let authId: string | undefined;
     try {
-      // Contraseña determinista: mismo teléfono → misma contraseña en cualquier dispositivo
+      // Contraseña determinista: mismo teléfono → mismo auth user en cualquier dispositivo
       const email    = `${telefono}@cfiel.app`;
       const password = `cfiel_${telefono}`;
 
-      // Intenta crear cuenta nueva; si el email ya existe, inicia sesión
-      let authUserId: string | undefined;
+      // Intenta crear cuenta nueva; si el email ya existe, inicia sesión para recuperar identidad
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
 
       if (!signUpError && signUpData.user) {
-        authUserId = signUpData.user.id;
+        authId = signUpData.user.id;
       } else {
-        // Cuenta ya existe → recuperar identidad de auth de esta persona
         const { data: signInData } = await supabase.auth.signInWithPassword({ email, password });
-        authUserId = signInData.user?.id;
+        authId = signInData.user?.id;
       }
 
-      // Último recurso si Supabase Auth no está disponible
-      if (!authUserId) authUserId = crypto.randomUUID();
+      // Solo como último recurso si Supabase Auth no está disponible
+      if (!authId) authId = crypto.randomUUID();
 
-      console.log('[CFIEL] Auth userId obtenido:', authUserId);
+      console.log('[CFIEL] Auth ID:', authId);
 
       const fechaNacimiento =
         anio && mes && dia
@@ -93,21 +99,26 @@ export default function RegistroPage() {
           nombre:           nombre.trim(),
           telefono,
           fecha_nacimiento: fechaNacimiento,
-          auth_user_id:     authUserId,
+          auth_id:          authId,
         }),
       });
 
       const data = await res.json();
-      const userId = data.usuario?.id ?? authUserId;
+      const userId = data.usuario?.id ?? authId;
 
-      console.log('[CFIEL] Registro: guardando cfiel_user_id:', userId);
+      console.log('[CFIEL] Usuario creado/encontrado:', data.usuario);
+      console.log('[CFIEL] Puntos iniciales:', data.usuario?.puntos_total ?? 0);
+      console.log('[CFIEL] Guardando cfiel_user_id:', userId);
+
       localStorage.setItem('cfiel_nombre',  nombre.trim().split(' ')[0]);
       localStorage.setItem('cfiel_user_id', userId);
-    } catch {
-      const demoId = `demo_${Date.now()}`;
-      console.log('[CFIEL] Registro demo: guardando cfiel_user_id:', demoId);
-      localStorage.setItem('cfiel_nombre',  nombre.trim().split(' ')[0]);
-      localStorage.setItem('cfiel_user_id', demoId);
+    } catch (err) {
+      console.error('[CFIEL] Error en registro:', err);
+      // Si obtuvimos authId antes de fallar, guardarlo igual (home intentará cargar el perfil)
+      if (authId) {
+        localStorage.setItem('cfiel_user_id', authId);
+        localStorage.setItem('cfiel_nombre',  nombre.trim().split(' ')[0]);
+      }
     } finally {
       setIsSubmitting(false);
       router.push('/onboarding/bienvenida');

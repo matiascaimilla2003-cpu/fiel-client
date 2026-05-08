@@ -6,19 +6,46 @@ export async function crearUsuario(
   telefono: string,
   fechaNacimiento: string | null,
   tenantId: string,
-  authUserId?: string,
+  authId: string,
 ) {
-  // El ID siempre proviene de Supabase Auth para garantizar unicidad por persona
-  const userId = authUserId ?? crypto.randomUUID();
+  console.log('[CFIEL] crearUsuario: buscando por auth_id:', authId);
 
+  // Buscar por auth_id: misma persona en otro dispositivo → devolver su perfil
+  const { data: existente } = await supabaseAdmin
+    .from('usuarios')
+    .select()
+    .eq('auth_id', authId)
+    .maybeSingle();
+
+  if (existente) {
+    console.log('[CFIEL] Usuario existente encontrado:', existente.id, 'puntos:', existente.puntos_total);
+    // Actualizar nombre si cambió
+    if (existente.nombre !== nombre) {
+      const { data: actualizado } = await supabaseAdmin
+        .from('usuarios')
+        .update({ nombre })
+        .eq('id', existente.id)
+        .select()
+        .single();
+      return actualizado ?? existente;
+    }
+    return existente;
+  }
+
+  // No existe → crear nuevo perfil desde cero
   const payload: Record<string, unknown> = {
-    id:        userId,
-    auth_id:   userId,
+    id:           authId,
+    auth_id:      authId,
     nombre,
     telefono,
-    tenant_id: tenantId,
+    tenant_id:    tenantId,
+    puntos_total: 0,
+    nivel:        'bronce',
+    racha_dias:   0,
   };
   if (fechaNacimiento) payload.fecha_nacimiento = fechaNacimiento;
+
+  console.log('[CFIEL] Creando nuevo usuario:', authId, nombre);
 
   const { data, error } = await supabaseAdmin
     .from('usuarios')
@@ -26,33 +53,9 @@ export async function crearUsuario(
     .select()
     .single();
 
-  if (!error) return data;
-
-  // Conflicto de PK: este auth user ya tiene fila — devolver perfil existente
-  // (y actualizar nombre si cambió)
-  if (error.code === '23505') {
-    const { data: existente, error: fetchErr } = await supabaseAdmin
-      .from('usuarios')
-      .select()
-      .eq('id', userId)
-      .single();
-
-    if (fetchErr) throw fetchErr;
-
-    if (existente.nombre !== nombre) {
-      const { data: actualizado } = await supabaseAdmin
-        .from('usuarios')
-        .update({ nombre })
-        .eq('id', userId)
-        .select()
-        .single();
-      return actualizado ?? existente;
-    }
-
-    return existente;
-  }
-
-  throw error;
+  if (error) throw error;
+  console.log('[CFIEL] Usuario creado:', data.id, 'puntos:', data.puntos_total);
+  return data;
 }
 
 export async function obtenerUsuario(userId: string) {
