@@ -9,12 +9,15 @@ interface Tarjeta {
   puntos: number;
   nivel: 'bronce' | 'plata' | 'oro' | 'platino';
   progreso: number;
+  mensaje?: string;
 }
 
-const TARJETAS: Tarjeta[] = [
-  { empresa: 'Tío Polo',    puntos: 1207, nivel: 'oro',    progreso: 72 },
-  { empresa: 'Bot. Matías', puntos:  340, nivel: 'bronce', progreso: 34 },
-];
+interface Props {
+  puntos: number;
+  nivel: 'bronce' | 'plata' | 'oro' | 'platino';
+  progreso: number;
+  empresa?: string;
+}
 
 const NIVEL_META: Record<string, { label: string; color: string; next: string }> = {
   bronce:  { label: 'BRONCE',  color: '#CD8B4A', next: 'Plata'   },
@@ -97,10 +100,16 @@ function TarjetaCard({ tarjeta }: { tarjeta: Tarjeta }) {
         color: '#fff',
         lineHeight: 1,
         letterSpacing: -2,
-        marginBottom: 12,
+        marginBottom: tarjeta.mensaje ? 6 : 12,
       }}>
         {tarjeta.puntos.toLocaleString('es-CL')}
       </div>
+
+      {tarjeta.mensaje && (
+        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginBottom: 10 }}>
+          {tarjeta.mensaje}
+        </div>
+      )}
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
         <div style={{
@@ -140,12 +149,17 @@ function TarjetaCard({ tarjeta }: { tarjeta: Tarjeta }) {
   );
 }
 
-export default function TarjetasCarousel() {
+export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'Tío Polo' }: Props) {
+  const tarjetas: Tarjeta[] = [
+    { empresa, puntos, nivel, progreso },
+    { empresa: 'Bot. Matías', puntos: 0, nivel: 'bronce', progreso: 0, mensaje: 'Aún no has comprado aquí' },
+  ];
+
   const [active, setActive] = useState(0);
   const [dir, setDir] = useState(0);
 
   const goTo = (index: number) => {
-    if (index === active || index < 0 || index >= TARJETAS.length) return;
+    if (index === active || index < 0 || index >= tarjetas.length) return;
     setDir(index > active ? 1 : -1);
     setActive(index);
   };
@@ -174,15 +188,15 @@ export default function TarjetasCarousel() {
             onDragEnd={handleDragEnd}
             style={{ cursor: 'grab' }}
           >
-            <TarjetaCard tarjeta={TARJETAS[active]} />
+            <TarjetaCard tarjeta={tarjetas[active]} />
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Dots indicadores */}
-      {TARJETAS.length > 1 && (
+      {tarjetas.length > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5, marginTop: 9 }}>
-          {TARJETAS.map((_, i) => (
+          {tarjetas.map((_, i) => (
             <motion.div
               key={i}
               onClick={() => goTo(i)}

@@ -93,8 +93,8 @@ export default function QRModal({ open, onClose, userName, userLevel }: Props) {
             </div>
 
             {userId && (
-              <div style={{ fontSize: 10, color: 'rgba(0,0,0,0.38)', marginTop: 6, fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                {userId.slice(0, 8)}…{userId.slice(-4)}
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.38)', marginTop: 8, fontFamily: 'monospace', letterSpacing: '0.5px' }}>
+                ID: {userId.slice(0, 8)}
               </div>
             )}
 

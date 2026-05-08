@@ -178,7 +178,12 @@ export default function HomePage() {
         </motion.div>
 
         {/* ── Hero: carrusel de tarjetas por empresa ── */}
-        <TarjetasCarousel />
+        <TarjetasCarousel
+          puntos={USER.points}
+          nivel={(USER.level.toLowerCase() as 'bronce' | 'plata' | 'oro' | 'platino') || 'bronce'}
+          progreso={USER.progressPct}
+          empresa="Tío Polo"
+        />
 
         {/* ── Duo grid: streak + ruleta ── */}
         <motion.div
