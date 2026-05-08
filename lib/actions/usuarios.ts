@@ -8,6 +8,15 @@ export async function crearUsuario(
   tenantId: string,
   authUserId?: string,
 ) {
+  // Return existing user if this phone is already registered
+  const { data: existing } = await supabaseAdmin
+    .from('usuarios')
+    .select()
+    .eq('telefono', telefono)
+    .maybeSingle();
+
+  if (existing) return existing;
+
   const payload: Record<string, unknown> = { nombre, telefono, tenant_id: tenantId };
   if (fechaNacimiento) payload.fecha_nacimiento = fechaNacimiento;
   if (authUserId)      payload.id = authUserId;

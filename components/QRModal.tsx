@@ -92,8 +92,14 @@ export default function QRModal({ open, onClose, userName, userLevel }: Props) {
               )}
             </div>
 
+            {userId && (
+              <div style={{ fontSize: 10, color: 'rgba(0,0,0,0.38)', marginTop: 6, fontFamily: 'monospace', letterSpacing: '0.5px' }}>
+                {userId.slice(0, 8)}…{userId.slice(-4)}
+              </div>
+            )}
+
             {userLevel && (
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginBottom: 5 }}>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginBottom: 5, marginTop: 12 }}>
                 Nivel {userLevel} {levelEmoji}
               </div>
             )}

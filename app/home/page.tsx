@@ -48,12 +48,6 @@ const DEFAULT_USER: UserState = {
   ptsToNextLevel: 293,
 };
 
-const ACTIVITY = [
-  { initials: 'ML', name: 'Marcela L.',  detail: 'Compra $6.400',  pts: '+80',  time: 'Ahora'      },
-  { initials: 'RF', name: 'Roberto F.',  detail: 'Compra $19.500', pts: '+240', time: 'Ahora'      },
-  { initials: 'PS', name: 'Paula S.',    detail: 'Compra $12.800', pts: '+160', time: 'Hace 5 min' },
-];
-
 type Modal = 'qr' | 'streak' | 'misiones' | null;
 
 /* animación fadeUp reutilizable */
@@ -333,56 +327,6 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        {/* ── Actividad reciente ── */}
-        <motion.div
-          {...fadeUp(0.33)}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}
-        >
-          <div style={{
-            fontSize: 10, fontWeight: 600,
-            color: 'rgba(255,255,255,0.28)',
-            letterSpacing: '1.2px', textTransform: 'uppercase',
-          }}>
-            Actividad reciente
-          </div>
-          <div style={{ fontSize: 11, color: '#D4A847', cursor: 'pointer' }}>Ver todo →</div>
-        </motion.div>
-
-        {ACTIVITY.map((item, i) => (
-          <motion.div
-            key={i}
-            {...fadeUp(0.33 + i * 0.05)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 10,
-              padding: '11px 13px',
-              background: '#141414',
-              borderRadius: 14,
-              border: '0.5px solid rgba(255,255,255,0.07)',
-              marginBottom: 6,
-              cursor: 'pointer',
-            }}
-          >
-            <div style={{
-              width: 34, height: 34,
-              background: '#222222',
-              borderRadius: '50%',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 12, fontWeight: 600,
-              color: 'rgba(255,255,255,0.55)',
-              flexShrink: 0,
-            }}>
-              {item.initials}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, fontWeight: 500, color: '#fff', marginBottom: 1 }}>{item.name}</div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)' }}>{item.detail}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#2ECC71' }}>{item.pts}</div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', textAlign: 'right' }}>{item.time}</div>
-            </div>
-          </motion.div>
-        ))}
 
       </div>
 
