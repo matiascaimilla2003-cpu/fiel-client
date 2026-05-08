@@ -42,11 +42,23 @@ export default function RegistroPage() {
     localStorage.removeItem('cfiel_cajero');
   }, []);
 
+  /* ── Validación de fecha de nacimiento ── */
+  const fechaEsValida = (): boolean => {
+    if (!dia || !mes || anio.length < 4) return false;
+    const d = parseInt(dia, 10);
+    const m = parseInt(mes, 10);
+    const a = parseInt(anio, 10);
+    return d >= 1 && d <= 31 && m >= 1 && m <= 12 && a >= 1920 && a <= 2010;
+  };
+
+  const mostrarErrorFecha =
+    step === 2 && !!(dia || mes || anio) && !fechaEsValida();
+
   /* ── Validación del paso actual ── */
   const canContinue = (): boolean => {
     if (step === 0) return nombre.trim().length >= 2;
     if (step === 1) return telefono.replace(/\D/g, '').length >= 8;
-    if (step === 2) return !!dia && !!mes && !!anio && anio.length === 4;
+    if (step === 2) return fechaEsValida();
     if (step === 3) return code.length === 4;
     return false;
   };
@@ -273,10 +285,16 @@ export default function RegistroPage() {
                     />
                   ))}
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', marginTop: 9, lineHeight: 1.55 }}>
-                  Para enviarte{' '}
-                  <span style={{ color: '#F0C96A' }}>puntos extra en tu cumpleaños 🎂</span>
-                </div>
+                {mostrarErrorFecha ? (
+                  <div style={{ fontSize: 12, color: '#E74C3C', marginTop: 9, lineHeight: 1.55 }}>
+                    Fecha inválida, verifica los datos
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', marginTop: 9, lineHeight: 1.55 }}>
+                    Para enviarte{' '}
+                    <span style={{ color: '#F0C96A' }}>puntos extra en tu cumpleaños 🎂</span>
+                  </div>
+                )}
               </div>
             )}
 

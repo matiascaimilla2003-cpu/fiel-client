@@ -50,7 +50,7 @@ export async function POST(request: Request) {
         telefono,
         fecha_nacimiento: fecha_nacimiento || null,
         tenant_id: tenant.id,
-        puntos_total: 0,
+        puntos_total: 200,
         nivel: 'bronce',
         racha_dias: 0,
       })
@@ -61,6 +61,21 @@ export async function POST(request: Request) {
 
     if (insertError) {
       return Response.json({ error: insertError.message }, { status: 500 });
+    }
+
+    // Registrar bono de bienvenida en transacciones_puntos
+    const { error: txError } = await supabaseAdmin
+      .from('transacciones_puntos')
+      .insert({
+        usuario_id:  nuevo.id,
+        tenant_id:   tenant.id,
+        tipo:        'bono',
+        puntos:      200,
+        descripcion: 'Bono de bienvenida',
+      });
+
+    if (txError) {
+      console.error('[CREAR] Error al registrar transacción de bienvenida:', txError.message);
     }
 
     return Response.json({ usuario: nuevo });
