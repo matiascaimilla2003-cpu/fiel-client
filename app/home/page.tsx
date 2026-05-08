@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { getSession } from '@/lib/supabase';
 import TarjetasCarousel from '@/components/TarjetasCarousel';
 import StreakCard from '@/components/StreakCard';
 import RuletaCard from '@/components/RuletaCard';
@@ -67,22 +66,12 @@ export default function HomePage() {
     let cancelled = false;
 
     const init = async () => {
-      // Auth es la fuente de verdad; localStorage solo es caché
-      const session = await getSession();
-      const sessionId = session?.user?.id ?? null;
+      const userId = localStorage.getItem('cfiel_user_id');
 
-      console.log('[CFIEL] Home: sesión de Auth:', sessionId ?? 'sin sesión');
-
-      // Sincronizar sesión a localStorage
-      if (sessionId) {
-        localStorage.setItem('cfiel_user_id', sessionId);
-      }
-
-      // Auth tiene prioridad; localStorage es fallback para usuarios existentes
-      const userId = sessionId ?? localStorage.getItem('cfiel_user_id');
+      console.log('[CFIEL] Home: cfiel_user_id:', userId ?? 'no hay');
 
       if (!userId) {
-        if (!cancelled) router.replace('/onboarding/registro');
+        if (!cancelled) router.replace('/');
         return;
       }
 
@@ -90,8 +79,10 @@ export default function HomePage() {
       try { res = await fetch(`/api/usuarios/${userId}`); } catch { /* red no disponible */ }
 
       if (!res || !res.ok) {
-        console.log('[CFIEL] Home: sin perfil en BD para', userId, '— redirigiendo a registro');
-        if (!cancelled) router.replace('/onboarding/registro');
+        console.log('[CFIEL] Home: sin perfil en BD para', userId, '— limpiando y redirigiendo');
+        localStorage.removeItem('cfiel_user_id');
+        localStorage.removeItem('cfiel_nombre');
+        if (!cancelled) router.replace('/');
         return;
       }
 

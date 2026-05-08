@@ -6,36 +6,24 @@ export async function crearUsuario(
   telefono: string,
   fechaNacimiento: string | null,
   tenantId: string,
-  authId: string,
 ) {
-  console.log('[CFIEL] crearUsuario: buscando por auth_id:', authId);
-
-  // Buscar por auth_id: misma persona en otro dispositivo → devolver su perfil
+  // Buscar por teléfono + tenant: misma persona → devolver su perfil sin modificar puntos
   const { data: existente } = await supabaseAdmin
     .from('usuarios')
     .select()
-    .eq('auth_id', authId)
+    .eq('telefono', telefono)
+    .eq('tenant_id', tenantId)
     .maybeSingle();
 
   if (existente) {
-    console.log('[CFIEL] Usuario existente encontrado:', existente.id, 'puntos:', existente.puntos_total);
-    // Actualizar nombre si cambió
-    if (existente.nombre !== nombre) {
-      const { data: actualizado } = await supabaseAdmin
-        .from('usuarios')
-        .update({ nombre })
-        .eq('id', existente.id)
-        .select()
-        .single();
-      return actualizado ?? existente;
-    }
+    console.log('[CFIEL] Usuario existente:', existente.id, 'puntos:', existente.puntos_total);
     return existente;
   }
 
-  // No existe → crear nuevo perfil desde cero
+  // No existe → crear perfil nuevo desde cero
+  const newId = crypto.randomUUID();
   const payload: Record<string, unknown> = {
-    id:           authId,
-    auth_id:      authId,
+    id:           newId,
     nombre,
     telefono,
     tenant_id:    tenantId,
@@ -45,7 +33,7 @@ export async function crearUsuario(
   };
   if (fechaNacimiento) payload.fecha_nacimiento = fechaNacimiento;
 
-  console.log('[CFIEL] Creando nuevo usuario:', authId, nombre);
+  console.log('[CFIEL] Creando usuario nuevo:', newId, nombre);
 
   const { data, error } = await supabaseAdmin
     .from('usuarios')

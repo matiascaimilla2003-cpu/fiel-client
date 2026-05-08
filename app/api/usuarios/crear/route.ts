@@ -4,13 +4,10 @@ import { crearUsuario } from '@/lib/actions/usuarios';
 
 export async function POST(request: NextRequest) {
   try {
-    const { nombre, telefono, fecha_nacimiento, auth_id } = await request.json();
+    const { nombre, telefono, fecha_nacimiento } = await request.json();
 
-    if (!nombre || !telefono || !auth_id) {
-      return NextResponse.json(
-        { error: 'nombre, telefono y auth_id son requeridos' },
-        { status: 400 },
-      );
+    if (!nombre || !telefono) {
+      return NextResponse.json({ error: 'nombre y telefono son requeridos' }, { status: 400 });
     }
 
     const { data: tenant, error: tenantError } = await supabaseAdmin
@@ -28,7 +25,6 @@ export async function POST(request: NextRequest) {
       telefono,
       fecha_nacimiento ?? null,
       tenant.id,
-      auth_id,
     );
 
     console.log('[CFIEL] /api/usuarios/crear — id:', usuario.id, 'puntos:', usuario.puntos_total);
