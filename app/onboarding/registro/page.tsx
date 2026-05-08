@@ -60,11 +60,26 @@ export default function RegistroPage() {
     // Paso final: registrar usuario
     setIsSubmitting(true);
     try {
+      // Contraseña determinista: mismo teléfono → misma contraseña en cualquier dispositivo
       const email    = `${telefono}@cfiel.app`;
-      const password = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+      const password = `cfiel_${telefono}`;
 
-      const { data: authData } = await supabase.auth.signUp({ email, password });
-      const authUserId = authData.user?.id;
+      // Intenta crear cuenta nueva; si el email ya existe, inicia sesión
+      let authUserId: string | undefined;
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
+
+      if (!signUpError && signUpData.user) {
+        authUserId = signUpData.user.id;
+      } else {
+        // Cuenta ya existe → recuperar identidad de auth de esta persona
+        const { data: signInData } = await supabase.auth.signInWithPassword({ email, password });
+        authUserId = signInData.user?.id;
+      }
+
+      // Último recurso si Supabase Auth no está disponible
+      if (!authUserId) authUserId = crypto.randomUUID();
+
+      console.log('[CFIEL] Auth userId obtenido:', authUserId);
 
       const fechaNacimiento =
         anio && mes && dia
@@ -75,22 +90,20 @@ export default function RegistroPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nombre:          nombre.trim(),
+          nombre:           nombre.trim(),
           telefono,
           fecha_nacimiento: fechaNacimiento,
-          auth_user_id:    authUserId,
+          auth_user_id:     authUserId,
         }),
       });
 
       const data = await res.json();
-      // Garantizar que userId nunca sea string vacío (falsy en el check de home)
-      const userId = data.usuario?.id ?? authUserId ?? `demo_${Date.now()}`;
+      const userId = data.usuario?.id ?? authUserId;
 
       console.log('[CFIEL] Registro: guardando cfiel_user_id:', userId);
       localStorage.setItem('cfiel_nombre',  nombre.trim().split(' ')[0]);
       localStorage.setItem('cfiel_user_id', userId);
     } catch {
-      // Demo mode: continuar sin datos reales, igual necesita un ID
       const demoId = `demo_${Date.now()}`;
       console.log('[CFIEL] Registro demo: guardando cfiel_user_id:', demoId);
       localStorage.setItem('cfiel_nombre',  nombre.trim().split(' ')[0]);

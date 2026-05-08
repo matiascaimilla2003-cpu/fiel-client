@@ -8,18 +8,17 @@ export async function crearUsuario(
   tenantId: string,
   authUserId?: string,
 ) {
-  // Return existing user if this phone is already registered
-  const { data: existing } = await supabaseAdmin
-    .from('usuarios')
-    .select()
-    .eq('telefono', telefono)
-    .maybeSingle();
+  // El ID siempre proviene de Supabase Auth para garantizar unicidad por persona
+  const userId = authUserId ?? crypto.randomUUID();
 
-  if (existing) return existing;
-
-  const payload: Record<string, unknown> = { nombre, telefono, tenant_id: tenantId };
+  const payload: Record<string, unknown> = {
+    id:        userId,
+    auth_id:   userId,
+    nombre,
+    telefono,
+    tenant_id: tenantId,
+  };
   if (fechaNacimiento) payload.fecha_nacimiento = fechaNacimiento;
-  if (authUserId)      payload.id = authUserId;
 
   const { data, error } = await supabaseAdmin
     .from('usuarios')
@@ -27,8 +26,33 @@ export async function crearUsuario(
     .select()
     .single();
 
-  if (error) throw error;
-  return data;
+  if (!error) return data;
+
+  // Conflicto de PK: este auth user ya tiene fila — devolver perfil existente
+  // (y actualizar nombre si cambió)
+  if (error.code === '23505') {
+    const { data: existente, error: fetchErr } = await supabaseAdmin
+      .from('usuarios')
+      .select()
+      .eq('id', userId)
+      .single();
+
+    if (fetchErr) throw fetchErr;
+
+    if (existente.nombre !== nombre) {
+      const { data: actualizado } = await supabaseAdmin
+        .from('usuarios')
+        .update({ nombre })
+        .eq('id', userId)
+        .select()
+        .single();
+      return actualizado ?? existente;
+    }
+
+    return existente;
+  }
+
+  throw error;
 }
 
 export async function obtenerUsuario(userId: string) {

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { getSession } from '@/lib/supabase';
 import TarjetasCarousel from '@/components/TarjetasCarousel';
 import StreakCard from '@/components/StreakCard';
 import RuletaCard from '@/components/RuletaCard';
@@ -66,13 +67,23 @@ export default function HomePage() {
     let cancelled = false;
 
     const init = async () => {
-      let userId = localStorage.getItem('cfiel_user_id');
+      // Supabase Auth tiene prioridad: garantiza que usamos el ID real de esta persona
+      const session = await getSession();
+      const sessionId = session?.user?.id ?? null;
 
-      // Retry una vez si localStorage aún no tiene el ID (race condition post-registro)
+      // Si hay sesión activa, sincronizarla a localStorage
+      if (sessionId) {
+        localStorage.setItem('cfiel_user_id', sessionId);
+      }
+
+      let userId = sessionId ?? localStorage.getItem('cfiel_user_id');
+
+      // Retry si todavía no hay nada (race condition post-registro)
       if (!userId) {
         await new Promise(r => setTimeout(r, 1000));
         if (cancelled) return;
-        userId = localStorage.getItem('cfiel_user_id');
+        const session2 = await getSession();
+        userId = session2?.user?.id ?? localStorage.getItem('cfiel_user_id');
       }
 
       if (!userId) {
