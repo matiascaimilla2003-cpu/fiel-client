@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import TarjetasCarousel from '@/components/TarjetasCarousel';
 import StreakCard from '@/components/StreakCard';
@@ -27,7 +27,6 @@ function calcPtsToNextLevel(nivel: string, puntos: number): number {
   return Math.max(0, (next[nivel] ?? 500) - puntos);
 }
 
-/* ─── Forma del estado de usuario ─── */
 interface UserState {
   name: string;
   lastName: string;
@@ -38,19 +37,24 @@ interface UserState {
   ptsToNextLevel: number;
 }
 
-const DEFAULT_USER: UserState = {
-  name: 'Carlos',
-  lastName: 'Morales',
-  points: 1207,
-  level: 'Oro',
-  streak: 7,
-  progressPct: 72,
-  ptsToNextLevel: 293,
+interface Mision {
+  id: string;
+  titulo: string;
+  descripcion: string | null;
+  puntos_premio: number;
+  meta_tipo: string;
+  meta_valor: number;
+  fecha_fin: string | null;
+}
+
+const EMPTY_USER: UserState = {
+  name: '', lastName: '',
+  points: 0, level: 'bronce',
+  streak: 0, progressPct: 0, ptsToNextLevel: 500,
 };
 
 type Modal = 'qr' | 'streak' | 'misiones' | null;
 
-/* animación fadeUp reutilizable */
 const fadeUp = (delay: number) => ({
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0 },
@@ -58,9 +62,11 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function HomePage() {
-  const router           = useRouter();
-  const [modal, setModal] = useState<Modal>(null);
-  const [USER,  setUser]  = useState<UserState>(DEFAULT_USER);
+  const router             = useRouter();
+  const [modal, setModal]  = useState<Modal>(null);
+  const [USER, setUser]    = useState<UserState>(EMPTY_USER);
+  const [misiones, setMisiones] = useState<Mision[]>([]);
+  const [loading, setLoading]   = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -68,40 +74,51 @@ export default function HomePage() {
     const init = async () => {
       const userId = localStorage.getItem('cfiel_user_id');
 
-      console.log('[CFIEL] Home: cfiel_user_id:', userId ?? 'no hay');
-
       if (!userId) {
         if (!cancelled) router.replace('/');
         return;
       }
 
-      let res: Response | null = null;
-      try { res = await fetch(`/api/usuarios/${userId}`); } catch { /* red no disponible */ }
+      try {
+        const [userRes, misionRes] = await Promise.all([
+          fetch(`/api/usuarios/${userId}`).catch(() => null as null),
+          fetch('/api/misiones?tenant_slug=tio-polo').catch(() => null as null),
+        ]);
 
-      if (!res || !res.ok) {
-        console.log('[CFIEL] Home: sin perfil en BD para', userId, '— limpiando y redirigiendo');
-        localStorage.removeItem('cfiel_user_id');
-        localStorage.removeItem('cfiel_nombre');
-        if (!cancelled) router.replace('/');
-        return;
+        if (!userRes?.ok) {
+          localStorage.removeItem('cfiel_user_id');
+          localStorage.removeItem('cfiel_nombre');
+          if (!cancelled) router.replace('/');
+          return;
+        }
+
+        const [userData, misionData] = await Promise.all([
+          userRes.json().catch(() => null),
+          misionRes?.ok ? misionRes.json().catch(() => null) : null,
+        ]);
+
+        if (cancelled) return;
+
+        if (userData?.usuario) {
+          const u = userData.usuario;
+          const nivel = (u.nivel as string) ?? 'bronce';
+          setUser({
+            name:           u.nombre.split(' ')[0],
+            lastName:       u.nombre.split(' ')[1] ?? '',
+            points:         u.puntos_total,
+            level:          nivel.charAt(0).toUpperCase() + nivel.slice(1),
+            streak:         u.racha_dias,
+            progressPct:    calcProgressPct(nivel, u.puntos_total),
+            ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
+          });
+        }
+
+        if (misionData?.misiones) {
+          setMisiones(misionData.misiones);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-
-      const data = await res.json().catch(() => null);
-      if (cancelled || !data?.usuario) return;
-
-      const u = data.usuario;
-      console.log('[CFIEL] Home: usuario cargado:', u.id, '— puntos:', u.puntos_total, '— nivel:', u.nivel);
-
-      const nivel = (u.nivel as string) ?? 'bronce';
-      setUser({
-        name:           u.nombre.split(' ')[0],
-        lastName:       u.nombre.split(' ')[1] ?? '',
-        points:         u.puntos_total,
-        level:          nivel.charAt(0).toUpperCase() + nivel.slice(1),
-        streak:         u.racha_dias,
-        progressPct:    calcProgressPct(nivel, u.puntos_total),
-        ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
-      });
     };
 
     init();
@@ -117,7 +134,6 @@ export default function HomePage() {
       position: 'relative',
     }}>
 
-      {/* ── Contenido scrolleable ── */}
       <div style={{ padding: '16px 16px 90px', overflowY: 'auto' }}>
 
         {/* ── Header ── */}
@@ -126,12 +142,21 @@ export default function HomePage() {
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}
         >
           <div>
-            <div style={{ fontSize: 18, fontWeight: 600, color: '#fff', letterSpacing: -0.4 }}>
-              Hola, {USER.name} 👋
-            </div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>
-              Bienvenido de vuelta
-            </div>
+            {loading ? (
+              <>
+                <div style={{ width: 150, height: 18, background: '#1e1e1e', borderRadius: 6, marginBottom: 6 }} />
+                <div style={{ width: 110, height: 11, background: '#1a1a1a', borderRadius: 4 }} />
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize: 18, fontWeight: 600, color: '#fff', letterSpacing: -0.4 }}>
+                  Hola, {USER.name || '…'} 👋
+                </div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>
+                  Bienvenido de vuelta
+                </div>
+              </>
+            )}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -140,12 +165,10 @@ export default function HomePage() {
               onClick={() => setModal('misiones')}
               style={{
                 width: 36, height: 36,
-                background: '#1a1a1a',
-                borderRadius: '50%',
+                background: '#1a1a1a', borderRadius: '50%',
                 border: '0.5px solid rgba(255,255,255,0.13)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: 'pointer',
-                position: 'relative',
+                cursor: 'pointer', position: 'relative',
               }}
             >
               <svg width={17} height={17} viewBox="0 0 24 24" fill="none"
@@ -153,31 +176,31 @@ export default function HomePage() {
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                 <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
               </svg>
-              <div style={{
-                position: 'absolute', top: 0, right: 0,
-                width: 9, height: 9,
-                background: '#E74C3C',
-                borderRadius: '50%',
-                border: '1.5px solid #0a0a0a',
-                animation: 'pulseDot 2s ease infinite',
-              }} />
+              {misiones.length > 0 && (
+                <div style={{
+                  position: 'absolute', top: 0, right: 0,
+                  width: 9, height: 9,
+                  background: '#E74C3C', borderRadius: '50%',
+                  border: '1.5px solid #0a0a0a',
+                  animation: 'pulseDot 2s ease infinite',
+                }} />
+              )}
             </div>
 
             {/* Avatar */}
             <div style={{
               width: 36, height: 36,
-              background: '#222222',
-              borderRadius: '50%',
+              background: '#222222', borderRadius: '50%',
               border: '1px solid rgba(255,255,255,0.13)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 14, fontWeight: 600, color: '#fff',
             }}>
-              {USER.name[0]}
+              {USER.name ? USER.name[0] : '?'}
             </div>
           </div>
         </motion.div>
 
-        {/* ── Hero: carrusel de tarjetas por empresa ── */}
+        {/* ── Hero: carrusel de tarjetas ── */}
         <TarjetasCarousel
           puntos={USER.points}
           nivel={(USER.level.toLowerCase() as 'bronce' | 'plata' | 'oro' | 'platino') || 'bronce'}
@@ -194,27 +217,30 @@ export default function HomePage() {
           <RuletaCard onOpen={() => setModal('misiones')} />
         </motion.div>
 
-        {/* ── Misión activa ── */}
-        <motion.div
-          {...fadeUp(0.19)}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}
-        >
-          <div style={{
-            fontSize: 10, fontWeight: 600,
-            color: 'rgba(255,255,255,0.28)',
-            letterSpacing: '1.2px', textTransform: 'uppercase',
-          }}>
-            Misión activa
-          </div>
-          <div
-            onClick={() => setModal('misiones')}
-            style={{ fontSize: 11, color: '#D4A847', cursor: 'pointer' }}
-          >
-            2 misiones →
-          </div>
-        </motion.div>
-
-        <MisionCard onOpen={() => setModal('misiones')} />
+        {/* ── Misión activa (solo si hay misiones) ── */}
+        {misiones.length > 0 && (
+          <>
+            <motion.div
+              {...fadeUp(0.19)}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}
+            >
+              <div style={{
+                fontSize: 10, fontWeight: 600,
+                color: 'rgba(255,255,255,0.28)',
+                letterSpacing: '1.2px', textTransform: 'uppercase',
+              }}>
+                Misión activa
+              </div>
+              <div
+                onClick={() => setModal('misiones')}
+                style={{ fontSize: 11, color: '#D4A847', cursor: 'pointer' }}
+              >
+                {misiones.length} misión{misiones.length !== 1 ? 'es' : ''} →
+              </div>
+            </motion.div>
+            <MisionCard onOpen={() => setModal('misiones')} mision={misiones[0]} />
+          </>
+        )}
 
         {/* ── Referidos entry ── */}
         <motion.div
@@ -222,12 +248,9 @@ export default function HomePage() {
           style={{
             background: '#141414',
             border: '0.5px solid rgba(212,168,71,0.28)',
-            borderRadius: 20,
-            padding: 14,
-            marginBottom: 12,
+            borderRadius: 20, padding: 14, marginBottom: 12,
             display: 'flex', alignItems: 'center', gap: 12,
-            cursor: 'pointer',
-            position: 'relative', overflow: 'hidden',
+            cursor: 'pointer', position: 'relative', overflow: 'hidden',
           }}
         >
           <div style={{
@@ -238,8 +261,7 @@ export default function HomePage() {
           }} />
           <div style={{
             width: 46, height: 46,
-            background: 'rgba(212,168,71,0.12)',
-            borderRadius: 14,
+            background: 'rgba(212,168,71,0.12)', borderRadius: 14,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 22, flexShrink: 0,
           }}>🤝</div>
@@ -248,23 +270,21 @@ export default function HomePage() {
               Trae un amigo, gana puntos
             </div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
-              Nivel Oro:{' '}
+              Nivel {USER.level}:{' '}
               <span style={{ color: '#F0C96A', fontWeight: 600 }}>+500 pts</span>
-              {' '}por referido · 3 invitados
+              {' '}por referido
             </div>
           </div>
           <div style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.28)', fontSize: 20, flexShrink: 0 }}>›</div>
         </motion.div>
 
-        {/* ── QR Card (fondo blanco) ── */}
+        {/* ── QR Card ── */}
         <motion.div
           {...fadeUp(0.26)}
           onClick={() => setModal('qr')}
           style={{
-            background: '#fff',
-            borderRadius: 32,
-            padding: '14px 16px',
-            marginBottom: 12,
+            background: '#fff', borderRadius: 32,
+            padding: '14px 16px', marginBottom: 12,
             display: 'flex', alignItems: 'center', gap: 13,
             cursor: 'pointer',
           }}
@@ -303,17 +323,14 @@ export default function HomePage() {
           style={{
             background: '#141414',
             border: '0.5px solid rgba(212,168,71,0.28)',
-            borderRadius: 20,
-            padding: '13px 14px',
-            marginBottom: 12,
+            borderRadius: 20, padding: '13px 14px', marginBottom: 12,
             display: 'flex', alignItems: 'center', gap: 10,
             cursor: 'pointer',
           }}
         >
           <div style={{
             width: 42, height: 42,
-            background: 'rgba(212,168,71,0.12)',
-            borderRadius: 14,
+            background: 'rgba(212,168,71,0.12)', borderRadius: 14,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 20, flexShrink: 0,
           }}>🍺</div>
@@ -325,29 +342,36 @@ export default function HomePage() {
           </div>
           <div style={{
             marginLeft: 'auto',
-            background: '#D4A847',
-            color: '#000',
+            background: '#D4A847', color: '#000',
             fontSize: 10, fontWeight: 800,
-            padding: '3px 8px',
-            borderRadius: 20,
-            whiteSpace: 'nowrap', flexShrink: 0,
-            letterSpacing: '0.3px',
+            padding: '3px 8px', borderRadius: 20,
+            whiteSpace: 'nowrap', flexShrink: 0, letterSpacing: '0.3px',
           }}>
             HOY
           </div>
         </motion.div>
 
-
       </div>
 
       {/* ── Modales ── */}
-      <QRModal      open={modal === 'qr'}       onClose={() => setModal(null)} userName={`${USER.name} ${USER.lastName}`.trim()} userLevel={USER.level} />
-      <StreakModal   open={modal === 'streak'}   onClose={() => setModal(null)} streak={USER.streak} />
-      <MisionesModal open={modal === 'misiones'} onClose={() => setModal(null)} />
+      <QRModal
+        open={modal === 'qr'}
+        onClose={() => setModal(null)}
+        userName={`${USER.name} ${USER.lastName}`.trim()}
+        userLevel={USER.level}
+      />
+      <StreakModal
+        open={modal === 'streak'}
+        onClose={() => setModal(null)}
+        streak={USER.streak}
+      />
+      <MisionesModal
+        open={modal === 'misiones'}
+        onClose={() => setModal(null)}
+        misiones={misiones}
+      />
 
-      {/* ── Bottom Nav ── */}
       <BottomNav />
-
     </div>
   );
 }

@@ -1,49 +1,20 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
 import CanjeModal from '@/components/CanjeModal';
 
 type Category = 'todos' | 'bebidas' | 'descuentos' | 'packs';
 
-interface Reward {
-  emoji: string;
+interface Beneficio {
+  id: string;
   nombre: string;
-  desc: string;
-  pts: number;
-  cat: Category;
-  badge: string | null;
-  locked: boolean;
-  platinoOnly?: boolean;
+  descripcion: string | null;
+  puntos_costo: number;
+  icono: string | null;
+  tipo: string;
 }
-
-const REWARDS: Reward[] = [
-  {
-    emoji: '🍺', nombre: 'Cerveza gratis',
-    desc: 'Una cerveza premium de la casa',
-    pts: 800, cat: 'bebidas', badge: 'HOY 2×', locked: false,
-  },
-  {
-    emoji: '💸', nombre: 'Descuento $3.000',
-    desc: 'En tu próxima compra, sin mínimo',
-    pts: 600, cat: 'descuentos', badge: null, locked: false,
-  },
-  {
-    emoji: '🎁', nombre: 'Pack Fin de Semana',
-    desc: '6 cervezas + snacks seleccionados',
-    pts: 1500, cat: 'packs', badge: null, locked: false,
-  },
-  {
-    emoji: '🥃', nombre: 'Botella Premium',
-    desc: 'Whisky o pisco de la casa',
-    pts: 3000, cat: 'bebidas', badge: null, locked: true,
-  },
-  {
-    emoji: '👑', nombre: 'Descuento $10.000',
-    desc: 'Exclusivo nivel Platino',
-    pts: 5000, cat: 'descuentos', badge: null, locked: true, platinoOnly: true,
-  },
-];
 
 const CATS: { id: Category; label: string }[] = [
   { id: 'todos',      label: 'Todos'      },
@@ -58,11 +29,63 @@ const fadeUp = (delay: number) => ({
   transition: { delay, duration: 0.4 },
 });
 
-export default function BeneficiosPage() {
-  const [cat, setCat]     = useState<Category>('todos');
-  const [canje, setCanje] = useState<Reward | null>(null);
+function Sk({ w, h, r = 8 }: { w: number | string; h: number; r?: number }) {
+  return <div style={{ width: w, height: h, background: '#1a1a1a', borderRadius: r, flexShrink: 0 }} />;
+}
 
-  const visible = REWARDS.filter((r) => cat === 'todos' || r.cat === cat);
+export default function BeneficiosPage() {
+  const router = useRouter();
+  const [cat, setCat]             = useState<Category>('todos');
+  const [beneficios, setBeneficios] = useState<Beneficio[]>([]);
+  const [userPoints, setUserPoints] = useState(0);
+  const [tenantId, setTenantId]   = useState('');
+  const [userId, setUserId]       = useState('');
+  const [loading, setLoading]     = useState(true);
+  const [canje, setCanje]         = useState<Beneficio | null>(null);
+
+  useEffect(() => {
+    const uid = localStorage.getItem('cfiel_user_id');
+    if (!uid) { router.replace('/'); return; }
+    setUserId(uid);
+
+    Promise.all([
+      fetch('/api/beneficios/tio-polo').then(r => r.ok ? r.json() : null),
+      fetch(`/api/usuarios/${uid}`).then(r => r.ok ? r.json() : null),
+    ])
+      .then(([benData, userData]) => {
+        if (benData?.beneficios) setBeneficios(benData.beneficios);
+        if (benData?.tenant_id)  setTenantId(benData.tenant_id);
+        if (userData?.usuario?.puntos_total != null) setUserPoints(userData.usuario.puntos_total);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [router]);
+
+  const visible = beneficios.filter(b => cat === 'todos' || b.tipo === cat);
+
+  if (loading) {
+    return (
+      <div style={{ background: '#0a0a0a', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
+        <div style={{ padding: '16px 16px 90px' }}>
+          <Sk w={140} h={30} r={8} />
+          <div style={{ height: 8 }} />
+          <Sk w={220} h={12} r={6} />
+          <div style={{ height: 12 }} />
+          <Sk w={130} h={26} r={20} />
+          <div style={{ height: 14 }} />
+          <div style={{ display: 'flex', gap: 7, marginBottom: 14 }}>
+            {[80, 72, 96, 60].map((w, i) => <Sk key={i} w={w} h={34} r={20} />)}
+          </div>
+          {[0, 1, 2].map(i => (
+            <div key={i} style={{ marginBottom: 10 }}>
+              <Sk w="100%" h={116} r={32} />
+            </div>
+          ))}
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
 
   return (
     <div style={{ background: '#0a0a0a', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
@@ -86,11 +109,11 @@ export default function BeneficiosPage() {
             borderRadius: 20, padding: '4px 12px',
             fontSize: 11, color: '#F0C96A', fontWeight: 500,
           }}>
-            ⭐ 1.207 pts disponibles
+            ⭐ {userPoints.toLocaleString('es-CL')} pts disponibles
           </div>
         </motion.div>
 
-        {/* ── Tabs de categoría ── */}
+        {/* ── Tabs ── */}
         <motion.div
           {...fadeUp(0.1)}
           style={{ display: 'flex', gap: 7, marginBottom: 14, overflowX: 'auto' }}
@@ -102,17 +125,12 @@ export default function BeneficiosPage() {
                 key={id}
                 onClick={() => setCat(id)}
                 style={{
-                  padding: '7px 15px',
-                  borderRadius: 20,
-                  fontSize: 12,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  fontFamily: 'inherit',
+                  padding: '7px 15px', borderRadius: 20, fontSize: 12,
+                  cursor: 'pointer', whiteSpace: 'nowrap', fontFamily: 'inherit',
                   border: `0.5px solid ${active ? '#fff' : 'rgba(255,255,255,0.07)'}`,
                   background: active ? '#fff' : 'transparent',
                   color: active ? '#0a0a0a' : 'rgba(255,255,255,0.55)',
-                  fontWeight: active ? 600 : 500,
-                  transition: 'all 0.2s',
+                  fontWeight: active ? 600 : 500, transition: 'all 0.2s',
                 }}
               >
                 {label}
@@ -121,105 +139,101 @@ export default function BeneficiosPage() {
           })}
         </motion.div>
 
-        {/* ── Reward cards ── */}
-        {visible.map((r, i) => (
+        {/* ── Empty state ── */}
+        {visible.length === 0 && (
           <motion.div
-            key={r.nombre}
-            {...fadeUp(0.12 + i * 0.07)}
-            style={{
-              background: '#141414',
-              borderRadius: 32,
-              border: '0.5px solid rgba(255,255,255,0.07)',
-              overflow: 'hidden',
-              marginBottom: 10,
-              opacity: r.locked ? 0.5 : 1,
-              position: 'relative',
-            }}
+            {...fadeUp(0.14)}
+            style={{ textAlign: 'center', padding: '48px 20px', color: 'rgba(255,255,255,0.28)', fontSize: 13, lineHeight: 1.6 }}
           >
-            {/* Badge HOY 2× */}
-            {r.badge && (
-              <div style={{
-                position: 'absolute', top: 12, right: 12,
-                background: '#D4A847', color: '#000',
-                fontSize: 9, fontWeight: 800,
-                padding: '2px 7px', borderRadius: 10,
-                letterSpacing: '0.5px', zIndex: 1,
-              }}>
-                {r.badge}
-              </div>
-            )}
-
-            {/* Parte superior: bg #1a1a1a */}
-            <div style={{
-              background: '#1a1a1a',
-              padding: 16,
-              display: 'flex', alignItems: 'center', gap: 13,
-              borderBottom: '0.5px solid rgba(255,255,255,0.07)',
-            }}>
-              <div style={{
-                width: 48, height: 48,
-                background: '#222222', borderRadius: 14,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 23, flexShrink: 0,
-              }}>
-                {r.emoji}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
-                  {r.nombre}
-                </div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>{r.desc}</div>
-              </div>
-              {r.locked && <div style={{ fontSize: 18, opacity: 0.5 }}>🔒</div>}
-            </div>
-
-            {/* Parte inferior: puntos + botón */}
-            <div style={{
-              padding: '12px 15px',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <div style={{
-                  width: 6, height: 6, borderRadius: '50%',
-                  background: r.locked ? 'rgba(255,255,255,0.28)' : '#D4A847',
-                }} />
-                <div style={{
-                  fontSize: 15, fontWeight: 700,
-                  color: r.locked ? 'rgba(255,255,255,0.28)' : '#F0C96A',
-                }}>
-                  {r.pts.toLocaleString('es-CL')}
-                </div>
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)' }}>pts</div>
-              </div>
-
-              <button
-                disabled={r.locked}
-                onClick={() => !r.locked && setCanje(r)}
-                style={{
-                  background: r.locked ? '#222222' : '#fff',
-                  color: r.locked ? 'rgba(255,255,255,0.28)' : '#0a0a0a',
-                  border: r.locked ? '0.5px solid rgba(255,255,255,0.07)' : 'none',
-                  borderRadius: 20, padding: '8px 18px',
-                  fontSize: 12, fontWeight: 700,
-                  cursor: r.locked ? 'not-allowed' : 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'transform 0.15s',
-                }}
-              >
-                {r.locked ? (r.platinoOnly ? 'Platino' : 'Bloqueado') : 'Canjear'}
-              </button>
-            </div>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>🎁</div>
+            Tu botillería aún no tiene beneficios configurados
           </motion.div>
-        ))}
+        )}
+
+        {/* ── Beneficio cards ── */}
+        {visible.map((b, i) => {
+          const locked = b.puntos_costo > userPoints;
+          return (
+            <motion.div
+              key={b.id}
+              {...fadeUp(0.12 + i * 0.07)}
+              style={{
+                background: '#141414', borderRadius: 32,
+                border: '0.5px solid rgba(255,255,255,0.07)',
+                overflow: 'hidden', marginBottom: 10,
+                opacity: locked ? 0.5 : 1,
+              }}
+            >
+              {/* Top section */}
+              <div style={{
+                background: '#1a1a1a', padding: 16,
+                display: 'flex', alignItems: 'center', gap: 13,
+                borderBottom: '0.5px solid rgba(255,255,255,0.07)',
+              }}>
+                <div style={{
+                  width: 48, height: 48, background: '#222222', borderRadius: 14,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 23, flexShrink: 0,
+                }}>
+                  {b.icono ?? '🎁'}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
+                    {b.nombre}
+                  </div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
+                    {b.descripcion ?? ''}
+                  </div>
+                </div>
+                {locked && <div style={{ fontSize: 18, opacity: 0.5 }}>🔒</div>}
+              </div>
+
+              {/* Bottom: pts + button */}
+              <div style={{ padding: '12px 15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <div style={{
+                    width: 6, height: 6, borderRadius: '50%',
+                    background: locked ? 'rgba(255,255,255,0.28)' : '#D4A847',
+                  }} />
+                  <div style={{
+                    fontSize: 15, fontWeight: 700,
+                    color: locked ? 'rgba(255,255,255,0.28)' : '#F0C96A',
+                  }}>
+                    {b.puntos_costo.toLocaleString('es-CL')}
+                  </div>
+                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)' }}>pts</div>
+                </div>
+                <button
+                  disabled={locked}
+                  onClick={() => !locked && setCanje(b)}
+                  style={{
+                    background: locked ? '#222222' : '#fff',
+                    color: locked ? 'rgba(255,255,255,0.28)' : '#0a0a0a',
+                    border: locked ? '0.5px solid rgba(255,255,255,0.07)' : 'none',
+                    borderRadius: 20, padding: '8px 18px',
+                    fontSize: 12, fontWeight: 700,
+                    cursor: locked ? 'not-allowed' : 'pointer',
+                    fontFamily: 'inherit', transition: 'transform 0.15s',
+                  }}
+                >
+                  {locked ? 'Bloqueado' : 'Canjear'}
+                </button>
+              </div>
+            </motion.div>
+          );
+        })}
 
       </div>
 
-      {/* ── Canje modal ── */}
       <CanjeModal
         open={!!canje}
         onClose={() => setCanje(null)}
         nombre={canje?.nombre ?? ''}
-        puntos={canje?.pts ?? 0}
+        puntos={canje?.puntos_costo ?? 0}
+        usuarioId={userId}
+        tenantId={tenantId}
+        beneficioId={canje?.id ?? ''}
+        onSuccess={(puntosRestantes) => setUserPoints(puntosRestantes)}
       />
 
       <BottomNav />

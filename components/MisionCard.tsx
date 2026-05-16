@@ -2,17 +2,52 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
-interface Props {
-  onOpen: () => void;
+interface Mision {
+  id: string;
+  titulo: string;
+  descripcion: string | null;
+  puntos_premio: number;
+  meta_tipo: string;
+  meta_valor: number;
+  fecha_fin: string | null;
 }
 
-export default function MisionCard({ onOpen }: Props) {
+interface Props {
+  onOpen: () => void;
+  mision: Mision | null;
+}
+
+const MISION_ICON: Record<string, string> = {
+  compras: '🛒',
+  visitas: '🛒',
+  monto:   '💰',
+  dias:    '🔥',
+};
+
+function daysLeft(fechaFin: string | null): string {
+  if (!fechaFin) return '';
+  const days = Math.ceil((new Date(fechaFin).getTime() - Date.now()) / 86400000);
+  if (days <= 0) return 'Vence hoy';
+  return `${days} día${days === 1 ? '' : 's'} restante${days === 1 ? '' : 's'}`;
+}
+
+export default function MisionCard({ onOpen, mision }: Props) {
   const [barWidth, setBarWidth] = useState(0);
 
   useEffect(() => {
-    const t = setTimeout(() => setBarWidth(50), 300);
+    if (!mision) return;
+    const t = setTimeout(() => setBarWidth(0), 300);
     return () => clearTimeout(t);
-  }, []);
+  }, [mision]);
+
+  if (!mision) return null;
+
+  const icon = MISION_ICON[mision.meta_tipo] ?? '🎯';
+  const dias = daysLeft(mision.fecha_fin);
+  const subtitle = [
+    `0 de ${mision.meta_valor}`,
+    dias,
+  ].filter(Boolean).join(' · ');
 
   return (
     <motion.div
@@ -21,44 +56,35 @@ export default function MisionCard({ onOpen }: Props) {
       transition={{ delay: 0.19, duration: 0.4 }}
       onClick={onOpen}
       style={{
-        background: '#141414',
-        borderRadius: 20,
+        background: '#141414', borderRadius: 20,
         border: '0.5px solid rgba(255,255,255,0.07)',
-        padding: 14,
-        marginBottom: 12,
-        cursor: 'pointer',
+        padding: 14, marginBottom: 12, cursor: 'pointer',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
         <div style={{
-          width: 42, height: 42,
-          background: '#222222',
-          borderRadius: 14,
+          width: 42, height: 42, background: '#222222', borderRadius: 14,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: 19, flexShrink: 0,
         }}>
-          🛒
+          {icon}
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
-            Compra 2 veces esta semana
+            {mision.titulo}
           </div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
-            1 de 2 compras · 4 días restantes
+            {subtitle}
           </div>
         </div>
         <div style={{
           background: 'rgba(212,168,71,0.12)',
           border: '0.5px solid rgba(212,168,71,0.28)',
-          borderRadius: 20,
-          padding: '4px 9px',
-          fontSize: 11,
-          fontWeight: 700,
-          color: '#F0C96A',
-          whiteSpace: 'nowrap',
-          flexShrink: 0,
+          borderRadius: 20, padding: '4px 9px',
+          fontSize: 11, fontWeight: 700, color: '#F0C96A',
+          whiteSpace: 'nowrap', flexShrink: 0,
         }}>
-          +200 pts
+          +{mision.puntos_premio} pts
         </div>
       </div>
 
@@ -73,7 +99,7 @@ export default function MisionCard({ onOpen }: Props) {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 5 }}>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)' }}>50% completada</div>
+        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)' }}>0% completada</div>
         <div style={{ fontSize: 10, color: '#D4A847' }}>Ver todas →</div>
       </div>
     </motion.div>
