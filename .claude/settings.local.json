@@ -9,7 +9,8 @@
       "Bash(Select-Object FullName)",
       "Bash(Format-Table -AutoSize)",
       "Bash(Get-ChildItem C:\\\\Users\\\\Matias Caimilla\\\\fiel-client\\\\app\\\\api\\\\usuarios *)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(npx next *)"
     ]
   }
 }
