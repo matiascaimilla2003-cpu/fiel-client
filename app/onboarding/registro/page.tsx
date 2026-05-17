@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -12,9 +12,9 @@ const STEP_BTN_LABELS = [
 
 /* Color de cada segmento de progreso según el paso actual */
 function segColor(index: number, step: number): string {
-  if (step === 3) return '#D4A847';                // SMS: todos done
-  if (index < step) return '#D4A847';              // anteriores: done
-  if (index === step) return '#F0C96A';            // actual: active
+  if (step === 3) return '#6366F1';                // SMS: todos done
+  if (index < step) return '#6366F1';              // anteriores: done
+  if (index === step) return '#818CF8';            // actual: active
   return 'rgba(255,255,255,0.10)';                 // siguientes: vacío
 }
 
@@ -146,7 +146,7 @@ export default function RegistroPage() {
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) =>
-    (e.target.style.borderColor = '#D4A847');
+    (e.target.style.borderColor = '#6366F1');
   const handleBlur  = (e: React.FocusEvent<HTMLInputElement>) =>
     (e.target.style.borderColor = 'rgba(255,255,255,0.13)');
 
@@ -255,7 +255,7 @@ export default function RegistroPage() {
                   style={{ ...inputBase, fontSize: 15 }}
                 />
                 {codigoReferido.length > 0 && (
-                  <div style={{ fontSize: 11, color: '#D4A847', marginTop: 7 }}>
+                  <div style={{ fontSize: 11, color: '#6366F1', marginTop: 7 }}>
                     🎁 +200 pts extra de bienvenida al registrarte
                   </div>
                 )}
@@ -286,7 +286,7 @@ export default function RegistroPage() {
                 </div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', marginTop: 9, lineHeight: 1.55 }}>
                   Te enviamos un código SMS para verificar.{' '}
-                  <span style={{ color: '#F0C96A' }}>Sin spam, prometido.</span>
+                  <span style={{ color: '#818CF8' }}>Sin spam, prometido.</span>
                 </div>
               </div>
             )}
@@ -323,7 +323,7 @@ export default function RegistroPage() {
                 ) : (
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', marginTop: 9, lineHeight: 1.55 }}>
                     Para enviarte{' '}
-                    <span style={{ color: '#F0C96A' }}>puntos extra en tu cumpleaños 🎂</span>
+                    <span style={{ color: '#818CF8' }}>puntos extra en tu cumpleaños 🎂</span>
                   </div>
                 )}
               </div>
@@ -352,8 +352,8 @@ export default function RegistroPage() {
                         width: 58, height: 68,
                         background: '#141414',
                         border: `0.5px solid ${
-                          code[i]         ? '#D4A847'
-                          : i === code.length ? '#F0C96A'
+                          code[i]         ? '#6366F1'
+                          : i === code.length ? '#818CF8'
                           : 'rgba(255,255,255,0.13)'
                         }`,
                         borderRadius: 14,
@@ -369,7 +369,7 @@ export default function RegistroPage() {
                         <div style={{
                           position: 'absolute', bottom: 10,
                           width: 2, height: 20,
-                          background: '#F0C96A', borderRadius: 1,
+                          background: '#818CF8', borderRadius: 1,
                           animation: 'blink 0.9s ease infinite',
                         }} />
                       )}
@@ -389,7 +389,7 @@ export default function RegistroPage() {
 
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', textAlign: 'center' }}>
                   ¿No llegó?{' '}
-                  <span style={{ color: '#D4A847', cursor: 'pointer' }}>Reenviar →</span>
+                  <span style={{ color: '#6366F1', cursor: 'pointer' }}>Reenviar →</span>
                 </div>
               </div>
             )}

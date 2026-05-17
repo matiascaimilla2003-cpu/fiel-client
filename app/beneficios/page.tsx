@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -107,7 +107,7 @@ export default function BeneficiosPage() {
             background: 'rgba(212,168,71,0.12)',
             border: '0.5px solid rgba(212,168,71,0.28)',
             borderRadius: 20, padding: '4px 12px',
-            fontSize: 11, color: '#F0C96A', fontWeight: 500,
+            fontSize: 11, color: '#818CF8', fontWeight: 500,
           }}>
             ⭐ {userPoints.toLocaleString('es-CL')} pts disponibles
           </div>
@@ -193,11 +193,11 @@ export default function BeneficiosPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                   <div style={{
                     width: 6, height: 6, borderRadius: '50%',
-                    background: locked ? 'rgba(255,255,255,0.28)' : '#D4A847',
+                    background: locked ? 'rgba(255,255,255,0.28)' : '#6366F1',
                   }} />
                   <div style={{
                     fontSize: 15, fontWeight: 700,
-                    color: locked ? 'rgba(255,255,255,0.28)' : '#F0C96A',
+                    color: locked ? 'rgba(255,255,255,0.28)' : '#818CF8',
                   }}>
                     {b.puntos_costo.toLocaleString('es-CL')}
                   </div>

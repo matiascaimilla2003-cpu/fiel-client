@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -221,7 +221,7 @@ export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'C
               onClick={() => goTo(i)}
               animate={{
                 width: i === active ? 20 : 6,
-                backgroundColor: i === active ? '#D4A847' : 'rgba(255,255,255,0.22)',
+                backgroundColor: i === active ? '#6366F1' : 'rgba(255,255,255,0.22)',
               }}
               transition={{ duration: 0.3 }}
               style={{ height: 6, borderRadius: 3, cursor: 'pointer' }}

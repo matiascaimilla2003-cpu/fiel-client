@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
   --background: #0a0a0a;
@@ -16,8 +16,8 @@
   --color-fiel-card: #141414;
   --color-fiel-card2: #1a1a1a;
   --color-fiel-card3: #222222;
-  --color-fiel-gold: #D4A847;
-  --color-fiel-gold-light: #F0C96A;
+  --color-fiel-gold: #6366F1;
+  --color-fiel-gold-light: #818CF8;
   --color-fiel-green: #2ECC71;
   --color-fiel-red: #E74C3C;
   --color-fiel-border: rgba(255,255,255,0.07);

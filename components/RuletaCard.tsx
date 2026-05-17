@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { motion } from 'framer-motion';
 
 interface Props {
@@ -45,7 +45,7 @@ export default function RuletaCard({ onOpen }: Props) {
       <button
         onClick={(e) => { e.stopPropagation(); onOpen(); }}
         style={{
-          background: '#D4A847',
+          background: '#6366F1',
           color: '#0a0a0a',
           border: 'none',
           borderRadius: 16,

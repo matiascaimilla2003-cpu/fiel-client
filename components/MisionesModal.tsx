@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Mision {
@@ -108,7 +108,7 @@ export default function MisionesModal({ open, onClose, misiones }: Props) {
                       background: 'rgba(212,168,71,0.12)',
                       border: '0.5px solid rgba(212,168,71,0.28)',
                       borderRadius: 20, padding: '3px 9px',
-                      fontSize: 11, fontWeight: 700, color: '#F0C96A',
+                      fontSize: 11, fontWeight: 700, color: '#818CF8',
                       whiteSpace: 'nowrap', flexShrink: 0,
                     }}>
                       +{m.puntos_premio} pts
@@ -118,7 +118,7 @@ export default function MisionesModal({ open, onClose, misiones }: Props) {
                   <div style={{ height: 5, background: 'rgba(255,255,255,0.07)', borderRadius: 5, overflow: 'hidden' }}>
                     <div style={{
                       height: '100%',
-                      background: 'linear-gradient(90deg, #D4A847, #F0C96A)',
+                      background: 'linear-gradient(90deg, #6366F1, #818CF8)',
                       borderRadius: 5, width: '0%',
                     }} />
                   </div>

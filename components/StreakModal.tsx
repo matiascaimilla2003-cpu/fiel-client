@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
@@ -60,7 +60,7 @@ export default function StreakModal({ open, onClose, streak }: Props) {
             }}>
               <div style={{
                 fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
-                fontSize: 34, color: '#F0C96A', letterSpacing: 1,
+                fontSize: 34, color: '#818CF8', letterSpacing: 1,
               }}>
                 +50 PTS
               </div>

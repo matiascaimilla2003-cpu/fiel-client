@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -312,7 +312,7 @@ export default function HomePage() {
               </div>
               <div
                 onClick={() => setModal('misiones')}
-                style={{ fontSize: 11, color: '#D4A847', cursor: 'pointer' }}
+                style={{ fontSize: 11, color: '#6366F1', cursor: 'pointer' }}
               >
                 {misiones.length} misión{misiones.length !== 1 ? 'es' : ''} →
               </div>
@@ -351,9 +351,9 @@ export default function HomePage() {
             </div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
               {referidosCount !== null && referidosCount > 0
-                ? <><span style={{ color: '#F0C96A', fontWeight: 600 }}>{referidosCount} amigo{referidosCount !== 1 ? 's' : ''}</span>{' registrado · '}</>
+                ? <><span style={{ color: '#818CF8', fontWeight: 600 }}>{referidosCount} amigo{referidosCount !== 1 ? 's' : ''}</span>{' registrado · '}</>
                 : null}
-              <span style={{ color: '#F0C96A', fontWeight: 600 }}>+250 pts</span>{' '}por referido
+              <span style={{ color: '#818CF8', fontWeight: 600 }}>+250 pts</span>{' '}por referido
             </div>
           </div>
           <div style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.28)', fontSize: 20, flexShrink: 0 }}>›</div>

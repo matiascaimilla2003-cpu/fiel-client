@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -14,7 +14,7 @@ interface ConfettiPiece {
   isRound: boolean;
 }
 
-const CONFETTI_COLORS = ['#D4A847', '#F0C96A', '#2ECC71', '#ffffff', '#E8C060', '#3B82F6'];
+const CONFETTI_COLORS = ['#6366F1', '#818CF8', '#2ECC71', '#ffffff', '#E8C060', '#3B82F6'];
 
 const CARDS = [
   { icon: '🎁', title: 'Bono de bienvenida', sub: 'Puntos para empezar ya',    pts: '+200 pts' },
@@ -111,7 +111,7 @@ export default function BienvenidaPage() {
         }}>
           <span style={{ color: '#fff' }}>¡BIENVENIDO,</span>
           <br />
-          <span style={{ color: '#D4A847' }}>{nombre.toUpperCase() || 'CARLOS'}</span>
+          <span style={{ color: '#6366F1' }}>{nombre.toUpperCase() || 'CARLOS'}</span>
           <span style={{ color: '#fff' }}>!</span>
         </div>
 
@@ -163,7 +163,7 @@ export default function BienvenidaPage() {
             <div style={{
               marginLeft: 'auto',
               fontSize: 13, fontWeight: 700,
-              color: '#F0C96A',
+              color: '#818CF8',
               flexShrink: 0,
             }}>
               {card.pts}
@@ -186,7 +186,7 @@ export default function BienvenidaPage() {
             router.push('/home');
           }}
           style={{
-            background: '#D4A847',
+            background: '#6366F1',
             color: '#0a0a0a',
             border: 'none',
             borderRadius: 28,

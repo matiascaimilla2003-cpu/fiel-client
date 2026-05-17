@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
@@ -60,7 +60,7 @@ export default function SplashPage() {
           zIndex: 2,
         }}
       >
-        <span style={{ color: '#D4A847' }}>C</span>
+        <span style={{ color: '#6366F1' }}>C</span>
         <span style={{ color: '#fff' }}>FIEL</span>
       </motion.div>
 

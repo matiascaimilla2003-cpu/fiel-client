@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -199,7 +199,7 @@ export default function PerfilPage() {
               </div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>acumulados</div>
               {meta.next && (
-                <div style={{ fontSize: 10, color: '#F0C96A', marginTop: 3 }}>
+                <div style={{ fontSize: 10, color: '#818CF8', marginTop: 3 }}>
                   → {ptsToNext} pts para {meta.next}
                 </div>
               )}

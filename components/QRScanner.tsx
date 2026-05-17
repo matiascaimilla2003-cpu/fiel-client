@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -187,10 +187,10 @@ export default function QRScanner({ onScan, onCancel }: Props) {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <div style={{ position: 'relative', width: 240, height: 240 }}>
-              <Corner style={{ top: 0, left: 0, borderTop: '3px solid #D4A847', borderLeft: '3px solid #D4A847' }} />
-              <Corner style={{ top: 0, right: 0, borderTop: '3px solid #D4A847', borderRight: '3px solid #D4A847' }} />
-              <Corner style={{ bottom: 0, left: 0, borderBottom: '3px solid #D4A847', borderLeft: '3px solid #D4A847' }} />
-              <Corner style={{ bottom: 0, right: 0, borderBottom: '3px solid #D4A847', borderRight: '3px solid #D4A847' }} />
+              <Corner style={{ top: 0, left: 0, borderTop: '3px solid #6366F1', borderLeft: '3px solid #6366F1' }} />
+              <Corner style={{ top: 0, right: 0, borderTop: '3px solid #6366F1', borderRight: '3px solid #6366F1' }} />
+              <Corner style={{ bottom: 0, left: 0, borderBottom: '3px solid #6366F1', borderLeft: '3px solid #6366F1' }} />
+              <Corner style={{ bottom: 0, right: 0, borderBottom: '3px solid #6366F1', borderRight: '3px solid #6366F1' }} />
 
               <motion.div
                 animate={{ y: [0, 218, 0] }}
@@ -201,7 +201,7 @@ export default function QRScanner({ onScan, onCancel }: Props) {
                   right: 4,
                   height: 2,
                   background:
-                    'linear-gradient(90deg, transparent, #D4A847 30%, #F0C96A 50%, #D4A847 70%, transparent)',
+                    'linear-gradient(90deg, transparent, #6366F1 30%, #818CF8 50%, #6366F1 70%, transparent)',
                   boxShadow: '0 0 10px rgba(212,168,71,0.7)',
                 }}
               />

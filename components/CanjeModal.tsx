@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -115,8 +115,8 @@ export default function CanjeModal({
                   border: '0.5px solid rgba(212,168,71,0.28)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                 }}>
-                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4A847' }} />
-                  <span style={{ fontSize: 18, fontWeight: 700, color: '#F0C96A' }}>
+                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#6366F1' }} />
+                  <span style={{ fontSize: 18, fontWeight: 700, color: '#818CF8' }}>
                     {puntos.toLocaleString('es-CL')}
                   </span>
                   <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>pts</span>
@@ -158,7 +158,7 @@ export default function CanjeModal({
                 <div style={{
                   width: 40, height: 40, margin: '0 auto 16px',
                   border: '3px solid rgba(255,255,255,0.1)',
-                  borderTop: '3px solid #D4A847',
+                  borderTop: '3px solid #6366F1',
                   borderRadius: '50%',
                   animation: 'spin 0.8s linear infinite',
                 }} />

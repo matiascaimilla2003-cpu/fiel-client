@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -93,7 +93,7 @@ export default function BottomNav() {
               background: 'transparent',
               border: 'none',
               cursor: 'pointer',
-              color: active ? '#D4A847' : 'rgba(255,255,255,0.28)',
+              color: active ? '#6366F1' : 'rgba(255,255,255,0.28)',
               transition: 'color 0.2s',
               fontFamily: 'inherit',
             }}

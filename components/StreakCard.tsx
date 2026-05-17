@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { motion } from 'framer-motion';
 
 interface Props {
@@ -38,7 +38,7 @@ export default function StreakCard({ streak, onOpen }: Props) {
           <div style={{
             fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
             fontSize: 36,
-            color: '#D4A847',
+            color: '#6366F1',
             lineHeight: 1,
             letterSpacing: -1,
           }}>
@@ -61,16 +61,16 @@ export default function StreakCard({ streak, onOpen }: Props) {
               borderRadius: 4,
               background:
                 i < streak - 1
-                  ? '#D4A847'
+                  ? '#6366F1'
                   : i === streak - 1
-                  ? '#F0C96A'
+                  ? '#818CF8'
                   : 'rgba(255,255,255,0.08)',
             }}
           />
         ))}
       </div>
 
-      <div style={{ fontSize: 10, color: '#F0C96A', fontWeight: 600 }}>+50 pts hoy ✓</div>
+      <div style={{ fontSize: 10, color: '#818CF8', fontWeight: 600 }}>+50 pts hoy ✓</div>
     </motion.div>
   );
 }

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -57,7 +57,7 @@ function SlidePreview({ index }: { index: number }) {
         {items.map((it, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: 13, color: '#fff' }}>{it.label}</span>
-            <span style={{ fontSize: 12, color: '#F0C96A', fontWeight: 600 }}>{it.pts}</span>
+            <span style={{ fontSize: 12, color: '#818CF8', fontWeight: 600 }}>{it.pts}</span>
           </div>
         ))}
       </div>
@@ -77,7 +77,7 @@ function SlidePreview({ index }: { index: number }) {
         {levels.map((lv, i) => (
           <span key={i} style={{
             fontSize: 11,
-            color: lv.active ? '#F0C96A' : 'rgba(255,255,255,0.28)',
+            color: lv.active ? '#818CF8' : 'rgba(255,255,255,0.28)',
             fontWeight: lv.active ? 600 : 400,
           }}>
             {lv.emoji} {lv.label}
@@ -88,7 +88,7 @@ function SlidePreview({ index }: { index: number }) {
         <div style={{
           height: '100%',
           width: '72%',
-          background: 'linear-gradient(90deg, #D4A847, #F0C96A)',
+          background: 'linear-gradient(90deg, #6366F1, #818CF8)',
           borderRadius: 4,
         }} />
       </div>
@@ -210,7 +210,7 @@ export default function SlidesPage() {
               width: i === cur ? 22 : 6,
               height: 6,
               borderRadius: 3,
-              background: i === cur ? '#D4A847' : 'rgba(255,255,255,0.2)',
+              background: i === cur ? '#6366F1' : 'rgba(255,255,255,0.2)',
               transition: 'all 0.3s',
               cursor: 'pointer',
             }}

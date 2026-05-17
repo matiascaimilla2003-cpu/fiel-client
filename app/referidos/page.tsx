@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -142,7 +142,7 @@ export default function ReferidosPage() {
           <div style={{
             fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
             fontSize: 44, letterSpacing: 4,
-            color: '#D4A847',
+            color: '#6366F1',
             lineHeight: 1,
             marginBottom: 6,
           }}>
@@ -189,7 +189,7 @@ export default function ReferidosPage() {
               padding: '12px 16px',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               cursor: 'pointer',
-              color: copied ? '#D4A847' : 'rgba(255,255,255,0.7)',
+              color: copied ? '#6366F1' : 'rgba(255,255,255,0.7)',
               fontSize: 13, fontWeight: 600,
               fontFamily: 'inherit',
               transition: 'all 0.2s',
@@ -218,7 +218,7 @@ export default function ReferidosPage() {
               <div style={{
                 fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
                 fontSize: 30, letterSpacing: 1,
-                color: '#F0C96A',
+                color: '#818CF8',
                 lineHeight: 1,
                 marginBottom: 4,
               }}>
@@ -270,7 +270,7 @@ export default function ReferidosPage() {
               </div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', lineHeight: 1.55 }}>
                 Comparte tu código y gana{' '}
-                <span style={{ color: '#F0C96A' }}>250 pts</span>{' '}
+                <span style={{ color: '#818CF8' }}>250 pts</span>{' '}
                 por cada amigo que se registre
               </div>
             </div>
@@ -299,7 +299,7 @@ export default function ReferidosPage() {
                     borderRadius: '50%',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 13, fontWeight: 700,
-                    color: isRegistered ? '#D4A847' : 'rgba(255,255,255,0.4)',
+                    color: isRegistered ? '#6366F1' : 'rgba(255,255,255,0.4)',
                   }}>
                     {initials}
                   </div>
@@ -315,7 +315,7 @@ export default function ReferidosPage() {
                     <div style={{
                       fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
                       fontSize: 20, letterSpacing: 1,
-                      color: '#D4A847', flexShrink: 0,
+                      color: '#6366F1', flexShrink: 0,
                     }}>
                       +{r.puntos_acreditados}
                     </div>

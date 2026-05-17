@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
@@ -69,7 +69,7 @@ export default function HeroCard({ points, level, progressPct, ptsToNextLevel }:
           borderRadius: 20, padding: '3px 10px',
         }}>
           <span style={{ fontSize: 10 }}>⭐</span>
-          <span style={{ fontSize: 10, fontWeight: 600, color: '#D4A847', letterSpacing: '0.5px' }}>
+          <span style={{ fontSize: 10, fontWeight: 600, color: '#6366F1', letterSpacing: '0.5px' }}>
             NIVEL {level.toUpperCase()}
           </span>
         </div>
@@ -82,7 +82,7 @@ export default function HeroCard({ points, level, progressPct, ptsToNextLevel }:
       <div style={{ height: 5, background: 'rgba(255,255,255,0.07)', borderRadius: 5, overflow: 'hidden' }}>
         <div style={{
           height: '100%',
-          background: 'linear-gradient(90deg, #D4A847, #F0C96A)',
+          background: 'linear-gradient(90deg, #6366F1, #818CF8)',
           borderRadius: 5,
           width: `${barWidth}%`,
           transition: 'width 1.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -91,7 +91,7 @@ export default function HeroCard({ points, level, progressPct, ptsToNextLevel }:
 
       <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', marginTop: 6 }}>
         Te faltan{' '}
-        <span style={{ color: '#F0C96A', fontWeight: 600 }}>{ptsToNextLevel} pts</span>
+        <span style={{ color: '#818CF8', fontWeight: 600 }}>{ptsToNextLevel} pts</span>
         {' '}para el siguiente nivel
       </div>
     </motion.div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
@@ -81,7 +81,7 @@ export default function MisionCard({ onOpen, mision }: Props) {
           background: 'rgba(212,168,71,0.12)',
           border: '0.5px solid rgba(212,168,71,0.28)',
           borderRadius: 20, padding: '4px 9px',
-          fontSize: 11, fontWeight: 700, color: '#F0C96A',
+          fontSize: 11, fontWeight: 700, color: '#818CF8',
           whiteSpace: 'nowrap', flexShrink: 0,
         }}>
           +{mision.puntos_premio} pts
@@ -91,7 +91,7 @@ export default function MisionCard({ onOpen, mision }: Props) {
       <div style={{ height: 5, background: 'rgba(255,255,255,0.07)', borderRadius: 5, overflow: 'hidden' }}>
         <div style={{
           height: '100%',
-          background: 'linear-gradient(90deg, #D4A847, #F0C96A)',
+          background: 'linear-gradient(90deg, #6366F1, #818CF8)',
           borderRadius: 5,
           width: `${barWidth}%`,
           transition: 'width 1.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -100,7 +100,7 @@ export default function MisionCard({ onOpen, mision }: Props) {
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 5 }}>
         <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)' }}>0% completada</div>
-        <div style={{ fontSize: 10, color: '#D4A847' }}>Ver todas →</div>
+        <div style={{ fontSize: 10, color: '#6366F1' }}>Ver todas →</div>
       </div>
     </motion.div>
   );

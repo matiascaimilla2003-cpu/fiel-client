@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -61,7 +61,7 @@ export default function CajeroLoginPage() {
           marginBottom: 6,
         }}
       >
-        <span style={{ color: '#D4A847' }}>C</span>
+        <span style={{ color: '#6366F1' }}>C</span>
         <span style={{ color: '#fff' }}>FIEL</span>
       </motion.div>
 
@@ -124,7 +124,7 @@ export default function CajeroLoginPage() {
             transition: 'border-color 0.2s',
             letterSpacing: 3,
           }}
-          onFocus={(e) => { if (!error) e.target.style.borderColor = '#D4A847'; }}
+          onFocus={(e) => { if (!error) e.target.style.borderColor = '#6366F1'; }}
           onBlur={(e)  => { if (!error) e.target.style.borderColor = 'rgba(255,255,255,0.13)'; }}
         />
 
@@ -151,7 +151,7 @@ export default function CajeroLoginPage() {
           disabled={!password || loading}
           style={{
             width: '100%',
-            background: password && !loading ? '#D4A847' : 'rgba(255,255,255,0.08)',
+            background: password && !loading ? '#6366F1' : 'rgba(255,255,255,0.08)',
             color: password && !loading ? '#0a0a0a' : 'rgba(255,255,255,0.28)',
             border: 'none',
             borderRadius: 28,

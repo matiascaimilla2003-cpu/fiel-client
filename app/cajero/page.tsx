@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -78,7 +78,7 @@ const labelStyle: React.CSSProperties = {
 const spinnerPath =
   'M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83';
 
-function Spinner({ color = '#D4A847', size = 28 }: { color?: string; size?: number }) {
+function Spinner({ color = '#6366F1', size = 28 }: { color?: string; size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
       stroke={color} strokeWidth={2.5}
@@ -133,7 +133,7 @@ function ClientCard({
         background: 'rgba(212,168,71,0.12)',
         borderRadius: '50%',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 20, fontWeight: 700, color: '#D4A847', flexShrink: 0,
+        fontSize: 20, fontWeight: 700, color: '#6366F1', flexShrink: 0,
       }}>
         {client.nombre.charAt(0).toUpperCase()}
       </div>
@@ -149,7 +149,7 @@ function ClientCard({
           {NIVEL_EMOJI[client.nivel] ?? ''}{' '}
           {client.nivel.charAt(0).toUpperCase() + client.nivel.slice(1)}
           {' · '}
-          <span style={{ color: '#D4A847', fontWeight: 600 }}>
+          <span style={{ color: '#6366F1', fontWeight: 600 }}>
             {client.puntos_total.toLocaleString('es-CL')} pts
           </span>
         </div>
@@ -419,7 +419,7 @@ export default function CajeroPage() {
               fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
               fontSize: 28, letterSpacing: 1, lineHeight: 1,
             }}>
-              <span style={{ color: '#D4A847' }}>C</span>
+              <span style={{ color: '#6366F1' }}>C</span>
               <span style={{ color: '#fff' }}>FIEL</span>
               <span style={{
                 fontSize: 13, fontWeight: 500, letterSpacing: '2px',
@@ -484,7 +484,7 @@ export default function CajeroPage() {
                     padding: '28px 24px',
                     display: 'flex', alignItems: 'center', gap: 20,
                     cursor: 'pointer',
-                    color: '#D4A847',
+                    color: '#6366F1',
                     fontFamily: 'inherit',
                     marginBottom: 16,
                     transition: 'all 0.2s',
@@ -595,7 +595,7 @@ export default function CajeroPage() {
                         width: '100%', background: '#141414',
                         border: '0.5px solid rgba(212,168,71,0.35)', borderRadius: 24,
                         padding: '16px', fontSize: 15, fontWeight: 600,
-                        color: '#D4A847', cursor: 'pointer', fontFamily: 'inherit',
+                        color: '#6366F1', cursor: 'pointer', fontFamily: 'inherit',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                       }}
                     >
@@ -641,7 +641,7 @@ export default function CajeroPage() {
                             outline: 'none', WebkitAppearance: 'none',
                             opacity: ventaPhase === 'submitting' ? 0.5 : 1,
                           }}
-                          onFocus={(e) => (e.target.style.borderColor = '#D4A847')}
+                          onFocus={(e) => (e.target.style.borderColor = '#6366F1')}
                           onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.13)')}
                         />
                       </div>
@@ -657,7 +657,7 @@ export default function CajeroPage() {
                       disabled={!canSubmitVenta}
                       style={{
                         width: '100%',
-                        background: canSubmitVenta ? '#D4A847' : 'rgba(255,255,255,0.08)',
+                        background: canSubmitVenta ? '#6366F1' : 'rgba(255,255,255,0.08)',
                         color: canSubmitVenta ? '#0a0a0a' : 'rgba(255,255,255,0.28)',
                         border: 'none', borderRadius: 28, padding: 16,
                         fontSize: 16, fontWeight: 700,
@@ -727,7 +727,7 @@ export default function CajeroPage() {
                           <div style={{ fontSize: 15, fontWeight: 600, color: '#fff' }}>{ventaResult.nombre}</div>
                           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>Cliente</div>
                         </div>
-                        <div style={{ background: '#222', borderRadius: 10, padding: '4px 10px', fontSize: 12, fontWeight: 600, color: '#F0C96A' }}>
+                        <div style={{ background: '#222', borderRadius: 10, padding: '4px 10px', fontSize: 12, fontWeight: 600, color: '#818CF8' }}>
                           {NIVEL_EMOJI[ventaResult.nivel_nuevo]}{' '}
                           {ventaResult.nivel_nuevo.charAt(0).toUpperCase() + ventaResult.nivel_nuevo.slice(1)}
                         </div>
@@ -737,7 +737,7 @@ export default function CajeroPage() {
                         paddingTop: 12, borderTop: '0.5px solid rgba(255,255,255,0.06)',
                       }}>
                         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>Total acumulado</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: '#D4A847' }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: '#6366F1' }}>
                           {ventaResult.puntos_total.toLocaleString('es-CL')} pts
                         </div>
                       </div>
@@ -750,7 +750,7 @@ export default function CajeroPage() {
                         style={{
                           background: 'rgba(212,168,71,0.12)', border: '0.5px solid rgba(212,168,71,0.4)',
                           borderRadius: 14, padding: '12px 16px', marginBottom: 16,
-                          fontSize: 13, fontWeight: 600, color: '#D4A847', textAlign: 'center',
+                          fontSize: 13, fontWeight: 600, color: '#6366F1', textAlign: 'center',
                         }}
                       >
                         🎉 ¡{ventaResult.nombre.split(' ')[0]} subió a nivel{' '}
@@ -914,7 +914,7 @@ export default function CajeroPage() {
                                 background: canCanje ? 'rgba(212,168,71,0.15)' : 'rgba(255,255,255,0.06)',
                                 borderRadius: 10, padding: '5px 10px',
                                 fontSize: 13, fontWeight: 700,
-                                color: canCanje ? '#D4A847' : 'rgba(255,255,255,0.3)',
+                                color: canCanje ? '#6366F1' : 'rgba(255,255,255,0.3)',
                               }}>
                                 {b.puntos_costo.toLocaleString('es-CL')} pts
                               </div>
@@ -957,7 +957,7 @@ export default function CajeroPage() {
                         display: 'inline-block',
                         background: 'rgba(212,168,71,0.15)',
                         borderRadius: 12, padding: '8px 18px',
-                        fontSize: 18, fontWeight: 700, color: '#D4A847',
+                        fontSize: 18, fontWeight: 700, color: '#6366F1',
                       }}>
                         {selectedBeneficio.puntos_costo.toLocaleString('es-CL')} puntos
                       </div>
@@ -968,7 +968,7 @@ export default function CajeroPage() {
                         fontSize: 12, color: 'rgba(255,255,255,0.4)',
                       }}>
                         Quedarán{' '}
-                        <span style={{ color: '#D4A847', fontWeight: 600 }}>
+                        <span style={{ color: '#6366F1', fontWeight: 600 }}>
                           {(canjeClient.puntos_total - selectedBeneficio.puntos_costo).toLocaleString('es-CL')} pts
                         </span>
                         {' '}en la cuenta
@@ -1067,7 +1067,7 @@ export default function CajeroPage() {
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       }}>
                         <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>Código</div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: '#D4A847', letterSpacing: 1 }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: '#6366F1', letterSpacing: 1 }}>
                           {canjeResult.codigo_canje}
                         </div>
                       </div>
@@ -1077,7 +1077,7 @@ export default function CajeroPage() {
                         paddingTop: 14, borderTop: '0.5px solid rgba(255,255,255,0.06)',
                       }}>
                         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>Puntos restantes</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: '#D4A847' }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: '#6366F1' }}>
                           {canjeResult.puntos_restantes.toLocaleString('es-CL')} pts
                         </div>
                       </div>
