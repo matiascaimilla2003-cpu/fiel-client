@@ -54,10 +54,9 @@ function TarjetaCard({
       onTap={() => onTap()}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.12 }}
+      className="cfiel-card"
       style={{
-        background: '#141414',
         borderRadius: 32,
-        border: '2px solid #6366F1',
         padding: '18px 20px 16px',
         position: 'relative',
         overflow: 'hidden',

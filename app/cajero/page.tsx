@@ -120,9 +120,7 @@ function ClientCard({
   onClear?: () => void;
 }) {
   return (
-    <div style={{
-      background: '#141414',
-      border: '0.5px solid rgba(99,102,241,0.3)',
+    <div className="cfiel-card" style={{
       borderRadius: 20,
       padding: '16px 18px',
       marginBottom: 24,
@@ -476,10 +474,9 @@ export default function CajeroPage() {
                 {/* Venta button */}
                 <button
                   onClick={() => { resetVenta(); setMode('venta'); }}
+                  className="cfiel-card"
                   style={{
                     width: '100%',
-                    background: 'linear-gradient(135deg, #1a1400, #141414)',
-                    border: '1px solid rgba(99,102,241,0.4)',
                     borderRadius: 24,
                     padding: '28px 24px',
                     display: 'flex', alignItems: 'center', gap: 20,
@@ -513,10 +510,9 @@ export default function CajeroPage() {
                 {/* Canje button */}
                 <button
                   onClick={() => { resetCanje(); setMode('canje'); }}
+                  className="cfiel-card"
                   style={{
                     width: '100%',
-                    background: 'linear-gradient(135deg, #001a0a, #141414)',
-                    border: '1px solid rgba(46,204,113,0.35)',
                     borderRadius: 24,
                     padding: '28px 24px',
                     display: 'flex', alignItems: 'center', gap: 20,
@@ -717,8 +713,8 @@ export default function CajeroPage() {
 
                     <motion.div
                       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                      className="cfiel-card"
                       style={{
-                        background: '#141414', border: '0.5px solid rgba(255,255,255,0.07)',
                         borderRadius: 20, padding: '16px 20px', marginBottom: 16, textAlign: 'left',
                       }}
                     >
@@ -747,8 +743,8 @@ export default function CajeroPage() {
                       <motion.div
                         initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.45, type: 'spring' }}
+                        className="cfiel-card"
                         style={{
-                          background: 'rgba(99,102,241,0.12)', border: '0.5px solid rgba(99,102,241,0.4)',
                           borderRadius: 14, padding: '12px 16px', marginBottom: 16,
                           fontSize: 13, fontWeight: 600, color: '#6366F1', textAlign: 'center',
                         }}
@@ -937,9 +933,8 @@ export default function CajeroPage() {
                     <motion.div
                       initial={{ opacity: 0, scale: 0.97 }}
                       animate={{ opacity: 1, scale: 1 }}
+                      className="cfiel-card"
                       style={{
-                        background: 'linear-gradient(135deg, #001a0a, #141414)',
-                        border: '1px solid rgba(46,204,113,0.3)',
                         borderRadius: 24, padding: '28px 24px',
                         textAlign: 'center', marginBottom: 24,
                       }}
@@ -1046,9 +1041,8 @@ export default function CajeroPage() {
 
                     <motion.div
                       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                      className="cfiel-card"
                       style={{
-                        background: '#141414',
-                        border: '0.5px solid rgba(46,204,113,0.25)',
                         borderRadius: 20, padding: '20px',
                         marginBottom: 16, textAlign: 'left',
                       }}

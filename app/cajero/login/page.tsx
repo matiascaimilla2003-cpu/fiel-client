@@ -86,10 +86,9 @@ export default function CajeroLoginPage() {
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.4 }}
+        className="cfiel-card"
         style={{
           width: '100%',
-          background: '#141414',
-          border: '0.5px solid rgba(255,255,255,0.07)',
           borderRadius: 24,
           padding: '28px 24px',
         }}

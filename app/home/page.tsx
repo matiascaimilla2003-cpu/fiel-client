@@ -325,9 +325,8 @@ export default function HomePage() {
         <motion.div
           {...fadeUp(0.26)}
           onClick={() => router.push('/referidos')}
+          className="cfiel-card"
           style={{
-            background: '#141414',
-            border: '0.5px solid rgba(99,102,241,0.28)',
             borderRadius: 20, padding: 14, marginBottom: 12,
             display: 'flex', alignItems: 'center', gap: 12,
             cursor: 'pointer', position: 'relative', overflow: 'hidden',
@@ -366,20 +365,21 @@ export default function HomePage() {
         <motion.div
           {...fadeUp(0.26)}
           onClick={() => setModal('qr')}
+          className="cfiel-card"
           style={{
-            background: '#fff', borderRadius: 32,
+            borderRadius: 32,
             padding: '14px 16px', marginBottom: 12,
             display: 'flex', alignItems: 'center', gap: 13,
             cursor: 'pointer',
           }}
         >
           <div style={{ width: 46, height: 46, flexShrink: 0 }}>
-            <svg viewBox="0 0 48 48" width={46} height={46} fill="black">
-              <rect x="2" y="2" width="18" height="18" rx="2" fill="none" stroke="black" strokeWidth="2.5"/>
+            <svg viewBox="0 0 48 48" width={46} height={46} fill="white">
+              <rect x="2" y="2" width="18" height="18" rx="2" fill="none" stroke="white" strokeWidth="2.5"/>
               <rect x="6" y="6" width="10" height="10"/>
-              <rect x="28" y="2" width="18" height="18" rx="2" fill="none" stroke="black" strokeWidth="2.5"/>
+              <rect x="28" y="2" width="18" height="18" rx="2" fill="none" stroke="white" strokeWidth="2.5"/>
               <rect x="32" y="6" width="10" height="10"/>
-              <rect x="2" y="28" width="18" height="18" rx="2" fill="none" stroke="black" strokeWidth="2.5"/>
+              <rect x="2" y="28" width="18" height="18" rx="2" fill="none" stroke="white" strokeWidth="2.5"/>
               <rect x="6" y="32" width="10" height="10"/>
               <rect x="28" y="28" width="6" height="6"/>
               <rect x="36" y="28" width="6" height="6"/>
@@ -389,16 +389,16 @@ export default function HomePage() {
           </div>
           <div>
             <div style={{
-              fontSize: 13, fontWeight: 700, color: '#0a0a0a',
+              fontSize: 13, fontWeight: 700, color: '#fff',
               textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 2,
             }}>
               Tu QR Personal
             </div>
-            <div style={{ fontSize: 11, color: '#777' }}>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
               Muéstralo en caja para sumar puntos
             </div>
           </div>
-          <div style={{ marginLeft: 'auto', color: '#bbb', fontSize: 20 }}>›</div>
+          <div style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.28)', fontSize: 20 }}>›</div>
         </motion.div>
 
 

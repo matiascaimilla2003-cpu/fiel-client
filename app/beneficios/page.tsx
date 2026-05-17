@@ -157,9 +157,9 @@ export default function BeneficiosPage() {
             <motion.div
               key={b.id}
               {...fadeUp(0.12 + i * 0.07)}
+              className="cfiel-card"
               style={{
-                background: '#141414', borderRadius: 32,
-                border: '0.5px solid rgba(255,255,255,0.07)',
+                borderRadius: 32,
                 overflow: 'hidden', marginBottom: 10,
                 opacity: locked ? 0.5 : 1,
               }}

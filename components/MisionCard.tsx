@@ -55,9 +55,9 @@ export default function MisionCard({ onOpen, mision }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.19, duration: 0.4 }}
       onClick={onOpen}
+      className="cfiel-card"
       style={{
-        background: '#141414', borderRadius: 20,
-        border: '0.5px solid rgba(255,255,255,0.07)',
+        borderRadius: 20,
         padding: 14, marginBottom: 12, cursor: 'pointer',
       }}
     >

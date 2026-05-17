@@ -47,9 +47,8 @@ export default function QRModal({ open, onClose, userName, userLevel }: Props) {
             exit={{ scale: 0.95 }}
             transition={{ type: 'spring', damping: 22, stiffness: 320 }}
             onClick={(e) => e.stopPropagation()}
+            className="cfiel-card"
             style={{
-              background: '#141414',
-              border: '0.5px solid rgba(255,255,255,0.13)',
               borderRadius: 32,
               padding: '28px 22px',
               width: '100%',

@@ -13,10 +13,9 @@ export default function StreakCard({ streak, onOpen }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.19, duration: 0.4 }}
       onClick={onOpen}
+      className="cfiel-card"
       style={{
-        background: '#141414',
         borderRadius: 20,
-        border: '0.5px solid rgba(99,102,241,0.28)',
         padding: 14,
         cursor: 'pointer',
         position: 'relative',

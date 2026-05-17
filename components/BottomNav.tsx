@@ -90,11 +90,11 @@ export default function BottomNav() {
               gap: 4,
               padding: '8px 18px',
               borderRadius: 14,
-              background: active ? '#6366F1' : 'transparent',
+              background: 'transparent',
               border: 'none',
               cursor: 'pointer',
-              color: active ? '#fff' : 'rgba(255,255,255,0.28)',
-              transition: 'background 0.2s, color 0.2s',
+              color: active ? '#818CF8' : 'rgba(255,255,255,0.28)',
+              transition: 'color 0.2s',
               fontFamily: 'inherit',
             }}
           >

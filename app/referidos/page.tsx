@@ -113,9 +113,8 @@ export default function ReferidosPage() {
         {/* Code card */}
         <motion.div
           {...fadeUp(0.05)}
+          className="cfiel-card"
           style={{
-            background: 'linear-gradient(135deg, #1a1508 0%, #141414 100%)',
-            border: '0.5px solid rgba(99,102,241,0.4)',
             borderRadius: 24,
             padding: '24px 20px',
             marginBottom: 16,
@@ -207,9 +206,8 @@ export default function ReferidosPage() {
           {STATS.map(({ label, value }) => (
             <div
               key={label}
+              className="cfiel-card"
               style={{
-                background: '#141414',
-                border: '0.5px solid rgba(255,255,255,0.08)',
                 borderRadius: 16,
                 padding: '14px 10px',
                 textAlign: 'center',

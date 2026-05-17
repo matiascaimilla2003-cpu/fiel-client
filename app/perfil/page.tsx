@@ -168,10 +168,9 @@ export default function PerfilPage() {
         {/* ── Card de nivel ── */}
         <motion.div
           {...fadeUp(0.1)}
+          className="cfiel-card"
           style={{
-            background: '#141414',
             borderRadius: 32,
-            border: `0.5px solid ${meta.color}45`,
             padding: 18,
             marginBottom: 14,
             position: 'relative', overflow: 'hidden',
@@ -237,9 +236,8 @@ export default function PerfilPage() {
           style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}
         >
           {stats.map((s, i) => (
-            <div key={i} style={{
-              background: '#141414', borderRadius: 14,
-              border: '0.5px solid rgba(255,255,255,0.07)',
+            <div key={i} className="cfiel-card" style={{
+              borderRadius: 14,
               padding: 14, textAlign: 'center',
             }}>
               <div style={{ fontSize: i === 3 ? 11 : 22, fontWeight: 700, color: s.color, marginBottom: 2, lineHeight: 1.2 }}>

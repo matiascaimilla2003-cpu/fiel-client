@@ -22,10 +22,9 @@ export default function HeroCard({ points, level, progressPct, ptsToNextLevel }:
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.12, duration: 0.4 }}
+      className="cfiel-card"
       style={{
-        background: '#141414',
         borderRadius: 32,
-        border: '0.5px solid rgba(255,255,255,0.07)',
         padding: '20px 20px 16px',
         marginBottom: 12,
         position: 'relative',

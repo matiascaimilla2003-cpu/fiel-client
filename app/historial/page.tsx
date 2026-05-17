@@ -180,7 +180,7 @@ export default function HistorialPage() {
           {...fadeUp(0.1)}
           style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16 }}
         >
-          <div style={{ background: '#141414', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.07)', padding: '13px 14px' }}>
+          <div className="cfiel-card" style={{ borderRadius: 14, padding: '13px 14px' }}>
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', letterSpacing: '0.8px', textTransform: 'uppercase', marginBottom: 4 }}>
               Ganados
             </div>
@@ -188,7 +188,7 @@ export default function HistorialPage() {
               +{ganados.toLocaleString('es-CL')}
             </div>
           </div>
-          <div style={{ background: '#141414', borderRadius: 14, border: '0.5px solid rgba(255,255,255,0.07)', padding: '13px 14px' }}>
+          <div className="cfiel-card" style={{ borderRadius: 14, padding: '13px 14px' }}>
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', letterSpacing: '0.8px', textTransform: 'uppercase', marginBottom: 4 }}>
               Usados
             </div>
