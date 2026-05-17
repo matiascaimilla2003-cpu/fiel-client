@@ -82,7 +82,7 @@ export default function PerfilPage() {
 
   if (loading) {
     return (
-      <div style={{ background: '#0a0a0a', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
+      <div style={{ background: '#0a0a14', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
         <div style={{ padding: '16px 16px 90px' }}>
           <div style={{ display: 'flex', gap: 14, marginBottom: 14, paddingBottom: 16, borderBottom: '0.5px solid rgba(255,255,255,0.07)', alignItems: 'center' }}>
             <Skeleton w={60} h={60} radius={30} />
@@ -121,7 +121,7 @@ export default function PerfilPage() {
   ];
 
   return (
-    <div style={{ background: '#0a0a0a', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
+    <div style={{ background: '#0a0a14', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
       <div style={{ padding: '16px 16px 90px' }}>
 
         {/* ── Hero: avatar + nombre + nivel ── */}

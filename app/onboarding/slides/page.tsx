@@ -117,7 +117,7 @@ export default function SlidesPage() {
 
   return (
     <div style={{
-      background: '#0a0a0a',
+      background: '#0a0a14',
       minHeight: '100dvh',
       maxWidth: 430,
       margin: '0 auto',

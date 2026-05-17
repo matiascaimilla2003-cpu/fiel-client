@@ -397,7 +397,7 @@ export default function CajeroPage() {
       </AnimatePresence>
 
       <div style={{
-        background: '#0a0a0a',
+        background: '#0a0a14',
         minHeight: '100dvh',
         maxWidth: 430,
         margin: '0 auto',
@@ -1056,7 +1056,7 @@ export default function CajeroPage() {
                       </div>
 
                       <div style={{
-                        background: '#0a0a0a', borderRadius: 12, padding: '10px 14px',
+                        background: '#0a0a14', borderRadius: 12, padding: '10px 14px',
                         marginBottom: 14,
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       }}>

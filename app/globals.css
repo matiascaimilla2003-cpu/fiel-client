@@ -1,7 +1,7 @@
 ﻿@import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
+  --background: #0a0a14;
   --foreground: #ffffff;
 }
 
@@ -12,7 +12,7 @@
   --font-mono: var(--font-geist-mono);
 
   /* CFIEL brand colors */
-  --color-fiel-bg: #0a0a0a;
+  --color-fiel-bg: #0a0a14;
   --color-fiel-card: #141414;
   --color-fiel-card2: #1a1a1a;
   --color-fiel-card3: #222222;
@@ -31,7 +31,7 @@
 
 html, body {
   height: 100%;
-  background: #0a0a0a;
+  background: #0a0a14;
   color: #ffffff;
   margin: 0;
   padding: 0;
@@ -68,6 +68,11 @@ html, body {
   border: 1px solid rgba(99,102,241,0.25);
   border-radius: 16px;
 }
+
+/* ── Typography refinements ── */
+h1, h2 { letter-spacing: -0.01em; }
+p { line-height: 1.5; }
+body { font-feature-settings: "ss01"; }
 
 /* Remove number input spinners */
 input[type=number]::-webkit-outer-spin-button,

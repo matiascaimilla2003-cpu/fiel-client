@@ -156,7 +156,7 @@ export default function HomePage() {
 
   return (
     <div style={{
-      background: '#0a0a0a',
+      background: '#0a0a14',
       minHeight: '100dvh',
       maxWidth: 430,
       margin: '0 auto',
@@ -178,10 +178,10 @@ export default function HomePage() {
               </>
             ) : (
               <>
-                <div style={{ fontSize: 18, fontWeight: 600, color: '#fff', letterSpacing: -0.4 }}>
+                <div style={{ fontSize: 18, fontWeight: 600, color: '#fff', letterSpacing: '-0.01em' }}>
                   Hola, {USER.name || '…'} 👋
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
                   Bienvenido de vuelta
                 </div>
               </>

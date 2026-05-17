@@ -133,7 +133,7 @@ export default function HistorialPage() {
 
   if (loading) {
     return (
-      <div style={{ background: '#0a0a0a', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
+      <div style={{ background: '#0a0a14', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
         <div style={{ padding: '16px 16px 90px' }}>
           <Sk w={120} h={30} r={8} />
           <div style={{ height: 8 }} />
@@ -160,7 +160,7 @@ export default function HistorialPage() {
   }
 
   return (
-    <div style={{ background: '#0a0a0a', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
+    <div style={{ background: '#0a0a14', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
       <div style={{ padding: '16px 16px 90px' }}>
 
         <motion.div {...fadeUp(0.05)} style={{ marginBottom: 16 }}>

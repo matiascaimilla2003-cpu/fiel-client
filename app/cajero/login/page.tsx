@@ -39,7 +39,7 @@ export default function CajeroLoginPage() {
 
   return (
     <div style={{
-      background: '#0a0a0a',
+      background: '#0a0a14',
       minHeight: '100dvh',
       maxWidth: 430,
       margin: '0 auto',
@@ -111,7 +111,7 @@ export default function CajeroLoginPage() {
           placeholder="••••••••"
           style={{
             width: '100%',
-            background: '#0a0a0a',
+            background: '#0a0a14',
             border: `0.5px solid ${error ? 'rgba(231,76,60,0.6)' : 'rgba(255,255,255,0.13)'}`,
             borderRadius: 14,
             padding: '15px 17px',

@@ -33,6 +33,31 @@ function Sk({ w, h, r = 8 }: { w: number | string; h: number; r?: number }) {
   return <div style={{ width: w, height: h, background: '#1a1a1a', borderRadius: r, flexShrink: 0 }} />;
 }
 
+function BeneficioSVG({ tipo }: { tipo: string }) {
+  if (tipo === 'descuento' || tipo === 'descuentos') {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+        <line x1="7" y1="7" x2="7.01" y2="7"/>
+      </svg>
+    );
+  }
+  if (tipo === 'especial') {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    );
+  }
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+      <line x1="12" y1="22.08" x2="12" y2="12"/>
+    </svg>
+  );
+}
+
 export default function BeneficiosPage() {
   const router = useRouter();
   const [cat, setCat]             = useState<Category>('todos');
@@ -65,7 +90,7 @@ export default function BeneficiosPage() {
 
   if (loading) {
     return (
-      <div style={{ background: '#0a0a0a', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
+      <div style={{ background: '#0a0a14', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
         <div style={{ padding: '16px 16px 90px' }}>
           <Sk w={140} h={30} r={8} />
           <div style={{ height: 8 }} />
@@ -88,14 +113,14 @@ export default function BeneficiosPage() {
   }
 
   return (
-    <div style={{ background: '#0a0a0a', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
+    <div style={{ background: '#0a0a14', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
       <div style={{ padding: '16px 16px 90px' }}>
 
         {/* ── Header ── */}
         <motion.div {...fadeUp(0.05)} style={{ marginBottom: 14 }}>
           <div style={{
             fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
-            fontSize: 30, color: '#fff', letterSpacing: 1, marginBottom: 3,
+            fontSize: 32, color: '#fff', letterSpacing: '-0.02em', marginBottom: 3,
           }}>
             Beneficios
           </div>
@@ -171,17 +196,18 @@ export default function BeneficiosPage() {
                 borderBottom: '0.5px solid rgba(255,255,255,0.07)',
               }}>
                 <div style={{
-                  width: 48, height: 48, background: '#222222', borderRadius: 14,
+                  background: locked ? 'rgba(255,255,255,0.06)' : 'rgba(99,102,241,0.15)',
+                  borderRadius: 10, padding: 10, flexShrink: 0,
+                  color: locked ? 'rgba(255,255,255,0.3)' : '#818CF8',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 23, flexShrink: 0,
                 }}>
-                  {b.icono ?? '🎁'}
+                  <BeneficioSVG tipo={b.tipo} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: '#fff', letterSpacing: '-0.01em', marginBottom: 2 }}>
                     {b.nombre}
                   </div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
                     {b.descripcion ?? ''}
                   </div>
                 </div>
@@ -196,7 +222,7 @@ export default function BeneficiosPage() {
                     background: locked ? 'rgba(255,255,255,0.28)' : '#6366F1',
                   }} />
                   <div style={{
-                    fontSize: 15, fontWeight: 700,
+                    fontSize: 14, fontWeight: 700,
                     color: locked ? 'rgba(255,255,255,0.28)' : '#818CF8',
                   }}>
                     {b.puntos_costo.toLocaleString('es-CL')}
