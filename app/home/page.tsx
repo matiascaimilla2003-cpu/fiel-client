@@ -47,6 +47,15 @@ interface Mision {
   fecha_fin: string | null;
 }
 
+interface Promocion {
+  id: string;
+  titulo: string;
+  descripcion: string | null;
+  tipo: 'puntos_extra' | 'descuento' | 'producto_gratis';
+  valor: string;
+  fecha_fin: string;
+}
+
 const EMPTY_USER: UserState = {
   name: '', lastName: '',
   points: 0, level: 'bronce',
@@ -67,6 +76,7 @@ export default function HomePage() {
   const [modal, setModal]  = useState<Modal>(null);
   const [USER, setUser]    = useState<UserState>(EMPTY_USER);
   const [misiones, setMisiones] = useState<Mision[]>([]);
+  const [promoActiva, setPromoActiva] = useState<Promocion | null>(null);
   const [loading, setLoading]   = useState(true);
   const [referidosCount, setReferidosCount] = useState<number | null>(null);
 
@@ -116,6 +126,16 @@ export default function HomePage() {
             ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
             empresa:        (u.tenants as { nombre?: string } | null)?.nombre ?? '',
           });
+
+          if (u.tenant_id) {
+            const promoRes = await fetch(`/api/promociones/activas?tenant_id=${u.tenant_id}`).catch(() => null);
+            if (promoRes?.ok && !cancelled) {
+              const promoData = await promoRes.json().catch(() => null);
+              if (promoData?.promociones?.length > 0) {
+                setPromoActiva(promoData.promociones[0] as Promocion);
+              }
+            }
+          }
         }
 
         if (misionData?.misiones) {
@@ -217,6 +237,59 @@ export default function HomePage() {
           empresa={USER.empresa}
           onQROpen={() => setModal('qr')}
         />
+
+        {/* ── Promo activa ── */}
+        {promoActiva && (
+          <motion.div
+            {...fadeUp(0.15)}
+            style={{
+              background: 'linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(59,130,246,0.04) 100%)',
+              border: '0.5px solid rgba(59,130,246,0.35)',
+              borderRadius: 20,
+              padding: '14px 16px',
+              marginBottom: 12,
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            <div style={{
+              position: 'absolute', top: -30, right: -30,
+              width: 100, height: 100,
+              background: 'radial-gradient(circle, rgba(59,130,246,0.18), transparent)',
+              borderRadius: '50%', pointerEvents: 'none',
+            }} />
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+              <div style={{
+                width: 40, height: 40,
+                background: 'rgba(59,130,246,0.15)', borderRadius: 12,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 20, flexShrink: 0,
+              }}>
+                {promoActiva.tipo === 'puntos_extra' ? '🔥' : promoActiva.tipo === 'descuento' ? '💸' : '🎁'}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontSize: 9, fontWeight: 700,
+                  color: '#3B82F6', letterSpacing: '1.5px',
+                  textTransform: 'uppercase', marginBottom: 4,
+                }}>
+                  PROMO ACTIVA 🔥
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2, lineHeight: 1.3 }}>
+                  {promoActiva.titulo}
+                </div>
+                {promoActiva.descripcion && (
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginBottom: 4, lineHeight: 1.4 }}>
+                    {promoActiva.descripcion}
+                  </div>
+                )}
+                <div style={{ fontSize: 10, color: 'rgba(59,130,246,0.8)' }}>
+                  Válida hasta el {new Date(promoActiva.fecha_fin).toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: 'numeric' })}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* ── Streak ── */}
         <motion.div {...fadeUp(0.19)} style={{ marginBottom: 12 }}>
