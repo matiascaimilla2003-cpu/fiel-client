@@ -1,5 +1,5 @@
 ﻿'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
@@ -72,12 +72,58 @@ export default function PerfilPage() {
       .finally(() => setLoading(false));
   }, [router]);
 
-  const MENU = [
-    { icon: '🤝', label: 'Referidos · 3 amigos', route: null,          danger: false },
-    { icon: '🎁', label: 'Ver beneficios',        route: '/beneficios', danger: false },
-    { icon: '📋', label: 'Mi historial',           route: '/historial',  danger: false },
-    { icon: '🔔', label: 'Notificaciones',         route: null,          danger: false },
-    { icon: '🚪', label: 'Cerrar sesión',          route: '/',           danger: true  },
+  const MENU: { icon: React.ReactElement; label: string; route: string | null; danger: boolean }[] = [
+    {
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      ),
+      label: 'Referidos · 3 amigos', route: null, danger: false,
+    },
+    {
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 12 20 22 4 22 4 12"/>
+          <rect x="2" y="7" width="20" height="5"/>
+          <line x1="12" y1="22" x2="12" y2="7"/>
+          <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+          <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+        </svg>
+      ),
+      label: 'Ver beneficios', route: '/beneficios', danger: false,
+    },
+    {
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+        </svg>
+      ),
+      label: 'Mi historial', route: '/historial', danger: false,
+    },
+    {
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      ),
+      label: 'Notificaciones', route: null, danger: false,
+    },
+    {
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      ),
+      label: 'Cerrar sesión', route: '/', danger: true,
+    },
   ];
 
   if (loading) {
@@ -157,7 +203,9 @@ export default function PerfilPage() {
               border: `0.5px solid ${meta.color}45`,
               borderRadius: 20, padding: '3px 10px',
             }}>
-              <span style={{ fontSize: 10 }}>⭐</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={meta.color} strokeWidth="1.5">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
               <span style={{ fontSize: 10, fontWeight: 600, color: meta.color, letterSpacing: '0.5px' }}>
                 NIVEL {meta.label}
               </span>
@@ -268,7 +316,8 @@ export default function PerfilPage() {
                 background: danger ? 'rgba(231,76,60,0.1)' : '#1a1a1a',
                 borderRadius: 10,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 16, flexShrink: 0,
+                flexShrink: 0,
+                color: danger ? '#E74C3C' : 'rgba(255,255,255,0.6)',
               }}>
                 {icon}
               </div>

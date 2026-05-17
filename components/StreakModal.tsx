@@ -40,7 +40,12 @@ export default function StreakModal({ open, onClose, streak }: Props) {
               textAlign: 'center',
             }}
           >
-            <span style={{ fontSize: 52, display: 'block', marginBottom: 12 }}>🔥</span>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#818CF8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2c0 4-4 7-4 11a4 4 0 0 0 8 0c0-4-4-7-4-11z"/>
+                <path d="M12 13c0-2 1.5-3 1.5-5"/>
+              </svg>
+            </div>
 
             <div style={{
               fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
@@ -70,7 +75,7 @@ export default function StreakModal({ open, onClose, streak }: Props) {
             </div>
 
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginBottom: 16 }}>
-              14 días seguidos → bonus doble 🎯
+              14 días seguidos → bonus doble
             </div>
 
             <button
@@ -82,7 +87,7 @@ export default function StreakModal({ open, onClose, streak }: Props) {
                 cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
-              ¡Vamos! 🔥
+              ¡Vamos!
             </button>
           </motion.div>
         </motion.div>

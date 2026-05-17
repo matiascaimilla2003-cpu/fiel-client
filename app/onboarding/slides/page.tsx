@@ -1,22 +1,39 @@
 ﻿'use client';
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 /* ── Contenido de cada slide ── */
-const SLIDES = [
+const SLIDES: { icon: React.ReactElement; title: string; desc: string }[] = [
   {
-    icon: '⭐',
+    icon: (
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    ),
     title: 'Gana puntos\ncon cada compra',
     desc: 'Por cada peso que gastas, acumulas puntos. Sin tarjetas, sin papeles. Todo desde tu teléfono.',
   },
   {
-    icon: '🎁',
+    icon: (
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="20 12 20 22 4 22 4 12"/>
+        <rect x="2" y="7" width="20" height="5"/>
+        <line x1="12" y1="22" x2="12" y2="7"/>
+        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+      </svg>
+    ),
     title: 'Canjea premios\nreales',
     desc: 'Descuentos, bebidas gratis y packs especiales. Tus puntos valen plata de verdad.',
   },
   {
-    icon: '🔥',
+    icon: (
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2c0 4-4 7-4 11a4 4 0 0 0 8 0c0-4-4-7-4-11z"/>
+        <path d="M12 13c0-2 1.5-3 1.5-5"/>
+      </svg>
+    ),
     title: 'Sube de nivel y\ndesbloquea más',
     desc: 'Bronce, Plata, Oro, Platino. Mientras más compras, mejores beneficios y más puntos.',
   },
@@ -48,9 +65,9 @@ function SlidePreview({ index }: { index: number }) {
 
   if (index === 1) {
     const items = [
-      { label: '🍺 Cerveza gratis',     pts: '800 pts'   },
-      { label: '💸 Descuento $3.000',   pts: '600 pts'   },
-      { label: '🎁 Pack fin de semana', pts: '1.500 pts' },
+      { label: 'Cerveza gratis',     pts: '800 pts'   },
+      { label: 'Descuento $3.000',   pts: '600 pts'   },
+      { label: 'Pack fin de semana', pts: '1.500 pts' },
     ];
     return (
       <div style={{ ...cardStyle, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -66,10 +83,10 @@ function SlidePreview({ index }: { index: number }) {
 
   /* Slide 3 — barra de niveles */
   const levels = [
-    { emoji: '🥉', label: 'Bronce', active: false },
-    { emoji: '🥈', label: 'Plata',  active: false },
-    { emoji: '⭐', label: 'Oro ✓',  active: true  },
-    { emoji: '👑', label: 'Platino', active: false },
+    { label: 'Bronce', active: false },
+    { label: 'Plata',  active: false },
+    { label: 'Oro ✓',  active: true  },
+    { label: 'Platino', active: false },
   ];
   return (
     <div style={cardStyle}>
@@ -80,7 +97,7 @@ function SlidePreview({ index }: { index: number }) {
             color: lv.active ? '#818CF8' : 'rgba(255,255,255,0.28)',
             fontWeight: lv.active ? 600 : 400,
           }}>
-            {lv.emoji} {lv.label}
+            {lv.label}
           </span>
         ))}
       </div>
@@ -161,7 +178,7 @@ export default function SlidesPage() {
               borderRadius: 24,
               border: '0.5px solid rgba(99,102,241,0.28)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 44, marginBottom: 26,
+              color: '#818CF8', marginBottom: 26,
               position: 'relative',
             }}>
               <div style={{

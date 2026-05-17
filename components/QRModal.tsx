@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 
-const NIVEL_EMOJI: Record<string, string> = {
-  bronce: '🥉', plata: '🥈', oro: '⭐', platino: '👑',
+const NIVEL_LABEL: Record<string, string> = {
+  bronce: 'Bronce', plata: 'Plata', oro: 'Oro', platino: 'Platino',
 };
 
 interface Props {
@@ -22,7 +22,6 @@ export default function QRModal({ open, onClose, userName, userLevel }: Props) {
   }, [open]);
 
   const levelKey = (userLevel ?? '').toLowerCase();
-  const levelEmoji = NIVEL_EMOJI[levelKey] ?? '';
   const displayName = userName ?? 'Tu QR Personal';
 
   return (
@@ -99,7 +98,7 @@ export default function QRModal({ open, onClose, userName, userLevel }: Props) {
 
             {userLevel && (
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginBottom: 5, marginTop: 12 }}>
-                Nivel {userLevel} {levelEmoji}
+                Nivel {NIVEL_LABEL[levelKey] ?? userLevel}
               </div>
             )}
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 18 }}>

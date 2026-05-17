@@ -99,7 +99,15 @@ export default function CanjeModal({
             {/* ── Confirm ── */}
             {step === 'confirm' && (
               <>
-                <span style={{ fontSize: 48, display: 'block', marginBottom: 12 }}>🎁</span>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#818CF8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 12 20 22 4 22 4 12"/>
+                    <rect x="2" y="7" width="20" height="5"/>
+                    <line x1="12" y1="22" x2="12" y2="7"/>
+                    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                  </svg>
+                </div>
                 <div style={{
                   fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
                   fontSize: 24, color: '#fff', letterSpacing: 1, marginBottom: 6,
@@ -172,7 +180,11 @@ export default function CanjeModal({
             {/* ── Success ── */}
             {step === 'success' && (
               <>
-                <span style={{ fontSize: 52, display: 'block', marginBottom: 12 }}>🎉</span>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+                  <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#2ECC71" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
                 <div style={{
                   fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
                   fontSize: 26, color: '#fff', letterSpacing: 1, marginBottom: 7,
@@ -214,7 +226,13 @@ export default function CanjeModal({
             {/* ── Error ── */}
             {step === 'error' && (
               <>
-                <span style={{ fontSize: 48, display: 'block', marginBottom: 12 }}>😕</span>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#E74C3C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                  </svg>
+                </div>
                 <div style={{
                   fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
                   fontSize: 22, color: '#E74C3C', letterSpacing: 1, marginBottom: 8,

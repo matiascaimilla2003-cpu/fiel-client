@@ -17,12 +17,37 @@ interface Props {
   misiones: Mision[];
 }
 
-const MISION_ICON: Record<string, string> = {
-  compras: '🛒',
-  visitas: '🛒',
-  monto:   '💰',
-  dias:    '🔥',
-};
+function MisionIcon({ tipo }: { tipo: string }) {
+  if (tipo === 'compras' || tipo === 'visitas') {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+    );
+  }
+  if (tipo === 'monto') {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/>
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    );
+  }
+  if (tipo === 'dias') {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2c0 4-4 7-4 11a4 4 0 0 0 8 0c0-4-4-7-4-11z"/>
+        <path d="M12 13c0-2 1.5-3 1.5-5"/>
+      </svg>
+    );
+  }
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
+    </svg>
+  );
+}
 
 function daysLeft(fechaFin: string | null): string {
   if (!fechaFin) return '';
@@ -75,11 +100,14 @@ export default function MisionesModal({ open, onClose, misiones }: Props) {
             </div>
 
             {misiones.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '20px 0', fontSize: 32 }}>🎯</div>
+              <div style={{ textAlign: 'center', padding: '20px 0', color: 'rgba(255,255,255,0.28)' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+                </svg>
+              </div>
             )}
 
             {misiones.map((m) => {
-              const icon = MISION_ICON[m.meta_tipo] ?? '🎯';
               const dias = daysLeft(m.fecha_fin);
               const desc = [m.descripcion ?? `0 de ${m.meta_valor}`, dias].filter(Boolean).join(' · ');
 
@@ -97,8 +125,9 @@ export default function MisionesModal({ open, onClose, misiones }: Props) {
                     justifyContent: 'space-between', marginBottom: 9,
                   }}>
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
-                        {icon} {m.titulo}
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ color: '#818CF8' }}><MisionIcon tipo={m.meta_tipo} /></span>
+                        {m.titulo}
                       </div>
                       <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
                         {desc}

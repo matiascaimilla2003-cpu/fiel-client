@@ -34,7 +34,13 @@ export default function RuletaCard({ onOpen }: Props) {
         border: '1.5px solid #141414',
       }} />
 
-      <div style={{ fontSize: 28, marginBottom: 6, lineHeight: 1 }}>🎰</div>
+      <div style={{ marginBottom: 6, color: '#818CF8' }}>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 8v4l3 3"/>
+          <circle cx="12" cy="12" r="1" fill="currentColor"/>
+        </svg>
+      </div>
       <div style={{ fontSize: 12, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
         Ruleta semanal
       </div>

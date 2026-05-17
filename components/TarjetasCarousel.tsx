@@ -118,7 +118,9 @@ function TarjetaCard({
           background: `${meta.color}18`, border: `0.5px solid ${meta.color}45`,
           borderRadius: 20, padding: '3px 10px',
         }}>
-          <span style={{ fontSize: 10 }}>⭐</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={meta.color} strokeWidth="1.5">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
           <span style={{ fontSize: 10, fontWeight: 600, color: meta.color, letterSpacing: '0.5px' }}>
             NIVEL {meta.label}
           </span>

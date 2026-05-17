@@ -134,7 +134,7 @@ export default function BeneficiosPage() {
             borderRadius: 20, padding: '4px 12px',
             fontSize: 11, color: '#818CF8', fontWeight: 500,
           }}>
-            ⭐ {userPoints.toLocaleString('es-CL')} pts disponibles
+            {userPoints.toLocaleString('es-CL')} pts disponibles
           </div>
         </motion.div>
 
@@ -170,7 +170,13 @@ export default function BeneficiosPage() {
             {...fadeUp(0.14)}
             style={{ textAlign: 'center', padding: '48px 20px', color: 'rgba(255,255,255,0.28)', fontSize: 13, lineHeight: 1.6 }}
           >
-            <div style={{ fontSize: 36, marginBottom: 12 }}>🎁</div>
+            <div style={{ marginBottom: 12, color: 'rgba(255,255,255,0.28)' }}>
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                <line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+            </div>
             Tu botillería aún no tiene beneficios configurados
           </motion.div>
         )}
@@ -178,27 +184,26 @@ export default function BeneficiosPage() {
         {/* ── Beneficio cards ── */}
         {visible.map((b, i) => {
           const locked = b.puntos_costo > userPoints;
+          const faltanPts = b.puntos_costo - userPoints;
           return (
             <motion.div
               key={b.id}
               {...fadeUp(0.12 + i * 0.07)}
-              className="cfiel-card"
               style={{
-                borderRadius: 32,
-                overflow: 'hidden', marginBottom: 10,
+                borderRadius: 16,
+                background: 'linear-gradient(135deg, rgba(99,102,241,0.10), rgba(99,102,241,0.03))',
+                border: '1px solid rgba(99,102,241,0.20)',
+                padding: 16, marginBottom: 10,
+                display: 'flex', flexDirection: 'column', gap: 12,
                 opacity: locked ? 0.5 : 1,
               }}
             >
-              {/* Top section */}
-              <div style={{
-                background: '#1a1a1a', padding: 16,
-                display: 'flex', alignItems: 'center', gap: 13,
-                borderBottom: '0.5px solid rgba(255,255,255,0.07)',
-              }}>
+              {/* Top row: icon + name/desc */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{
-                  background: locked ? 'rgba(255,255,255,0.06)' : 'rgba(99,102,241,0.15)',
-                  borderRadius: 10, padding: 10, flexShrink: 0,
-                  color: locked ? 'rgba(255,255,255,0.3)' : '#818CF8',
+                  width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+                  background: 'rgba(99,102,241,0.15)',
+                  color: '#818CF8',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
                   <BeneficioSVG tipo={b.tipo} />
@@ -207,35 +212,42 @@ export default function BeneficiosPage() {
                   <div style={{ fontSize: 15, fontWeight: 600, color: '#fff', letterSpacing: '-0.01em', marginBottom: 2 }}>
                     {b.nombre}
                   </div>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.4 }}>
                     {b.descripcion ?? ''}
                   </div>
                 </div>
-                {locked && <div style={{ fontSize: 18, opacity: 0.5 }}>🔒</div>}
               </div>
 
-              {/* Bottom: pts + button */}
-              <div style={{ padding: '12px 15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                  <div style={{
-                    width: 6, height: 6, borderRadius: '50%',
-                    background: locked ? 'rgba(255,255,255,0.28)' : '#6366F1',
-                  }} />
-                  <div style={{
-                    fontSize: 14, fontWeight: 700,
-                    color: locked ? 'rgba(255,255,255,0.28)' : '#818CF8',
-                  }}>
-                    {b.puntos_costo.toLocaleString('es-CL')}
+              {/* Divider */}
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} />
+
+              {/* Bottom: pts / lock + button */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                {locked ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
+                      Te faltan {faltanPts.toLocaleString('es-CL')} pts
+                    </span>
                   </div>
-                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)' }}>pts</div>
-                </div>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: '#818CF8' }}>
+                      {b.puntos_costo.toLocaleString('es-CL')}
+                    </span>
+                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>pts</span>
+                  </div>
+                )}
                 <button
                   disabled={locked}
                   onClick={() => !locked && setCanje(b)}
                   style={{
-                    background: locked ? '#222222' : '#fff',
-                    color: locked ? 'rgba(255,255,255,0.28)' : '#0a0a0a',
-                    border: locked ? '0.5px solid rgba(255,255,255,0.07)' : 'none',
+                    background: locked ? 'rgba(255,255,255,0.06)' : '#6366F1',
+                    color: locked ? 'rgba(255,255,255,0.3)' : '#fff',
+                    border: 'none',
                     borderRadius: 20, padding: '8px 18px',
                     fontSize: 12, fontWeight: 700,
                     cursor: locked ? 'not-allowed' : 'pointer',

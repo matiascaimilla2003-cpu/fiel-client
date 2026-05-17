@@ -57,8 +57,8 @@ interface CanjeResult {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const NIVEL_EMOJI: Record<string, string> = {
-  bronce: '🥉', plata: '🥈', oro: '⭐', platino: '👑',
+const NIVEL_LABEL: Record<string, string> = {
+  bronce: 'Bronce', plata: 'Plata', oro: 'Oro', platino: 'Platino',
 };
 
 const TENANT_SLUG = 'tio-polo';
@@ -144,8 +144,7 @@ function ClientCard({
           {client.nombre.split(' ')[0]}
         </div>
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>
-          {NIVEL_EMOJI[client.nivel] ?? ''}{' '}
-          {client.nivel.charAt(0).toUpperCase() + client.nivel.slice(1)}
+          {NIVEL_LABEL[client.nivel] ?? client.nivel.charAt(0).toUpperCase() + client.nivel.slice(1)}
           {' · '}
           <span style={{ color: '#6366F1', fontWeight: 600 }}>
             {client.puntos_total.toLocaleString('es-CL')} pts
@@ -493,9 +492,12 @@ export default function CajeroPage() {
                     background: 'rgba(99,102,241,0.12)',
                     borderRadius: '50%',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 28,
+                    color: '#6366F1',
                   }}>
-                    🛒
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
                   </div>
                   <div>
                     <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 5 }}>
@@ -528,9 +530,15 @@ export default function CajeroPage() {
                     background: 'rgba(46,204,113,0.12)',
                     borderRadius: '50%',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 28,
+                    color: '#2ECC71',
                   }}>
-                    🎁
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 12 20 22 4 22 4 12"/>
+                      <rect x="2" y="7" width="20" height="5"/>
+                      <line x1="12" y1="22" x2="12" y2="7"/>
+                      <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                      <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                    </svg>
                   </div>
                   <div>
                     <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 5 }}>
@@ -577,7 +585,13 @@ export default function CajeroPage() {
                         marginBottom: 24, textAlign: 'center',
                       }}
                     >
-                      <div style={{ fontSize: 32, marginBottom: 10 }}>⚠️</div>
+                      <div style={{ marginBottom: 10, color: '#E74C3C' }}>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                          <line x1="12" y1="9" x2="12" y2="13"/>
+                          <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                      </div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#E74C3C', marginBottom: 6 }}>
                         {ventaError.includes('no encontrado') ? 'Cliente no encontrado' : 'Error'}
                       </div>
@@ -724,8 +738,7 @@ export default function CajeroPage() {
                           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>Cliente</div>
                         </div>
                         <div style={{ background: '#222', borderRadius: 10, padding: '4px 10px', fontSize: 12, fontWeight: 600, color: '#818CF8' }}>
-                          {NIVEL_EMOJI[ventaResult.nivel_nuevo]}{' '}
-                          {ventaResult.nivel_nuevo.charAt(0).toUpperCase() + ventaResult.nivel_nuevo.slice(1)}
+                          {NIVEL_LABEL[ventaResult.nivel_nuevo] ?? ventaResult.nivel_nuevo.charAt(0).toUpperCase() + ventaResult.nivel_nuevo.slice(1)}
                         </div>
                       </div>
                       <div style={{
@@ -749,7 +762,7 @@ export default function CajeroPage() {
                           fontSize: 13, fontWeight: 600, color: '#6366F1', textAlign: 'center',
                         }}
                       >
-                        🎉 ¡{ventaResult.nombre.split(' ')[0]} subió a nivel{' '}
+                        ¡{ventaResult.nombre.split(' ')[0]} subió a nivel{' '}
                         {ventaResult.nivel_nuevo.charAt(0).toUpperCase() + ventaResult.nivel_nuevo.slice(1)}!
                       </motion.div>
                     )}
@@ -806,7 +819,13 @@ export default function CajeroPage() {
                         marginBottom: 24, textAlign: 'center',
                       }}
                     >
-                      <div style={{ fontSize: 32, marginBottom: 10 }}>⚠️</div>
+                      <div style={{ marginBottom: 10, color: '#E74C3C' }}>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                          <line x1="12" y1="9" x2="12" y2="13"/>
+                          <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                      </div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: '#E74C3C', marginBottom: 6 }}>
                         {canjeError.includes('no encontrado') ? 'Cliente no encontrado' : 'Error'}
                       </div>
@@ -847,7 +866,15 @@ export default function CajeroPage() {
                         background: '#141414', border: '0.5px solid rgba(255,255,255,0.07)',
                         borderRadius: 20, padding: '32px 20px', textAlign: 'center',
                       }}>
-                        <div style={{ fontSize: 32, marginBottom: 12 }}>🎁</div>
+                        <div style={{ marginBottom: 12, color: 'rgba(255,255,255,0.45)' }}>
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 12 20 22 4 22 4 12"/>
+                            <rect x="2" y="7" width="20" height="5"/>
+                            <line x1="12" y1="22" x2="12" y2="7"/>
+                            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                          </svg>
+                        </div>
                         <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)' }}>
                           No hay beneficios disponibles por el momento
                         </div>
@@ -882,9 +909,22 @@ export default function CajeroPage() {
                                 background: canCanje ? 'rgba(46,204,113,0.12)' : 'rgba(255,255,255,0.06)',
                                 borderRadius: 14,
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                fontSize: 22,
+                                color: canCanje ? '#2ECC71' : 'rgba(255,255,255,0.3)',
                               }}>
-                                {canCanje ? (b.icono ?? '🎁') : '🔒'}
+                                {canCanje ? (
+                                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 12 20 22 4 22 4 12"/>
+                                    <rect x="2" y="7" width="20" height="5"/>
+                                    <line x1="12" y1="22" x2="12" y2="7"/>
+                                    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                                    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                                  </svg>
+                                ) : (
+                                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                  </svg>
+                                )}
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{
@@ -939,8 +979,14 @@ export default function CajeroPage() {
                         textAlign: 'center', marginBottom: 24,
                       }}
                     >
-                      <div style={{ fontSize: 40, marginBottom: 14 }}>
-                        {selectedBeneficio.icono ?? '🎁'}
+                      <div style={{ marginBottom: 14, color: '#6366F1', display: 'flex', justifyContent: 'center' }}>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 12 20 22 4 22 4 12"/>
+                          <rect x="2" y="7" width="20" height="5"/>
+                          <line x1="12" y1="22" x2="12" y2="7"/>
+                          <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                          <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                        </svg>
                       </div>
                       <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginBottom: 6 }}>
                         Confirmar canje de
@@ -1050,7 +1096,13 @@ export default function CajeroPage() {
                       <div style={{ marginBottom: 14 }}>
                         <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginBottom: 4 }}>Entrega</div>
                         <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span>{selectedBeneficio.icono ?? '🎁'}</span>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818CF8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 12 20 22 4 22 4 12"/>
+                            <rect x="2" y="7" width="20" height="5"/>
+                            <line x1="12" y1="22" x2="12" y2="7"/>
+                            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                          </svg>
                           {selectedBeneficio.nombre}
                         </div>
                       </div>

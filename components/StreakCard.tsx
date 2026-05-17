@@ -32,7 +32,10 @@ export default function StreakCard({ streak, onOpen }: Props) {
       }} />
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-        <span style={{ fontSize: 24, lineHeight: 1 }}>🔥</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#818CF8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2c0 4-4 7-4 11a4 4 0 0 0 8 0c0-4-4-7-4-11z"/>
+          <path d="M12 13c0-2 1.5-3 1.5-5"/>
+        </svg>
         <div>
           <div style={{
             fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',

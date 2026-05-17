@@ -179,7 +179,7 @@ export default function HomePage() {
             ) : (
               <>
                 <div style={{ fontSize: 18, fontWeight: 600, color: '#fff', letterSpacing: '-0.01em' }}>
-                  Hola, {USER.name || '…'} 👋
+                  Hola, {USER.name || '…'}
                 </div>
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
                   Bienvenido de vuelta
@@ -263,9 +263,27 @@ export default function HomePage() {
                 width: 40, height: 40,
                 background: 'rgba(59,130,246,0.15)', borderRadius: 12,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 20, flexShrink: 0,
+                flexShrink: 0, color: '#3B82F6',
               }}>
-                {promoActiva.tipo === 'puntos_extra' ? '🔥' : promoActiva.tipo === 'descuento' ? '💸' : '🎁'}
+                {promoActiva.tipo === 'puntos_extra' ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2c0 4-4 7-4 11a4 4 0 0 0 8 0c0-4-4-7-4-11z"/>
+                    <path d="M12 13c0-2 1.5-3 1.5-5"/>
+                  </svg>
+                ) : promoActiva.tipo === 'descuento' ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 12 20 22 4 22 4 12"/>
+                    <rect x="2" y="7" width="20" height="5"/>
+                    <line x1="12" y1="22" x2="12" y2="7"/>
+                    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                  </svg>
+                )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{
@@ -273,7 +291,7 @@ export default function HomePage() {
                   color: '#3B82F6', letterSpacing: '1.5px',
                   textTransform: 'uppercase', marginBottom: 4,
                 }}>
-                  PROMO ACTIVA 🔥
+                  PROMO ACTIVA
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2, lineHeight: 1.3 }}>
                   {promoActiva.titulo}
@@ -342,8 +360,15 @@ export default function HomePage() {
             width: 46, height: 46,
             background: 'rgba(99,102,241,0.12)', borderRadius: 14,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 22, flexShrink: 0,
-          }}>🤝</div>
+            flexShrink: 0, color: '#818CF8',
+          }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
               Trae un amigo, gana puntos

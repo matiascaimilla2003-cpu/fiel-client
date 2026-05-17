@@ -1,5 +1,5 @@
 ﻿'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
@@ -16,10 +16,37 @@ interface ConfettiPiece {
 
 const CONFETTI_COLORS = ['#6366F1', '#818CF8', '#2ECC71', '#ffffff', '#E8C060', '#3B82F6'];
 
-const CARDS = [
-  { icon: '🎁', title: 'Bono de bienvenida', sub: 'Puntos para empezar ya',    pts: '+200 pts' },
-  { icon: '🔥', title: 'Racha activada',      sub: 'Abre la app cada día',      pts: 'Día 1'    },
-  { icon: '🛒', title: 'Misión de inicio',    sub: 'Haz tu primera compra',     pts: '+300 pts' },
+const CARDS: { icon: React.ReactElement; title: string; sub: string; pts: string }[] = [
+  {
+    icon: (
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="20 12 20 22 4 22 4 12"/>
+        <rect x="2" y="7" width="20" height="5"/>
+        <line x1="12" y1="22" x2="12" y2="7"/>
+        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+      </svg>
+    ),
+    title: 'Bono de bienvenida', sub: 'Puntos para empezar ya', pts: '+200 pts',
+  },
+  {
+    icon: (
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2c0 4-4 7-4 11a4 4 0 0 0 8 0c0-4-4-7-4-11z"/>
+        <path d="M12 13c0-2 1.5-3 1.5-5"/>
+      </svg>
+    ),
+    title: 'Racha activada', sub: 'Abre la app cada día', pts: 'Día 1',
+  },
+  {
+    icon: (
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+    ),
+    title: 'Misión de inicio', sub: 'Haz tu primera compra', pts: '+300 pts',
+  },
 ];
 
 const fadeUp = (delay: number) => ({
@@ -103,7 +130,11 @@ export default function BienvenidaPage() {
           zIndex: 20,
         }}
       >
-        <span style={{ fontSize: 56, display: 'block', marginBottom: 14 }}>🎉</span>
+        <div style={{ marginBottom: 14, display: 'flex', justifyContent: 'center' }}>
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
 
         <div style={{
           fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
@@ -150,7 +181,7 @@ export default function BienvenidaPage() {
               background: '#222222',
               borderRadius: 10,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 19, flexShrink: 0,
+              flexShrink: 0, color: '#818CF8',
             }}>
               {card.icon}
             </div>

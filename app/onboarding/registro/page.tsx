@@ -236,7 +236,7 @@ export default function RegistroPage() {
                   style={inputBase}
                 />
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', marginTop: 9, marginBottom: 18 }}>
-                  Así te saludaremos en la app 👋
+                  Así te saludaremos en la app
                 </div>
 
                 {/* Código de referido opcional */}
@@ -256,7 +256,7 @@ export default function RegistroPage() {
                 />
                 {codigoReferido.length > 0 && (
                   <div style={{ fontSize: 11, color: '#6366F1', marginTop: 7 }}>
-                    🎁 +200 pts extra de bienvenida al registrarte
+                    +200 pts extra de bienvenida al registrarte
                   </div>
                 )}
               </div>
@@ -269,7 +269,7 @@ export default function RegistroPage() {
                   Tu teléfono
                 </div>
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <span style={{ position: 'absolute', left: 14, fontSize: 18, pointerEvents: 'none', zIndex: 1 }}>🇨🇱</span>
+                  <span style={{ position: 'absolute', left: 14, fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.55)', pointerEvents: 'none', zIndex: 1 }}>CL</span>
                   <span style={{ position: 'absolute', left: 44, fontSize: 15, color: 'rgba(255,255,255,0.55)', fontWeight: 500, pointerEvents: 'none', zIndex: 1 }}>+56</span>
                   <input
                     autoFocus
@@ -323,7 +323,7 @@ export default function RegistroPage() {
                 ) : (
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', marginTop: 9, lineHeight: 1.55 }}>
                     Para enviarte{' '}
-                    <span style={{ color: '#818CF8' }}>puntos extra en tu cumpleaños 🎂</span>
+                    <span style={{ color: '#818CF8' }}>puntos extra en tu cumpleaños</span>
                   </div>
                 )}
               </div>
