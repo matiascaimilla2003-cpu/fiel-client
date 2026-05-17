@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import TarjetasCarousel from '@/components/TarjetasCarousel';
 import StreakCard from '@/components/StreakCard';
-import RuletaCard from '@/components/RuletaCard';
 import MisionCard from '@/components/MisionCard';
 import QRModal from '@/components/QRModal';
 import StreakModal from '@/components/StreakModal';
@@ -206,15 +205,12 @@ export default function HomePage() {
           nivel={(USER.level.toLowerCase() as 'bronce' | 'plata' | 'oro' | 'platino') || 'bronce'}
           progreso={USER.progressPct}
           empresa="Tío Polo"
+          onQROpen={() => setModal('qr')}
         />
 
-        {/* ── Duo grid: streak + ruleta ── */}
-        <motion.div
-          {...fadeUp(0.19)}
-          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}
-        >
+        {/* ── Streak ── */}
+        <motion.div {...fadeUp(0.19)} style={{ marginBottom: 12 }}>
           <StreakCard streak={USER.streak} onOpen={() => setModal('streak')} />
-          <RuletaCard onOpen={() => setModal('misiones')} />
         </motion.div>
 
         {/* ── Misión activa (solo si hay misiones) ── */}

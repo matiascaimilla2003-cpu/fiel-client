@@ -17,6 +17,7 @@ interface Props {
   nivel: 'bronce' | 'plata' | 'oro' | 'platino';
   progreso: number;
   empresa?: string;
+  onQROpen: () => void;
 }
 
 const NIVEL_META: Record<string, { label: string; color: string; next: string }> = {
@@ -29,12 +30,12 @@ const NIVEL_META: Record<string, { label: string; color: string; next: string }>
 const slideVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? '100%' : '-100%', opacity: 0.5 }),
   center: { x: 0, opacity: 1 },
-  exit: (dir: number) => ({ x: dir > 0 ? '-80%' : '80%', opacity: 0 }),
+  exit:  (dir: number) => ({ x: dir > 0 ? '-80%' : '80%', opacity: 0 }),
 };
 
-function TarjetaCard({ tarjeta }: { tarjeta: Tarjeta }) {
+function TarjetaCard({ tarjeta, showHint }: { tarjeta: Tarjeta; showHint?: boolean }) {
   const [barW, setBarW] = useState(0);
-  const meta = NIVEL_META[tarjeta.nivel] ?? NIVEL_META.bronce;
+  const meta    = NIVEL_META[tarjeta.nivel] ?? NIVEL_META.bronce;
   const inicial = tarjeta.empresa.charAt(0).toUpperCase();
 
   useEffect(() => {
@@ -51,14 +52,14 @@ function TarjetaCard({ tarjeta }: { tarjeta: Tarjeta }) {
       position: 'relative',
       overflow: 'hidden',
       userSelect: 'none',
+      cursor: 'pointer',
     }}>
-      {/* Glow top-right */}
+      {/* Glow */}
       <div style={{
         position: 'absolute', top: -40, right: -40,
         width: 160, height: 160,
         background: `radial-gradient(circle, ${meta.color}20, transparent 68%)`,
-        borderRadius: '50%',
-        pointerEvents: 'none',
+        borderRadius: '50%', pointerEvents: 'none',
       }} />
 
       {/* Empresa header */}
@@ -69,16 +70,12 @@ function TarjetaCard({ tarjeta }: { tarjeta: Tarjeta }) {
           border: `1.5px solid ${meta.color}55`,
           borderRadius: '50%',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 18, fontWeight: 700, color: meta.color,
-          flexShrink: 0,
+          fontSize: 18, fontWeight: 700, color: meta.color, flexShrink: 0,
         }}>
           {inicial}
         </div>
         <div>
-          <div style={{
-            fontSize: 9, color: 'rgba(255,255,255,0.4)',
-            letterSpacing: '1px', textTransform: 'uppercase',
-          }}>
+          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', letterSpacing: '1px', textTransform: 'uppercase' }}>
             Programa fidelidad
           </div>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#fff', letterSpacing: -0.3 }}>
@@ -87,20 +84,14 @@ function TarjetaCard({ tarjeta }: { tarjeta: Tarjeta }) {
         </div>
       </div>
 
-      <div style={{
-        fontSize: 10, color: 'rgba(255,255,255,0.28)',
-        letterSpacing: '1.4px', textTransform: 'uppercase', marginBottom: 2,
-      }}>
+      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', letterSpacing: '1.4px', textTransform: 'uppercase', marginBottom: 2 }}>
         Puntos acumulados
       </div>
 
       <div style={{
         fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
-        fontSize: 64,
-        color: '#fff',
-        lineHeight: 1,
-        letterSpacing: -2,
-        marginBottom: tarjeta.mensaje ? 6 : 12,
+        fontSize: 64, color: '#fff', lineHeight: 1,
+        letterSpacing: -2, marginBottom: tarjeta.mensaje ? 6 : 12,
       }}>
         {tarjeta.puntos.toLocaleString('es-CL')}
       </div>
@@ -114,8 +105,7 @@ function TarjetaCard({ tarjeta }: { tarjeta: Tarjeta }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 4,
-          background: `${meta.color}18`,
-          border: `0.5px solid ${meta.color}45`,
+          background: `${meta.color}18`, border: `0.5px solid ${meta.color}45`,
           borderRadius: 20, padding: '3px 10px',
         }}>
           <span style={{ fontSize: 10 }}>⭐</span>
@@ -135,8 +125,7 @@ function TarjetaCard({ tarjeta }: { tarjeta: Tarjeta }) {
         <div style={{
           height: '100%',
           background: `linear-gradient(90deg, ${meta.color}, ${meta.color}cc)`,
-          borderRadius: 5,
-          width: `${barW}%`,
+          borderRadius: 5, width: `${barW}%`,
           transition: 'width 1.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }} />
       </div>
@@ -145,18 +134,32 @@ function TarjetaCard({ tarjeta }: { tarjeta: Tarjeta }) {
         Progreso al siguiente nivel:{' '}
         <span style={{ color: meta.color, fontWeight: 600 }}>{tarjeta.progreso}%</span>
       </div>
+
+      {/* Hint sutil solo en la primera tarjeta */}
+      {showHint && (
+        <div style={{
+          marginTop: 10,
+          fontSize: 10,
+          color: 'rgba(255,255,255,0.2)',
+          textAlign: 'center',
+          letterSpacing: '0.3px',
+        }}>
+          Toca para ver tu QR
+        </div>
+      )}
     </div>
   );
 }
 
-export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'Tío Polo' }: Props) {
+export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'Tío Polo', onQROpen }: Props) {
   const tarjetas: Tarjeta[] = [
     { empresa, puntos, nivel, progreso },
     { empresa: 'Bot. Matías', puntos: 0, nivel: 'bronce', progreso: 0, mensaje: 'Aún no has comprado aquí' },
   ];
 
-  const [active, setActive] = useState(0);
-  const [dir, setDir] = useState(0);
+  const [active, setActive]     = useState(0);
+  const [dir, setDir]           = useState(0);
+  const [showToast, setShowToast] = useState(false);
 
   const goTo = (index: number) => {
     if (index === active || index < 0 || index >= tarjetas.length) return;
@@ -165,6 +168,16 @@ export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'T
   };
 
   const handleDragEnd = (_: unknown, info: PanInfo) => {
+    // Desplazamiento mínimo → se trató como tap
+    if (Math.abs(info.offset.x) < 8) {
+      if (active === 0) {
+        onQROpen();
+      } else {
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 2000);
+      }
+      return;
+    }
     if (info.offset.x < -40) goTo(active + 1);
     else if (info.offset.x > 40) goTo(active - 1);
   };
@@ -188,12 +201,12 @@ export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'T
             onDragEnd={handleDragEnd}
             style={{ cursor: 'grab' }}
           >
-            <TarjetaCard tarjeta={tarjetas[active]} />
+            <TarjetaCard tarjeta={tarjetas[active]} showHint={active === 0} />
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Dots indicadores */}
+      {/* Dots */}
       {tarjetas.length > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5, marginTop: 9 }}>
           {tarjetas.map((_, i) => (
@@ -210,6 +223,30 @@ export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'T
           ))}
         </div>
       )}
+
+      {/* Toast para la segunda tarjeta */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{ textAlign: 'center', marginTop: 8 }}
+          >
+            <span style={{
+              fontSize: 12,
+              color: 'rgba(255,255,255,0.5)',
+              padding: '5px 14px',
+              background: '#1a1a1a',
+              borderRadius: 20,
+              border: '0.5px solid rgba(255,255,255,0.1)',
+            }}>
+              Aún no has comprado aquí
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
