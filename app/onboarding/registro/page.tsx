@@ -41,13 +41,13 @@ export default function RegistroPage() {
     localStorage.removeItem('cfiel_user_id');
     localStorage.removeItem('cfiel_nombre');
     localStorage.removeItem('cfiel_cajero');
+    localStorage.removeItem('cfiel_codigo_referido');
     // Pre-fill referral code from URL param if present
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('ref');
     if (ref) {
       const code = ref.toUpperCase().trim();
       setCodigoReferido(code);
-      localStorage.setItem('cfiel_codigo_referido', code);
     }
   }, []);
 
@@ -92,7 +92,6 @@ export default function RegistroPage() {
           ? `${anio}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
           : null;
 
-      const savedCode = localStorage.getItem('cfiel_codigo_referido');
       const res = await fetch('/api/usuarios/crear', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -100,7 +99,7 @@ export default function RegistroPage() {
           nombre:           nombre.trim(),
           telefono,
           fecha_nacimiento: fechaNacimiento,
-          codigo_referido:  savedCode || undefined,
+          codigo_referido:  codigoReferido.trim() || undefined,
         }),
       });
 
@@ -113,7 +112,6 @@ export default function RegistroPage() {
 
       localStorage.setItem('cfiel_user_id', data.usuario.id);
       localStorage.setItem('cfiel_nombre',  data.usuario.nombre.split(' ')[0]);
-      localStorage.removeItem('cfiel_codigo_referido');
     } catch (err) {
       console.error('[CFIEL] Error en registro:', err);
     } finally {
@@ -248,12 +246,9 @@ export default function RegistroPage() {
                 <input
                   type="text"
                   value={codigoReferido}
-                  onChange={(e) => {
-                    const val = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
-                    setCodigoReferido(val);
-                    if (val) localStorage.setItem('cfiel_codigo_referido', val);
-                    else localStorage.removeItem('cfiel_codigo_referido');
-                  }}
+                  onChange={(e) =>
+                    setCodigoReferido(e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ''))
+                  }
                   onFocus={handleFocus}
                   onBlur={handleBlur}
                   placeholder="Ej: CFIEL-04863C"
