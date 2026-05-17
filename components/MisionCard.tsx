@@ -78,8 +78,8 @@ export default function MisionCard({ onOpen, mision }: Props) {
           </div>
         </div>
         <div style={{
-          background: 'rgba(212,168,71,0.12)',
-          border: '0.5px solid rgba(212,168,71,0.28)',
+          background: 'rgba(99,102,241,0.12)',
+          border: '0.5px solid rgba(99,102,241,0.28)',
           borderRadius: 20, padding: '4px 9px',
           fontSize: 11, fontWeight: 700, color: '#818CF8',
           whiteSpace: 'nowrap', flexShrink: 0,

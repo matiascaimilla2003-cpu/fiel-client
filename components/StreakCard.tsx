@@ -16,7 +16,7 @@ export default function StreakCard({ streak, onOpen }: Props) {
       style={{
         background: '#141414',
         borderRadius: 20,
-        border: '0.5px solid rgba(212,168,71,0.28)',
+        border: '0.5px solid rgba(99,102,241,0.28)',
         padding: 14,
         cursor: 'pointer',
         position: 'relative',
@@ -27,7 +27,7 @@ export default function StreakCard({ streak, onOpen }: Props) {
       <div style={{
         position: 'absolute', bottom: -20, right: -20,
         width: 80, height: 80,
-        background: 'radial-gradient(circle, rgba(212,168,71,0.14), transparent)',
+        background: 'radial-gradient(circle, rgba(99,102,241,0.14), transparent)',
         borderRadius: '50%',
         pointerEvents: 'none',
       }} />
@@ -70,7 +70,7 @@ export default function StreakCard({ streak, onOpen }: Props) {
         ))}
       </div>
 
-      <div style={{ fontSize: 10, color: '#818CF8', fontWeight: 600 }}>+50 pts hoy ✓</div>
+      <div style={{ fontSize: 10, color: '#6366F1', fontWeight: 700 }}>+50 pts hoy ✓</div>
     </motion.div>
   );
 }

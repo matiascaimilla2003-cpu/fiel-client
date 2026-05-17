@@ -115,7 +115,7 @@ export default function ReferidosPage() {
           {...fadeUp(0.05)}
           style={{
             background: 'linear-gradient(135deg, #1a1508 0%, #141414 100%)',
-            border: '0.5px solid rgba(212,168,71,0.4)',
+            border: '0.5px solid rgba(99,102,241,0.4)',
             borderRadius: 24,
             padding: '24px 20px',
             marginBottom: 16,
@@ -126,7 +126,7 @@ export default function ReferidosPage() {
           <div style={{
             position: 'absolute', top: -40, right: -40,
             width: 140, height: 140,
-            background: 'radial-gradient(circle, rgba(212,168,71,0.18), transparent)',
+            background: 'radial-gradient(circle, rgba(99,102,241,0.18), transparent)',
             borderRadius: '50%', pointerEvents: 'none',
           }} />
 
@@ -183,8 +183,8 @@ export default function ReferidosPage() {
             onClick={copyCodigo}
             style={{
               width: '100%',
-              background: copied ? 'rgba(212,168,71,0.15)' : 'rgba(255,255,255,0.07)',
-              border: `0.5px solid ${copied ? 'rgba(212,168,71,0.5)' : 'rgba(255,255,255,0.13)'}`,
+              background: copied ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.07)',
+              border: `0.5px solid ${copied ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.13)'}`,
               borderRadius: 14,
               padding: '12px 16px',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -294,8 +294,8 @@ export default function ReferidosPage() {
                 >
                   <div style={{
                     width: 38, height: 38, flexShrink: 0,
-                    background: isRegistered ? 'rgba(212,168,71,0.15)' : 'rgba(255,255,255,0.06)',
-                    border: `1px solid ${isRegistered ? 'rgba(212,168,71,0.3)' : 'rgba(255,255,255,0.1)'}`,
+                    background: isRegistered ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.06)',
+                    border: `1px solid ${isRegistered ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.1)'}`,
                     borderRadius: '50%',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 13, fontWeight: 700,

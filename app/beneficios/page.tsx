@@ -104,8 +104,8 @@ export default function BeneficiosPage() {
           </div>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
-            background: 'rgba(212,168,71,0.12)',
-            border: '0.5px solid rgba(212,168,71,0.28)',
+            background: 'rgba(99,102,241,0.12)',
+            border: '0.5px solid rgba(99,102,241,0.28)',
             borderRadius: 20, padding: '4px 12px',
             fontSize: 11, color: '#818CF8', fontWeight: 500,
           }}>

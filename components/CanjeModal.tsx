@@ -112,7 +112,7 @@ export default function CanjeModal({
                 <div style={{
                   background: '#1a1a1a',
                   borderRadius: 20, padding: '12px 16px', marginBottom: 20,
-                  border: '0.5px solid rgba(212,168,71,0.28)',
+                  border: '0.5px solid rgba(99,102,241,0.28)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                 }}>
                   <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#6366F1' }} />

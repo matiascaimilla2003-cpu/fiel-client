@@ -125,7 +125,7 @@ function TarjetaCard({
           </span>
         </div>
         {meta.next && (
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)' }}>
+          <div style={{ fontSize: 11, color: '#818CF8', fontWeight: 500 }}>
             → {100 - tarjeta.progreso}% para {meta.next}
           </div>
         )}
@@ -135,7 +135,7 @@ function TarjetaCard({
       <div style={{ height: 5, background: 'rgba(255,255,255,0.07)', borderRadius: 5, overflow: 'hidden' }}>
         <div style={{
           height: '100%',
-          background: `linear-gradient(90deg, ${meta.color}, ${meta.color}cc)`,
+          background: 'linear-gradient(90deg, #6366F1, #818CF8)',
           borderRadius: 5, width: `${barW}%`,
           transition: 'width 1.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }} />
@@ -143,7 +143,7 @@ function TarjetaCard({
 
       <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', marginTop: 6 }}>
         Progreso al siguiente nivel:{' '}
-        <span style={{ color: meta.color, fontWeight: 600 }}>{tarjeta.progreso}%</span>
+        <span style={{ color: '#6366F1', fontWeight: 600 }}>{tarjeta.progreso}%</span>
       </div>
 
       {/* Hint sutil solo en la primera tarjeta */}

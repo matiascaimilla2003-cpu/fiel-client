@@ -159,14 +159,14 @@ export default function SlidesPage() {
               width: 96, height: 96,
               background: '#141414',
               borderRadius: 24,
-              border: '0.5px solid rgba(212,168,71,0.28)',
+              border: '0.5px solid rgba(99,102,241,0.28)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 44, marginBottom: 26,
               position: 'relative',
             }}>
               <div style={{
                 position: 'absolute', inset: -1, borderRadius: 24,
-                background: 'radial-gradient(circle at 50% 0, rgba(212,168,71,0.2), transparent 60%)',
+                background: 'radial-gradient(circle at 50% 0, rgba(99,102,241,0.2), transparent 60%)',
                 pointerEvents: 'none',
               }} />
               {SLIDES[cur].icon}

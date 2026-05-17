@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -23,7 +23,7 @@ const ICON_MAP: Record<string, string> = {
 };
 
 function iconBg(tipo: string, puntos: number): string {
-  if (tipo === 'bono' || tipo === 'ruleta' || tipo === 'mision') return 'rgba(212,168,71,0.12)';
+  if (tipo === 'bono' || tipo === 'ruleta' || tipo === 'mision') return 'rgba(99,102,241,0.12)';
   return puntos >= 0 ? 'rgba(46,204,113,0.1)' : 'rgba(231,76,60,0.1)';
 }
 

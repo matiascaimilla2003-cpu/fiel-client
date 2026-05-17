@@ -114,7 +114,7 @@ export default function PerfilPage() {
   const ptsToNext   = meta.ptsNext > 0 ? Math.max(0, meta.ptsNext - u.puntos_total) : 0;
 
   const stats = [
-    { value: u.puntos_total.toLocaleString('es-CL'),  label: 'Pts acumulados', color: meta.color  },
+    { value: u.puntos_total.toLocaleString('es-CL'),  label: 'Pts acumulados', color: '#6366F1'   },
     { value: meta.label,                               label: 'Nivel actual',   color: '#ffffff'   },
     { value: `${u.racha_dias}d`,                       label: 'Racha',          color: '#2ECC71'   },
     { value: desdeLabel(u.created_at),                 label: 'Miembro desde',  color: '#ffffff'   },

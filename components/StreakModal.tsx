@@ -56,7 +56,7 @@ export default function StreakModal({ open, onClose, streak }: Props) {
             <div style={{
               background: '#1a1a1a',
               borderRadius: 20, padding: 15, marginBottom: 16,
-              border: '0.5px solid rgba(212,168,71,0.28)',
+              border: '0.5px solid rgba(99,102,241,0.28)',
             }}>
               <div style={{
                 fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',

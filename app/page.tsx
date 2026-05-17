@@ -38,7 +38,7 @@ export default function SplashPage() {
             width: size,
             height: size,
             borderRadius: '50%',
-            border: '0.5px solid rgba(212,168,71,0.12)',
+            border: '0.5px solid rgba(99,102,241,0.12)',
             top: '38%',
             left: '50%',
             transform: 'translate(-50%, -50%)',

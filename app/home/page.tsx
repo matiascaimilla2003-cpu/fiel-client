@@ -327,7 +327,7 @@ export default function HomePage() {
           onClick={() => router.push('/referidos')}
           style={{
             background: '#141414',
-            border: '0.5px solid rgba(212,168,71,0.28)',
+            border: '0.5px solid rgba(99,102,241,0.28)',
             borderRadius: 20, padding: 14, marginBottom: 12,
             display: 'flex', alignItems: 'center', gap: 12,
             cursor: 'pointer', position: 'relative', overflow: 'hidden',
@@ -336,12 +336,12 @@ export default function HomePage() {
           <div style={{
             position: 'absolute', top: -20, right: -20,
             width: 80, height: 80,
-            background: 'radial-gradient(circle, rgba(212,168,71,0.13), transparent)',
+            background: 'radial-gradient(circle, rgba(99,102,241,0.13), transparent)',
             borderRadius: '50%', pointerEvents: 'none',
           }} />
           <div style={{
             width: 46, height: 46,
-            background: 'rgba(212,168,71,0.12)', borderRadius: 14,
+            background: 'rgba(99,102,241,0.12)', borderRadius: 14,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 22, flexShrink: 0,
           }}>🤝</div>

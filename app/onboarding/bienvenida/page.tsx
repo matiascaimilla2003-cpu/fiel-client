@@ -98,7 +98,7 @@ export default function BienvenidaPage() {
           padding: '28px 24px 24px',
           textAlign: 'center',
           marginBottom: 20,
-          borderBottom: '0.5px solid rgba(212,168,71,0.28)',
+          borderBottom: '0.5px solid rgba(99,102,241,0.28)',
           position: 'relative',
           zIndex: 20,
         }}

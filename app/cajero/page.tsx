@@ -122,7 +122,7 @@ function ClientCard({
   return (
     <div style={{
       background: '#141414',
-      border: '0.5px solid rgba(212,168,71,0.3)',
+      border: '0.5px solid rgba(99,102,241,0.3)',
       borderRadius: 20,
       padding: '16px 18px',
       marginBottom: 24,
@@ -130,7 +130,7 @@ function ClientCard({
     }}>
       <div style={{
         width: 48, height: 48,
-        background: 'rgba(212,168,71,0.12)',
+        background: 'rgba(99,102,241,0.12)',
         borderRadius: '50%',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontSize: 20, fontWeight: 700, color: '#6366F1', flexShrink: 0,
@@ -479,7 +479,7 @@ export default function CajeroPage() {
                   style={{
                     width: '100%',
                     background: 'linear-gradient(135deg, #1a1400, #141414)',
-                    border: '1px solid rgba(212,168,71,0.4)',
+                    border: '1px solid rgba(99,102,241,0.4)',
                     borderRadius: 24,
                     padding: '28px 24px',
                     display: 'flex', alignItems: 'center', gap: 20,
@@ -493,7 +493,7 @@ export default function CajeroPage() {
                 >
                   <div style={{
                     width: 64, height: 64, flexShrink: 0,
-                    background: 'rgba(212,168,71,0.12)',
+                    background: 'rgba(99,102,241,0.12)',
                     borderRadius: '50%',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 28,
@@ -593,7 +593,7 @@ export default function CajeroPage() {
                       onClick={resetVenta}
                       style={{
                         width: '100%', background: '#141414',
-                        border: '0.5px solid rgba(212,168,71,0.35)', borderRadius: 24,
+                        border: '0.5px solid rgba(99,102,241,0.35)', borderRadius: 24,
                         padding: '16px', fontSize: 15, fontWeight: 600,
                         color: '#6366F1', cursor: 'pointer', fontFamily: 'inherit',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -748,7 +748,7 @@ export default function CajeroPage() {
                         initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.45, type: 'spring' }}
                         style={{
-                          background: 'rgba(212,168,71,0.12)', border: '0.5px solid rgba(212,168,71,0.4)',
+                          background: 'rgba(99,102,241,0.12)', border: '0.5px solid rgba(99,102,241,0.4)',
                           borderRadius: 14, padding: '12px 16px', marginBottom: 16,
                           fontSize: 13, fontWeight: 600, color: '#6366F1', textAlign: 'center',
                         }}
@@ -911,7 +911,7 @@ export default function CajeroPage() {
                               </div>
                               <div style={{
                                 flexShrink: 0,
-                                background: canCanje ? 'rgba(212,168,71,0.15)' : 'rgba(255,255,255,0.06)',
+                                background: canCanje ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.06)',
                                 borderRadius: 10, padding: '5px 10px',
                                 fontSize: 13, fontWeight: 700,
                                 color: canCanje ? '#6366F1' : 'rgba(255,255,255,0.3)',
@@ -955,7 +955,7 @@ export default function CajeroPage() {
                       </div>
                       <div style={{
                         display: 'inline-block',
-                        background: 'rgba(212,168,71,0.15)',
+                        background: 'rgba(99,102,241,0.15)',
                         borderRadius: 12, padding: '8px 18px',
                         fontSize: 18, fontWeight: 700, color: '#6366F1',
                       }}>

@@ -202,7 +202,7 @@ export default function QRScanner({ onScan, onCancel }: Props) {
                   height: 2,
                   background:
                     'linear-gradient(90deg, transparent, #6366F1 30%, #818CF8 50%, #6366F1 70%, transparent)',
-                  boxShadow: '0 0 10px rgba(212,168,71,0.7)',
+                  boxShadow: '0 0 10px rgba(99,102,241,0.7)',
                 }}
               />
             </div>

@@ -37,7 +37,7 @@ export default function HeroCard({ points, level, progressPct, ptsToNextLevel }:
       <div style={{
         position: 'absolute', top: -40, right: -40,
         width: 150, height: 150,
-        background: 'radial-gradient(circle, rgba(212,168,71,0.15), transparent 68%)',
+        background: 'radial-gradient(circle, rgba(99,102,241,0.15), transparent 68%)',
         borderRadius: '50%',
         pointerEvents: 'none',
       }} />
@@ -64,8 +64,8 @@ export default function HeroCard({ points, level, progressPct, ptsToNextLevel }:
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 4,
-          background: 'rgba(212,168,71,0.12)',
-          border: '0.5px solid rgba(212,168,71,0.28)',
+          background: 'rgba(99,102,241,0.12)',
+          border: '0.5px solid rgba(99,102,241,0.28)',
           borderRadius: 20, padding: '3px 10px',
         }}>
           <span style={{ fontSize: 10 }}>⭐</span>
