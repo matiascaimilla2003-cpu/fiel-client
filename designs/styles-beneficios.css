@@ -1,0 +1,340 @@
+/* CFIEL brand system — Home */
+:root {
+  --bg: #0a0a14;
+  --bg-2: #0f0f1a;
+  --bg-3: #14141f;
+  --indigo: #6366F1;
+  --indigo-light: #818CF8;
+  --indigo-deep: #4F46E5;
+  --indigo-pale: #A5B4FC;
+  --violet: #8B5CF6;
+  --card-bg: linear-gradient(180deg, rgba(99,102,241,0.10), rgba(99,102,241,0.04));
+  --card-border: rgba(99,102,241,0.20);
+  --card-border-strong: rgba(99,102,241,0.40);
+  --text: #ffffff;
+  --text-muted: #8a8aa3;
+  --text-dim: #5b5b75;
+  --gold: #F5C16C;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; }
+
+.home-screen {
+  width: 430px;
+  height: 900px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.02em; }
+.muted { color: var(--text-muted); }
+.dim { color: var(--text-dim); }
+.indigo { color: var(--indigo); }
+.indigo-light { color: var(--indigo-light); }
+
+/* ─── scroll area ─── */
+.home-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px 100px;
+  scrollbar-width: none;
+}
+.home-scroll::-webkit-scrollbar { display: none; }
+
+/* ─── status bar ─── */
+.status-bar {
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+  color: var(--text);
+}
+.status-bar .icons { display: flex; gap: 6px; align-items: center; }
+
+/* ─── topbar (greeting) ─── */
+.topbar {
+  padding: 8px 20px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.topbar h1 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.topbar .sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ─── topbar icon buttons ─── */
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: var(--bg-2);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+.icon-btn:hover { border-color: rgba(99,102,241,0.4); background: rgba(99,102,241,0.08); }
+.icon-btn .dot {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 8px; height: 8px;
+  background: #F87171;
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #818CF8, #6366F1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+}
+
+/* ─── cards ─── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 22px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin: 24px 4px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-label .right {
+  color: var(--indigo-light);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ─── animations ─── */
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@keyframes holoSheen {
+  0%   { background-position: -120% 0; opacity: 0; }
+  20%  { opacity: 1; }
+  60%  { background-position: 220% 0;  opacity: 1; }
+  80%  { opacity: 0; }
+  100% { background-position: 220% 0;  opacity: 0; }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.7); }
+  50%      { opacity: 1;   transform: scale(1.1); }
+}
+@keyframes borderBreath {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.12); }
+}
+@keyframes edgeGlint {
+  0%, 88%, 100% { opacity: 0; transform: translateX(0); }
+  3%            { opacity: 0; }
+  10%           { opacity: 1; transform: translateX(60px); }
+  18%           { opacity: 0; transform: translateX(80px); }
+}
+@keyframes edgeGlintRev {
+  0%, 88%, 100% { opacity: 0; transform: translateX(0); }
+  3%            { opacity: 0; }
+  10%           { opacity: 1; transform: translateX(-60px); }
+  18%           { opacity: 0; transform: translateX(-80px); }
+}
+@keyframes dust {
+  0%   { transform: translateY(120%); opacity: 0; }
+  10%  { opacity: 0.85; }
+  90%  { opacity: 0.85; }
+  100% { transform: translateY(-40%); opacity: 0; }
+}
+@keyframes prismShift {
+  0%, 100% { background-position: -100% 0; }
+  50%      { background-position: 200% 0; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ─── bottom nav ─── */
+.bottom-nav {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: rgba(10,10,20,0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 1px solid rgba(99,102,241,0.12);
+  padding-bottom: 20px;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 6px 0;
+  position: relative;
+  color: var(--text-dim);
+  transition: color 0.2s ease;
+}
+.nav-item:hover { color: var(--text-muted); }
+.nav-item.active { color: var(--indigo-light); }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 32px;
+  height: 2px;
+  background: var(--indigo);
+  border-radius: 100px;
+  box-shadow: 0 0 12px rgba(99,102,241,0.7);
+}
+.nav-item.active .nav-icon {
+  background: rgba(99,102,241,0.18);
+  border-color: rgba(99,102,241,0.35);
+}
+.nav-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+.nav-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* ─── modal system ─── */
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 12, 0.7);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+  animation: overlayIn 0.25s ease;
+}
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal-sheet {
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(180deg, #15151f 0%, #0e0e18 100%);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+  position: relative;
+  animation: modalIn 0.35s cubic-bezier(.2,1.2,.3,1);
+  max-height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-close-pill {
+  align-self: center;
+  margin-top: 16px;
+  padding: 12px 36px;
+  border-radius: 100px;
+  background: #fff;
+  color: #0a0a14;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.modal-close-pill:hover { transform: translateY(-1px); }
+
+/* ─── tap card affordance ─── */
+.tap-card { cursor: pointer; transition: transform 0.18s ease, box-shadow 0.25s ease; }
+.tap-card:hover { transform: translateY(-1px); }
+.tap-card:active { transform: translateY(0) scale(0.998); }
+
