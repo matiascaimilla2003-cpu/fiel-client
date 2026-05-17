@@ -1,7 +1,6 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import TarjetasCarousel from '@/components/TarjetasCarousel';
 import StreakCard from '@/components/StreakCard';
@@ -11,7 +10,9 @@ import StreakModal from '@/components/StreakModal';
 import MisionesModal from '@/components/MisionesModal';
 import BottomNav from '@/components/BottomNav';
 
-/* ─── Helpers de nivel ─── */
+const BEBAS = 'var(--font-bebas), "Bebas Neue", sans-serif';
+
+/* ── Tier helpers ── */
 function calcProgressPct(nivel: string, puntos: number): number {
   const ranges: Record<string, [number, number]> = {
     bronce: [0, 500], plata: [500, 1000], oro: [1000, 2000], platino: [2000, 2000],
@@ -64,12 +65,6 @@ const EMPTY_USER: UserState = {
 };
 
 type Modal = 'qr' | 'streak' | 'misiones' | null;
-
-const fadeUp = (delay: number) => ({
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay, duration: 0.4 },
-});
 
 export default function HomePage() {
   const router             = useRouter();
@@ -138,9 +133,7 @@ export default function HomePage() {
           }
         }
 
-        if (misionData?.misiones) {
-          setMisiones(misionData.misiones);
-        }
+        if (misionData?.misiones) setMisiones(misionData.misiones);
 
         if (typeof refData?.total_registrados === 'number') {
           setReferidosCount(refData.total_registrados);
@@ -161,271 +154,247 @@ export default function HomePage() {
       maxWidth: 430,
       margin: '0 auto',
       position: 'relative',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
+      {/* Ambient background glow */}
+      <div style={{
+        position: 'absolute', top: -100, left: '50%', transform: 'translateX(-50%)',
+        width: 600, height: 600,
+        background: 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 60%)',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }}/>
 
-      <div style={{ padding: '16px 16px 90px', overflowY: 'auto' }}>
+      {/* ── TopBar ── */}
+      <div style={{
+        padding: '8px 20px 4px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        flexShrink: 0, position: 'relative', zIndex: 2,
+      }}>
+        <div>
+          {loading ? (
+            <>
+              <div style={{ width: 150, height: 18, background: 'rgba(255,255,255,0.06)', borderRadius: 6, marginBottom: 6 }}/>
+              <div style={{ width: 110, height: 11, background: 'rgba(255,255,255,0.04)', borderRadius: 4 }}/>
+            </>
+          ) : (
+            <>
+              <div style={{ fontSize: 20, fontWeight: 700, color: '#fff', letterSpacing: '-0.01em' }}>
+                Hola, <span style={{ color: '#818CF8' }}>{USER.name || '…'}</span>
+              </div>
+              <div style={{ fontSize: 13, color: '#8a8aa3', marginTop: 2 }}>Bienvenido de vuelta</div>
+            </>
+          )}
+        </div>
 
-        {/* ── Header ── */}
-        <motion.div
-          {...fadeUp(0.05)}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}
-        >
-          <div>
-            {loading ? (
-              <>
-                <div style={{ width: 150, height: 18, background: '#1e1e1e', borderRadius: 6, marginBottom: 6 }} />
-                <div style={{ width: 110, height: 11, background: '#1a1a1a', borderRadius: 4 }} />
-              </>
-            ) : (
-              <>
-                <div style={{ fontSize: 18, fontWeight: 600, color: '#fff', letterSpacing: '-0.01em' }}>
-                  Hola, {USER.name || '…'}
-                </div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
-                  Bienvenido de vuelta
-                </div>
-              </>
+        <div style={{ display: 'flex', gap: 10 }}>
+          {/* Bell */}
+          <div
+            onClick={() => setModal('misiones')}
+            style={{
+              width: 40, height: 40, borderRadius: 14,
+              background: '#0f0f1a',
+              border: '1px solid rgba(255,255,255,0.06)',
+              color: '#fff',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', position: 'relative',
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/>
+            </svg>
+            {misiones.length > 0 && (
+              <div style={{
+                position: 'absolute', top: 8, right: 8,
+                width: 8, height: 8,
+                background: '#F87171',
+                border: '2px solid #0a0a14',
+                borderRadius: '50%',
+              }}/>
             )}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {/* Campana */}
-            <div
-              onClick={() => setModal('misiones')}
-              style={{
-                width: 36, height: 36,
-                background: '#1a1a1a', borderRadius: '50%',
-                border: '0.5px solid rgba(255,255,255,0.13)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: 'pointer', position: 'relative',
-              }}
-            >
-              <svg width={17} height={17} viewBox="0 0 24 24" fill="none"
-                stroke="rgba(255,255,255,0.65)" strokeWidth={2}>
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              </svg>
-              {misiones.length > 0 && (
-                <div style={{
-                  position: 'absolute', top: 0, right: 0,
-                  width: 9, height: 9,
-                  background: '#E74C3C', borderRadius: '50%',
-                  border: '1.5px solid #0a0a0a',
-                  animation: 'pulseDot 2s ease infinite',
-                }} />
-              )}
-            </div>
-
-            {/* Avatar */}
-            <div style={{
-              width: 36, height: 36,
-              background: '#222222', borderRadius: '50%',
-              border: '1px solid rgba(255,255,255,0.13)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 14, fontWeight: 600, color: '#fff',
-            }}>
-              {USER.name ? USER.name[0] : '?'}
-            </div>
+          {/* Avatar */}
+          <div style={{
+            width: 40, height: 40, borderRadius: 14,
+            background: 'linear-gradient(135deg, #818CF8, #6366F1)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: BEBAS, fontSize: 18, color: '#fff',
+            border: '1px solid rgba(255,255,255,0.1)',
+            cursor: 'pointer',
+          }}>
+            {USER.name ? USER.name[0].toUpperCase() : '?'}
           </div>
-        </motion.div>
+        </div>
+      </div>
 
-        {/* ── Hero: carrusel de tarjetas ── */}
+      {/* ── Scroll area ── */}
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        padding: '8px 20px 100px',
+        scrollbarWidth: 'none',
+        position: 'relative',
+        zIndex: 1,
+      }}>
+
+        {/* Hero membership card */}
         <TarjetasCarousel
           puntos={USER.points}
           nivel={(USER.level.toLowerCase() as 'bronce' | 'plata' | 'oro' | 'platino') || 'bronce'}
           progreso={USER.progressPct}
-          empresa={USER.empresa}
+          empresa={USER.empresa || 'Tío Polo'}
           onQROpen={() => setModal('qr')}
         />
 
-        {/* ── Promo activa ── */}
+        {/* Promo activa */}
         {promoActiva && (
-          <motion.div
-            {...fadeUp(0.15)}
-            style={{
-              background: 'linear-gradient(135deg, rgba(59,130,246,0.12) 0%, rgba(59,130,246,0.04) 100%)',
-              border: '0.5px solid rgba(59,130,246,0.35)',
-              borderRadius: 20,
-              padding: '14px 16px',
-              marginBottom: 12,
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
+          <div style={{
+            marginBottom: 12,
+            display: 'flex', alignItems: 'center', gap: 14,
+            background: 'linear-gradient(135deg, rgba(139,92,246,0.18) 0%, rgba(99,102,241,0.10) 40%, rgba(99,102,241,0.04) 100%)',
+            border: '1px solid rgba(139,92,246,0.30)',
+            borderRadius: 22,
+            padding: 18,
+            animation: 'fadeUp 0.6s cubic-bezier(.2,.8,.2,1) 0.1s both',
+          }}>
             <div style={{
-              position: 'absolute', top: -30, right: -30,
-              width: 100, height: 100,
-              background: 'radial-gradient(circle, rgba(59,130,246,0.18), transparent)',
-              borderRadius: '50%', pointerEvents: 'none',
-            }} />
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-              <div style={{
-                width: 40, height: 40,
-                background: 'rgba(59,130,246,0.15)', borderRadius: 12,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0, color: '#3B82F6',
-              }}>
-                {promoActiva.tipo === 'puntos_extra' ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2c0 4-4 7-4 11a4 4 0 0 0 8 0c0-4-4-7-4-11z"/>
-                    <path d="M12 13c0-2 1.5-3 1.5-5"/>
-                  </svg>
-                ) : promoActiva.tipo === 'descuento' ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="12" y1="1" x2="12" y2="23"/>
-                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                  </svg>
-                ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 12 20 22 4 22 4 12"/>
-                    <rect x="2" y="7" width="20" height="5"/>
-                    <line x1="12" y1="22" x2="12" y2="7"/>
-                    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
-                    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
-                  </svg>
-                )}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{
-                  fontSize: 9, fontWeight: 700,
-                  color: '#3B82F6', letterSpacing: '1.5px',
-                  textTransform: 'uppercase', marginBottom: 4,
-                }}>
-                  PROMO ACTIVA
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2, lineHeight: 1.3 }}>
-                  {promoActiva.titulo}
-                </div>
-                {promoActiva.descripcion && (
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginBottom: 4, lineHeight: 1.4 }}>
-                    {promoActiva.descripcion}
-                  </div>
-                )}
-                <div style={{ fontSize: 10, color: 'rgba(59,130,246,0.8)' }}>
-                  Válida hasta el {new Date(promoActiva.fecha_fin).toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: 'numeric' })}
-                </div>
+              width: 48, height: 48, borderRadius: 14,
+              background: 'linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#fff', flexShrink: 0,
+              boxShadow: '0 6px 20px rgba(139,92,246,0.4)',
+            }}>
+              {promoActiva.tipo === 'puntos_extra' ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                  <line x1="7" y1="7" x2="7.01" y2="7"/>
+                </svg>
+              ) : promoActiva.tipo === 'descuento' ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"/>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              ) : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                </svg>
+              )}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: BEBAS, fontSize: 11, letterSpacing: '0.28em', color: '#818CF8', marginBottom: 2 }}>PROMO ACTIVA</div>
+              <div style={{ fontSize: 15, fontWeight: 600 }}>{promoActiva.titulo}</div>
+              {promoActiva.descripcion && (
+                <div style={{ fontSize: 12, color: '#8a8aa3', marginTop: 2 }}>{promoActiva.descripcion}</div>
+              )}
+              <div style={{ fontSize: 12, color: '#8a8aa3', marginTop: 2 }}>
+                Hasta el{' '}
+                <span style={{ color: '#fff' }}>
+                  {new Date(promoActiva.fecha_fin).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })}
+                </span>
               </div>
             </div>
-          </motion.div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5b5b75"
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </div>
         )}
 
-        {/* ── Streak ── */}
-        <motion.div {...fadeUp(0.19)} style={{ marginBottom: 12 }}>
-          <StreakCard streak={USER.streak} onOpen={() => setModal('streak')} />
-        </motion.div>
+        {/* Streak */}
+        <StreakCard streak={USER.streak} onOpen={() => setModal('streak')}/>
 
-        {/* ── Misión activa (solo si hay misiones) ── */}
+        {/* Misión activa */}
         {misiones.length > 0 && (
           <>
-            <motion.div
-              {...fadeUp(0.19)}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}
-            >
-              <div style={{
-                fontSize: 10, fontWeight: 600,
-                color: 'rgba(255,255,255,0.28)',
-                letterSpacing: '1.2px', textTransform: 'uppercase',
-              }}>
-                Misión activa
-              </div>
-              <div
+            <div style={{
+              fontSize: 11, fontWeight: 600,
+              letterSpacing: '0.18em', color: '#8a8aa3',
+              textTransform: 'uppercase',
+              margin: '24px 4px 10px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
+              <span>Misión activa</span>
+              <span
                 onClick={() => setModal('misiones')}
-                style={{ fontSize: 11, color: '#818CF8', cursor: 'pointer', fontWeight: 600 }}
+                style={{
+                  color: '#818CF8', fontSize: 12, fontWeight: 600,
+                  letterSpacing: 0, textTransform: 'none',
+                  cursor: 'pointer',
+                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                }}
               >
-                {misiones.length} misión{misiones.length !== 1 ? 'es' : ''} →
-              </div>
-            </motion.div>
-            <MisionCard onOpen={() => setModal('misiones')} mision={misiones[0]} />
+                Ver todas
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
+              </span>
+            </div>
+            <MisionCard onOpen={() => setModal('misiones')} mision={misiones[0]}/>
           </>
         )}
 
-        {/* ── Referidos entry ── */}
-        <motion.div
-          {...fadeUp(0.26)}
+        {/* Referidos CTA */}
+        <div
           onClick={() => router.push('/referidos')}
-          className="cfiel-card"
           style={{
-            borderRadius: 20, padding: 14, marginBottom: 12,
-            display: 'flex', alignItems: 'center', gap: 12,
-            cursor: 'pointer', position: 'relative', overflow: 'hidden',
+            marginBottom: 12,
+            position: 'relative', overflow: 'hidden',
+            borderRadius: 22, padding: 16,
+            background: 'linear-gradient(135deg, #2a2540 0%, #14121f 100%)',
+            border: '1px solid rgba(139,92,246,0.30)',
+            display: 'flex', alignItems: 'center', gap: 14,
+            cursor: 'pointer',
+            animation: 'fadeUp 0.6s cubic-bezier(.2,.8,.2,1) 0.25s both',
           }}
         >
+          <svg style={{ position: 'absolute', top: -20, right: -10, opacity: 0.4 }}
+            width="120" height="120" viewBox="0 0 120 120" fill="none">
+            <circle cx="80" cy="40" r="35" stroke="rgba(139,92,246,0.4)" strokeWidth="1" strokeDasharray="2 4"/>
+            <circle cx="80" cy="40" r="20" stroke="rgba(139,92,246,0.5)" strokeWidth="1"/>
+            <circle cx="80" cy="40" r="6" fill="#8B5CF6"/>
+          </svg>
+
           <div style={{
-            position: 'absolute', top: -20, right: -20,
-            width: 80, height: 80,
-            background: 'radial-gradient(circle, rgba(99,102,241,0.13), transparent)',
-            borderRadius: '50%', pointerEvents: 'none',
-          }} />
-          <div style={{
-            width: 46, height: 46,
-            background: 'rgba(99,102,241,0.12)', borderRadius: 14,
+            width: 44, height: 44, borderRadius: 12,
+            background: 'rgba(139,92,246,0.18)',
+            border: '1px solid rgba(139,92,246,0.4)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0, color: '#818CF8',
+            color: '#C4B5FD', flexShrink: 0,
           }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
               <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
           </div>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
-              Trae un amigo, gana puntos
-            </div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
-              {referidosCount !== null && referidosCount > 0
-                ? <><span style={{ color: '#818CF8', fontWeight: 600 }}>{referidosCount} amigo{referidosCount !== 1 ? 's' : ''}</span>{' registrado · '}</>
-                : null}
-              <span style={{
-                background: '#6366F1', color: '#fff', fontWeight: 700,
-                borderRadius: 20, padding: '2px 8px', fontSize: 10,
-              }}>+250 pts</span>{' '}por referido
-            </div>
-          </div>
-          <div style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.28)', fontSize: 20, flexShrink: 0 }}>›</div>
-        </motion.div>
 
-        {/* ── QR Card ── */}
-        <motion.div
-          {...fadeUp(0.26)}
-          onClick={() => setModal('qr')}
-          className="cfiel-card"
-          style={{
-            borderRadius: 32,
-            padding: '14px 16px', marginBottom: 12,
-            display: 'flex', alignItems: 'center', gap: 13,
-            cursor: 'pointer',
-          }}
-        >
-          <div style={{ width: 46, height: 46, flexShrink: 0 }}>
-            <svg viewBox="0 0 48 48" width={46} height={46} fill="white">
-              <rect x="2" y="2" width="18" height="18" rx="2" fill="none" stroke="white" strokeWidth="2.5"/>
-              <rect x="6" y="6" width="10" height="10"/>
-              <rect x="28" y="2" width="18" height="18" rx="2" fill="none" stroke="white" strokeWidth="2.5"/>
-              <rect x="32" y="6" width="10" height="10"/>
-              <rect x="2" y="28" width="18" height="18" rx="2" fill="none" stroke="white" strokeWidth="2.5"/>
-              <rect x="6" y="32" width="10" height="10"/>
-              <rect x="28" y="28" width="6" height="6"/>
-              <rect x="36" y="28" width="6" height="6"/>
-              <rect x="28" y="36" width="6" height="6"/>
-              <rect x="36" y="36" width="6" height="6"/>
-            </svg>
-          </div>
-          <div>
-            <div style={{
-              fontSize: 13, fontWeight: 700, color: '#fff',
-              textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 2,
-            }}>
-              Tu QR Personal
-            </div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
-              Muéstralo en caja para sumar puntos
+          <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
+            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 2 }}>Trae un amigo</div>
+            <div style={{ fontSize: 12, color: '#8a8aa3' }}>
+              {referidosCount !== null && referidosCount > 0 && (
+                <><span style={{ color: '#C4B5FD', fontWeight: 600 }}>{referidosCount} registrado{referidosCount !== 1 ? 's' : ''}</span> · </>
+              )}
+              Ganas{' '}
+              <span style={{ fontFamily: BEBAS, color: '#C4B5FD', fontSize: 15, letterSpacing: '0.04em' }}>+250 PTS</span>
+              {' '}por cada referido
             </div>
           </div>
-          <div style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.28)', fontSize: 20 }}>›</div>
-        </motion.div>
 
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5b5b75"
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </div>
 
       </div>
 
@@ -447,7 +416,7 @@ export default function HomePage() {
         misiones={misiones}
       />
 
-      <BottomNav />
+      <BottomNav/>
     </div>
   );
 }

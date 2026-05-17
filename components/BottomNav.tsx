@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -19,33 +19,32 @@ const PATH_TAB: Record<string, Tab> = {
 };
 
 const HomeIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={24} height={24}>
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-    <polyline points="9 22 9 12 15 12 15 22"/>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}
+    strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+    <path d="M3 12l9-9 9 9M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/>
   </svg>
 );
 
 const GiftIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={24} height={24}>
-    <polyline points="20 12 20 22 4 22 4 12"/>
-    <rect x="2" y="7" width="20" height="5"/>
-    <line x1="12" y1="22" x2="12" y2="7"/>
-    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
-    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}
+    strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+    <path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
   </svg>
 );
 
 const ClockIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={24} height={24}>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}
+    strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
     <circle cx="12" cy="12" r="10"/>
-    <polyline points="12 6 12 12 16 14"/>
+    <path d="M12 6v6l4 2"/>
   </svg>
 );
 
 const UserIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={24} height={24}>
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-    <circle cx="12" cy="7" r="4"/>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}
+    strokeLinecap="round" strokeLinejoin="round" width={22} height={22}>
+    <circle cx="12" cy="8" r="4"/>
+    <path d="M4 21a8 8 0 0 1 16 0"/>
   </svg>
 );
 
@@ -68,13 +67,15 @@ export default function BottomNav() {
       transform: 'translateX(-50%)',
       width: '100%',
       maxWidth: 430,
-      height: 80,
-      background: '#141414',
-      borderTop: '0.5px solid rgba(255,255,255,0.07)',
+      height: 86,
+      background: 'rgba(10,10,20,0.85)',
+      backdropFilter: 'blur(24px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+      borderTop: '1px solid rgba(99,102,241,0.12)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-around',
-      padding: '0 8px 12px',
+      paddingBottom: 20,
       zIndex: 20,
     }}>
       {TABS.map(({ id, label, Icon }) => {
@@ -84,22 +85,47 @@ export default function BottomNav() {
             key={id}
             onClick={() => router.push(ROUTE_MAP[id])}
             style={{
+              flex: 1,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: 4,
-              padding: '8px 18px',
-              borderRadius: 14,
+              padding: '6px 0',
               background: 'transparent',
               border: 'none',
               cursor: 'pointer',
-              color: active ? '#818CF8' : 'rgba(255,255,255,0.28)',
-              transition: 'color 0.2s',
+              color: active ? '#818CF8' : '#5b5b75',
+              transition: 'color 0.2s ease',
               fontFamily: 'inherit',
+              position: 'relative',
             }}
           >
-            <Icon />
-            <span style={{ fontSize: 10, letterSpacing: '0.3px' }}>{label}</span>
+            {active && (
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                width: 32,
+                height: 2,
+                background: '#6366F1',
+                borderRadius: 100,
+                boxShadow: '0 0 12px rgba(99,102,241,0.7)',
+              }}/>
+            )}
+            <div style={{
+              width: 38,
+              height: 38,
+              borderRadius: 12,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: active ? 'rgba(99,102,241,0.18)' : 'transparent',
+              border: `1px solid ${active ? 'rgba(99,102,241,0.35)' : 'transparent'}`,
+              transition: 'all 0.2s ease',
+            }}>
+              <Icon/>
+            </div>
+            <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.04em' }}>{label}</span>
           </button>
         );
       })}
