@@ -8,7 +8,8 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Matias Caimilla\\\\fiel-client\" -Recurse -ErrorAction SilentlyContinue)",
       "Bash(Select-Object FullName)",
       "Bash(Format-Table -AutoSize)",
-      "Bash(Get-ChildItem C:\\\\Users\\\\Matias Caimilla\\\\fiel-client\\\\app\\\\api\\\\usuarios *)"
+      "Bash(Get-ChildItem C:\\\\Users\\\\Matias Caimilla\\\\fiel-client\\\\app\\\\api\\\\usuarios *)",
+      "Bash(node *)"
     ]
   }
 }
