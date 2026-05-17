@@ -89,12 +89,12 @@ export default function BottomNav() {
               alignItems: 'center',
               gap: 4,
               padding: '8px 18px',
-              borderRadius: 10,
-              background: 'transparent',
+              borderRadius: 14,
+              background: active ? '#6366F1' : 'transparent',
               border: 'none',
               cursor: 'pointer',
-              color: active ? '#6366F1' : 'rgba(255,255,255,0.28)',
-              transition: 'color 0.2s',
+              color: active ? '#fff' : 'rgba(255,255,255,0.28)',
+              transition: 'background 0.2s, color 0.2s',
               fontFamily: 'inherit',
             }}
           >

@@ -207,10 +207,10 @@ export default function SlidesPage() {
             key={i}
             onClick={() => go(i)}
             style={{
-              width: i === cur ? 22 : 6,
-              height: 6,
-              borderRadius: 3,
-              background: i === cur ? '#6366F1' : 'rgba(255,255,255,0.2)',
+              width: i === cur ? 26 : 7,
+              height: 7,
+              borderRadius: 4,
+              background: i === cur ? '#6366F1' : 'rgba(255,255,255,0.18)',
               transition: 'all 0.3s',
               cursor: 'pointer',
             }}

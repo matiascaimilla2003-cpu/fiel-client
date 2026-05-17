@@ -70,7 +70,7 @@ export default function StreakCard({ streak, onOpen }: Props) {
         ))}
       </div>
 
-      <div style={{ fontSize: 10, color: '#6366F1', fontWeight: 700 }}>+50 pts hoy ✓</div>
+      <div style={{ fontSize: 10, color: '#818CF8', fontWeight: 700 }}>+50 pts hoy ✓</div>
     </motion.div>
   );
 }

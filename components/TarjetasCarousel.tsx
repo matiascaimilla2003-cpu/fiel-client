@@ -57,7 +57,7 @@ function TarjetaCard({
       style={{
         background: '#141414',
         borderRadius: 32,
-        border: `1px solid ${meta.color}55`,
+        border: '2px solid #6366F1',
         padding: '18px 20px 16px',
         position: 'relative',
         overflow: 'hidden',
@@ -132,7 +132,7 @@ function TarjetaCard({
       </div>
 
       {/* Barra de progreso */}
-      <div style={{ height: 5, background: 'rgba(255,255,255,0.07)', borderRadius: 5, overflow: 'hidden' }}>
+      <div style={{ height: 6, background: 'rgba(255,255,255,0.07)', borderRadius: 6, overflow: 'hidden' }}>
         <div style={{
           height: '100%',
           background: 'linear-gradient(90deg, #6366F1, #818CF8)',

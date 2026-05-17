@@ -312,7 +312,7 @@ export default function HomePage() {
               </div>
               <div
                 onClick={() => setModal('misiones')}
-                style={{ fontSize: 11, color: '#6366F1', cursor: 'pointer' }}
+                style={{ fontSize: 11, color: '#818CF8', cursor: 'pointer', fontWeight: 600 }}
               >
                 {misiones.length} misión{misiones.length !== 1 ? 'es' : ''} →
               </div>
@@ -353,7 +353,10 @@ export default function HomePage() {
               {referidosCount !== null && referidosCount > 0
                 ? <><span style={{ color: '#818CF8', fontWeight: 600 }}>{referidosCount} amigo{referidosCount !== 1 ? 's' : ''}</span>{' registrado · '}</>
                 : null}
-              <span style={{ color: '#818CF8', fontWeight: 600 }}>+250 pts</span>{' '}por referido
+              <span style={{
+                background: '#6366F1', color: '#fff', fontWeight: 700,
+                borderRadius: 20, padding: '2px 8px', fontSize: 10,
+              }}>+250 pts</span>{' '}por referido
             </div>
           </div>
           <div style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.28)', fontSize: 20, flexShrink: 0 }}>›</div>
