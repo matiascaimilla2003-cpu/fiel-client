@@ -423,7 +423,13 @@ export default function RegistroPage() {
                 </p>
 
                 {/* 4 inputs OTP individuales */}
-                <div style={{ display: 'flex', gap: 10 }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: 12,
+                  width: '100%',
+                  marginBottom: 32,
+                }}>
                   {[0, 1, 2, 3].map(i => (
                     <input
                       key={i}
@@ -431,25 +437,23 @@ export default function RegistroPage() {
                       type="tel"
                       inputMode="numeric"
                       maxLength={1}
-                      value={otp[i]}
+                      value={otp[i] || ''}
                       onChange={(e) => handleOtp(i, e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === 'Backspace' && !otp[i] && i > 0) otpRefs.current[i - 1]?.focus();
                       }}
                       style={{
-                        flex: 1,
-                        height: 72,
-                        background: 'rgba(255,255,255,0.02)',
-                        border: `1px solid ${otp[i] ? 'rgba(99,102,241,0.6)' : 'rgba(255,255,255,0.06)'}`,
-                        boxShadow: otp[i] ? '0 0 0 4px rgba(99,102,241,0.12)' : 'none',
-                        borderRadius: 16,
+                        width: '100%',
+                        aspectRatio: '1',
                         textAlign: 'center',
-                        fontSize: 28, fontWeight: 700,
+                        fontSize: 32,
+                        fontWeight: 700,
                         color: '#fff',
+                        background: 'rgba(99,102,241,0.08)',
+                        border: '1.5px solid rgba(99,102,241,0.3)',
+                        borderRadius: 16,
                         outline: 'none',
-                        caretColor: 'transparent',
-                        fontFamily: 'inherit',
-                        transition: 'border-color 0.2s, box-shadow 0.2s',
+                        fontFamily: 'var(--font-bebas), "Bebas Neue", monospace',
                       }}
                     />
                   ))}
