@@ -168,7 +168,7 @@ export default function CajeroLoginPage() {
       </motion.div>
 
       <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', marginTop: 24 }}>
-        Solo personal autorizado de Tío Polo
+        Solo personal autorizado
       </div>
     </div>
   );

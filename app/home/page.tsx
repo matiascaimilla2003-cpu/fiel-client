@@ -34,6 +34,7 @@ interface UserState {
   streak: number;
   progressPct: number;
   ptsToNextLevel: number;
+  empresa: string;
 }
 
 interface Mision {
@@ -50,6 +51,7 @@ const EMPTY_USER: UserState = {
   name: '', lastName: '',
   points: 0, level: 'bronce',
   streak: 0, progressPct: 0, ptsToNextLevel: 500,
+  empresa: '',
 };
 
 type Modal = 'qr' | 'streak' | 'misiones' | null;
@@ -112,6 +114,7 @@ export default function HomePage() {
             streak:         u.racha_dias,
             progressPct:    calcProgressPct(nivel, u.puntos_total),
             ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
+            empresa:        (u.tenants as { nombre?: string } | null)?.nombre ?? '',
           });
         }
 
@@ -211,7 +214,7 @@ export default function HomePage() {
           puntos={USER.points}
           nivel={(USER.level.toLowerCase() as 'bronce' | 'plata' | 'oro' | 'platino') || 'bronce'}
           progreso={USER.progressPct}
-          empresa="Tío Polo"
+          empresa={USER.empresa}
           onQROpen={() => setModal('qr')}
         />
 
@@ -322,39 +325,6 @@ export default function HomePage() {
           <div style={{ marginLeft: 'auto', color: '#bbb', fontSize: 20 }}>›</div>
         </motion.div>
 
-        {/* ── Promo del día ── */}
-        <motion.div
-          {...fadeUp(0.26)}
-          style={{
-            background: '#141414',
-            border: '0.5px solid rgba(212,168,71,0.28)',
-            borderRadius: 20, padding: '13px 14px', marginBottom: 12,
-            display: 'flex', alignItems: 'center', gap: 10,
-            cursor: 'pointer',
-          }}
-        >
-          <div style={{
-            width: 42, height: 42,
-            background: 'rgba(212,168,71,0.12)', borderRadius: 14,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 20, flexShrink: 0,
-          }}>🍺</div>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
-              2× puntos en cervezas
-            </div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>Solo hoy · hasta las 22:00</div>
-          </div>
-          <div style={{
-            marginLeft: 'auto',
-            background: '#D4A847', color: '#000',
-            fontSize: 10, fontWeight: 800,
-            padding: '3px 8px', borderRadius: 20,
-            whiteSpace: 'nowrap', flexShrink: 0, letterSpacing: '0.3px',
-          }}>
-            HOY
-          </div>
-        </motion.div>
 
       </div>
 

@@ -391,9 +391,6 @@ export default function RegistroPage() {
                   ¿No llegó?{' '}
                   <span style={{ color: '#D4A847', cursor: 'pointer' }}>Reenviar →</span>
                 </div>
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', textAlign: 'center', marginTop: 8 }}>
-                  Demo: escribe cualquier 4 dígitos
-                </div>
               </div>
             )}
 

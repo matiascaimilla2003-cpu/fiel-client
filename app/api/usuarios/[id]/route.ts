@@ -14,7 +14,7 @@ export async function GET(
 
     const { data: usuario, error } = await supabaseAdmin
       .from('usuarios')
-      .select('*')
+      .select('*, tenants(nombre)')
       .eq('id', id.trim())
       .single();
 

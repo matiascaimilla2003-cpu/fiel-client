@@ -162,15 +162,13 @@ function TarjetaCard({
   );
 }
 
-export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'Tío Polo', onQROpen }: Props) {
+export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'CFIEL', onQROpen }: Props) {
   const tarjetas: Tarjeta[] = [
     { empresa, puntos, nivel, progreso },
-    { empresa: 'Bot. Matías', puntos: 0, nivel: 'bronce', progreso: 0, mensaje: 'Aún no has comprado aquí' },
   ];
 
-  const [active, setActive]       = useState(0);
-  const [dir, setDir]             = useState(0);
-  const [showToast, setShowToast] = useState(false);
+  const [active, setActive] = useState(0);
+  const [dir, setDir]       = useState(0);
 
   const goTo = (index: number) => {
     if (index === active || index < 0 || index >= tarjetas.length) return;
@@ -178,20 +176,12 @@ export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'T
     setActive(index);
   };
 
-  /* Solo maneja swipe — el tap lo detecta onTap en cada TarjetaCard */
   const handleDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.x < -40) goTo(active + 1);
     else if (info.offset.x > 40) goTo(active - 1);
   };
 
-  const handleTap = () => {
-    if (active === 0) {
-      onQROpen();
-    } else {
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 2000);
-    }
-  };
+  const handleTap = () => { onQROpen(); };
 
   return (
     <div style={{ marginBottom: 12 }}>
@@ -240,29 +230,6 @@ export default function TarjetasCarousel({ puntos, nivel, progreso, empresa = 'T
         </div>
       )}
 
-      {/* Toast para la segunda tarjeta */}
-      <AnimatePresence>
-        {showToast && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            style={{ textAlign: 'center', marginTop: 8 }}
-          >
-            <span style={{
-              fontSize: 12,
-              color: 'rgba(255,255,255,0.5)',
-              padding: '5px 14px',
-              background: '#1a1a1a',
-              borderRadius: 20,
-              border: '0.5px solid rgba(255,255,255,0.1)',
-            }}>
-              Aún no has comprado aquí
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

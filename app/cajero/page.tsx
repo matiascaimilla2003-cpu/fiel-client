@@ -430,7 +430,7 @@ export default function CajeroPage() {
               </span>
             </div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginTop: 4 }}>
-              Tío Polo — Panel de operaciones
+              Panel de operaciones CFIEL
             </div>
           </div>
 
