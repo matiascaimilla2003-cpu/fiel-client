@@ -29,7 +29,12 @@ export async function GET(
       .order('created_at', { ascending: false })
       .limit(20);
 
-    return NextResponse.json({ usuario, transacciones: transacciones ?? [] });
+    const codigo_referido = `CFIEL-${id.trim().substring(0, 6).toUpperCase()}`;
+
+    return NextResponse.json({
+      usuario: { ...usuario, codigo_referido },
+      transacciones: transacciones ?? [],
+    });
   } catch {
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }

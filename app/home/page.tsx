@@ -66,6 +66,7 @@ export default function HomePage() {
   const [USER, setUser]    = useState<UserState>(EMPTY_USER);
   const [misiones, setMisiones] = useState<Mision[]>([]);
   const [loading, setLoading]   = useState(true);
+  const [referidosCount, setReferidosCount] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,9 +80,10 @@ export default function HomePage() {
       }
 
       try {
-        const [userRes, misionRes] = await Promise.all([
+        const [userRes, misionRes, refRes] = await Promise.all([
           fetch(`/api/usuarios/${userId}`).catch(() => null as null),
           fetch('/api/misiones?tenant_slug=tio-polo').catch(() => null as null),
+          fetch(`/api/referidos?usuario_id=${userId}`).catch(() => null as null),
         ]);
 
         if (!userRes?.ok) {
@@ -91,9 +93,10 @@ export default function HomePage() {
           return;
         }
 
-        const [userData, misionData] = await Promise.all([
+        const [userData, misionData, refData] = await Promise.all([
           userRes.json().catch(() => null),
           misionRes?.ok ? misionRes.json().catch(() => null) : null,
+          refRes?.ok ? refRes.json().catch(() => null) : null,
         ]);
 
         if (cancelled) return;
@@ -114,6 +117,10 @@ export default function HomePage() {
 
         if (misionData?.misiones) {
           setMisiones(misionData.misiones);
+        }
+
+        if (typeof refData?.total_registrados === 'number') {
+          setReferidosCount(refData.total_registrados);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -241,6 +248,7 @@ export default function HomePage() {
         {/* ── Referidos entry ── */}
         <motion.div
           {...fadeUp(0.26)}
+          onClick={() => router.push('/referidos')}
           style={{
             background: '#141414',
             border: '0.5px solid rgba(212,168,71,0.28)',
@@ -266,9 +274,10 @@ export default function HomePage() {
               Trae un amigo, gana puntos
             </div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>
-              Nivel {USER.level}:{' '}
-              <span style={{ color: '#F0C96A', fontWeight: 600 }}>+500 pts</span>
-              {' '}por referido
+              {referidosCount !== null && referidosCount > 0
+                ? <><span style={{ color: '#F0C96A', fontWeight: 600 }}>{referidosCount} amigo{referidosCount !== 1 ? 's' : ''}</span>{' registrado · '}</>
+                : null}
+              <span style={{ color: '#F0C96A', fontWeight: 600 }}>+250 pts</span>{' '}por referido
             </div>
           </div>
           <div style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.28)', fontSize: 20, flexShrink: 0 }}>›</div>

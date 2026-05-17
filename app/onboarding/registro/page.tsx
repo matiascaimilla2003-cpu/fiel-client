@@ -26,12 +26,13 @@ export default function RegistroPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   /* Campos de formulario */
-  const [nombre,   setNombre]   = useState('');
-  const [telefono, setTelefono] = useState('');
-  const [dia,      setDia]      = useState('');
-  const [mes,      setMes]      = useState('');
-  const [anio,     setAnio]     = useState('');
-  const [code,     setCode]     = useState('');
+  const [nombre,         setNombre]         = useState('');
+  const [codigoReferido, setCodigoReferido] = useState('');
+  const [telefono,       setTelefono]       = useState('');
+  const [dia,            setDia]            = useState('');
+  const [mes,            setMes]            = useState('');
+  const [anio,           setAnio]           = useState('');
+  const [code,           setCode]           = useState('');
 
   const codeInputRef = useRef<HTMLInputElement>(null);
 
@@ -40,6 +41,14 @@ export default function RegistroPage() {
     localStorage.removeItem('cfiel_user_id');
     localStorage.removeItem('cfiel_nombre');
     localStorage.removeItem('cfiel_cajero');
+    // Pre-fill referral code from URL param if present
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    if (ref) {
+      const code = ref.toUpperCase().trim();
+      setCodigoReferido(code);
+      localStorage.setItem('cfiel_codigo_referido', code);
+    }
   }, []);
 
   /* ── Validación de fecha de nacimiento ── */
@@ -83,6 +92,7 @@ export default function RegistroPage() {
           ? `${anio}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
           : null;
 
+      const savedCode = localStorage.getItem('cfiel_codigo_referido');
       const res = await fetch('/api/usuarios/crear', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -90,6 +100,7 @@ export default function RegistroPage() {
           nombre:           nombre.trim(),
           telefono,
           fecha_nacimiento: fechaNacimiento,
+          codigo_referido:  savedCode || undefined,
         }),
       });
 
@@ -102,6 +113,7 @@ export default function RegistroPage() {
 
       localStorage.setItem('cfiel_user_id', data.usuario.id);
       localStorage.setItem('cfiel_nombre',  data.usuario.nombre.split(' ')[0]);
+      localStorage.removeItem('cfiel_codigo_referido');
     } catch (err) {
       console.error('[CFIEL] Error en registro:', err);
     } finally {
@@ -225,9 +237,33 @@ export default function RegistroPage() {
                   autoComplete="name"
                   style={inputBase}
                 />
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', marginTop: 9 }}>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', marginTop: 9, marginBottom: 18 }}>
                   Así te saludaremos en la app 👋
                 </div>
+
+                {/* Código de referido opcional */}
+                <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,0.28)', letterSpacing: '1.2px', textTransform: 'uppercase', marginBottom: 8 }}>
+                  ¿Tienes un código de invitación? (opcional)
+                </div>
+                <input
+                  type="text"
+                  value={codigoReferido}
+                  onChange={(e) => {
+                    const val = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+                    setCodigoReferido(val);
+                    if (val) localStorage.setItem('cfiel_codigo_referido', val);
+                    else localStorage.removeItem('cfiel_codigo_referido');
+                  }}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  placeholder="Ej: CFIEL-04863C"
+                  style={{ ...inputBase, fontSize: 15 }}
+                />
+                {codigoReferido.length > 0 && (
+                  <div style={{ fontSize: 11, color: '#D4A847', marginTop: 7 }}>
+                    🎁 +200 pts extra de bienvenida al registrarte
+                  </div>
+                )}
               </div>
             )}
 
