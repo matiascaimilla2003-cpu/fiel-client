@@ -270,21 +270,21 @@ export default function HomePage() {
               boxShadow: '0 6px 20px rgba(139,92,246,0.4)',
             }}>
               {promoActiva.tipo === 'puntos_extra' ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+              ) : promoActiva.tipo === 'descuento' ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
                   <line x1="7" y1="7" x2="7.01" y2="7"/>
                 </svg>
-              ) : promoActiva.tipo === 'descuento' ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="1" x2="12" y2="23"/>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
               ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <polyline points="20 12 20 22 4 22 4 12"/>
+                  <rect x="2" y="7" width="20" height="5"/>
+                  <line x1="12" y1="22" x2="12" y2="7"/>
+                  <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+                  <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
                 </svg>
               )}
             </div>
@@ -356,13 +356,6 @@ export default function HomePage() {
             animation: 'fadeUp 0.6s cubic-bezier(.2,.8,.2,1) 0.25s both',
           }}
         >
-          <svg style={{ position: 'absolute', top: -20, right: -10, opacity: 0.4 }}
-            width="120" height="120" viewBox="0 0 120 120" fill="none">
-            <circle cx="80" cy="40" r="35" stroke="rgba(139,92,246,0.4)" strokeWidth="1" strokeDasharray="2 4"/>
-            <circle cx="80" cy="40" r="20" stroke="rgba(139,92,246,0.5)" strokeWidth="1"/>
-            <circle cx="80" cy="40" r="6" fill="#8B5CF6"/>
-          </svg>
-
           <div style={{
             width: 44, height: 44, borderRadius: 12,
             background: 'rgba(139,92,246,0.18)',
@@ -390,9 +383,9 @@ export default function HomePage() {
             </div>
           </div>
 
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5b5b75"
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5b5b75"
             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 18l6-6-6-6"/>
+            <path d="M5 12h14M13 5l7 7-7 7"/>
           </svg>
         </div>
 

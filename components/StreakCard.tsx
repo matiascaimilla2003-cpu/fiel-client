@@ -34,20 +34,16 @@ export default function StreakCard({ streak, todayPts = 50, onOpen }: Props) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
         <div style={{
           width: 44, height: 44, borderRadius: 12,
-          background: 'radial-gradient(circle at 50% 60%, rgba(99,102,241,0.35), rgba(99,102,241,0.05))',
-          border: '1px solid rgba(99,102,241,0.35)',
+          background: 'rgba(99,102,241,0.15)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           color: '#818CF8', flexShrink: 0,
-          boxShadow: 'inset 0 0 16px rgba(99,102,241,0.2)',
         }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
-            style={{ filter: 'drop-shadow(0 0 6px rgba(99,102,241,0.7))' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3 2-4-.5 2 .5 3 1 3-.5-3 0-7 2-10z"/>
           </svg>
         </div>
 
         <div style={{ flex: 1 }}>
-          <div style={{ fontFamily: BEBAS, fontSize: 11, letterSpacing: '0.28em', color: '#8a8aa3' }}>TU RACHA</div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
             <span style={{ fontFamily: BEBAS, fontSize: 32, color: '#fff', lineHeight: 1 }}>{days}</span>
             <span style={{ fontSize: 13, color: '#8a8aa3' }}>días seguidos</span>
@@ -55,18 +51,14 @@ export default function StreakCard({ streak, todayPts = 50, onOpen }: Props) {
         </div>
 
         <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
+          display: 'inline-flex', alignItems: 'center',
           padding: '6px 10px',
           borderRadius: 100,
           background: 'rgba(34,197,94,0.12)',
-          border: '1px solid rgba(34,197,94,0.35)',
-          color: '#4ADE80',
+          border: '1px solid rgba(34,197,94,0.25)',
+          color: '#4ade80',
           fontSize: 12, fontWeight: 600,
         }}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20 6L9 17l-5-5"/>
-          </svg>
           +{todayPts} hoy
         </div>
       </div>

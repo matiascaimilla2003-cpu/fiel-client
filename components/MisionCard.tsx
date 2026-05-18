@@ -123,7 +123,7 @@ export default function MisionCard({ onOpen, mision }: Props) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
         <span style={{ fontSize: 11, color: '#5b5b75' }}>0% completada</span>
-        <span style={{ fontSize: 11, color: '#818CF8', fontWeight: 600 }}>Ver detalle →</span>
+        <span style={{ fontSize: 11, color: '#818CF8', fontWeight: 600 }}>Ver todas →</span>
       </div>
     </div>
   );
