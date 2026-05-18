@@ -24,7 +24,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${bebasNeue.variable} ${dmSans.variable}`}>
+    <html lang="es" className={`${bebasNeue.variable} ${dmSans.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('cfiel_theme')||'dark';document.documentElement.classList.add(t);})();` }}/>
+      </head>
       <body style={{ background: "#0a0a14", fontFamily: "var(--font-dm), DM Sans, sans-serif", margin: 0 }}>
         {children}
       </body>

@@ -39,3 +39,32 @@ export async function GET(
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }
 }
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+    if (!id || typeof id !== 'string' || !id.trim()) {
+      return NextResponse.json({ error: 'ID de usuario requerido' }, { status: 400 });
+    }
+    const body = await request.json();
+    const nombre = body?.nombre;
+    if (!nombre?.trim()) {
+      return NextResponse.json({ error: 'Nombre requerido' }, { status: 400 });
+    }
+    const { data, error } = await supabaseAdmin
+      .from('usuarios')
+      .update({ nombre: nombre.trim() })
+      .eq('id', id.trim())
+      .select()
+      .single();
+    if (error || !data) {
+      return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });
+    }
+    return NextResponse.json({ usuario: data });
+  } catch {
+    return NextResponse.json({ error: 'Error interno' }, { status: 500 });
+  }
+}
