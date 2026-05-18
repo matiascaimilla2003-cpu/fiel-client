@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -19,31 +19,25 @@ interface ReferidosData {
   total_puntos: number;
 }
 
-const fadeUp = (delay: number) => ({
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay, duration: 0.4 },
-});
+function Sk({ w, h, r = 8 }: { w: number | string; h: number; r?: number }) {
+  return <div style={{ width: w, height: h, background: '#1a1a1a', borderRadius: r, flexShrink: 0 }} />;
+}
 
 export default function ReferidosPage() {
   const router = useRouter();
-  const [codigo, setCodigo] = useState('');
-  const [data, setData] = useState<ReferidosData | null>(null);
+  const [codigo, setCodigo]   = useState('');
+  const [data, setData]       = useState<ReferidosData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied]   = useState(false);
 
   useEffect(() => {
     const id = localStorage.getItem('cfiel_user_id');
     if (!id) { router.replace('/'); return; }
-
     setCodigo(`CFIEL-${id.substring(0, 6).toUpperCase()}`);
-
     fetch(`/api/referidos?usuario_id=${id}`)
-      .then((r) => r.json())
-      .then((d) => setData(d))
-      .catch(() =>
-        setData({ referidos: [], total_invitados: 0, total_registrados: 0, total_puntos: 0 }),
-      )
+      .then(r => r.json())
+      .then(d => setData(d))
+      .catch(() => setData({ referidos: [], total_invitados: 0, total_registrados: 0, total_puntos: 0 }))
       .finally(() => setLoading(false));
   }, [router]);
 
@@ -55,272 +49,300 @@ export default function ReferidosPage() {
   };
 
   const copyCodigo = async () => {
-    try {
-      await navigator.clipboard.writeText(codigo);
-    } catch {
-      /* fallback: do nothing */
-    }
+    try { await navigator.clipboard.writeText(codigo); } catch { /* fallback */ }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const STATS = [
-    { label: 'Invitados', value: loading ? '…' : String(data?.total_invitados ?? 0) },
-    { label: 'Registrados', value: loading ? '…' : String(data?.total_registrados ?? 0) },
-    { label: 'Pts ganados', value: loading ? '…' : String(data?.total_puntos ?? 0) },
+  const stats = [
+    { label: 'INVITADOS',   value: loading ? '—' : String(data?.total_invitados ?? 0) },
+    { label: 'REGISTRADOS', value: loading ? '—' : String(data?.total_registrados ?? 0) },
+    { label: 'PTS GANADOS', value: loading ? '—' : String(data?.total_puntos ?? 0) },
   ];
+
+  const referidos = data?.referidos ?? [];
 
   return (
     <div style={{
-      background: '#0a0a14',
-      minHeight: '100dvh',
-      maxWidth: 430,
-      margin: '0 auto',
-      position: 'relative',
+      background: '#0a0a14', minHeight: '100dvh', maxWidth: 430,
+      margin: '0 auto', position: 'relative', overflow: 'hidden',
+      display: 'flex', flexDirection: 'column',
+      fontFamily: 'var(--font-dm-sans), "DM Sans", system-ui, sans-serif',
+      color: '#fff', WebkitFontSmoothing: 'antialiased',
     }}>
-      {/* Header */}
+      {/* ambient glow */}
       <div style={{
-        padding: '18px 24px 14px',
-        borderBottom: '0.5px solid rgba(255,255,255,0.07)',
-        flexShrink: 0,
-      }}>
-        <div
+        position: 'absolute', top: -100, left: '50%', transform: 'translateX(-50%)',
+        width: 600, height: 500,
+        background: 'radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 60%)',
+        pointerEvents: 'none', zIndex: 0,
+      }}/>
+
+      {/* ── Header ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        style={{
+          padding: '14px 20px',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          flexShrink: 0, position: 'relative', zIndex: 1,
+        }}
+      >
+        <button
           onClick={() => router.back()}
           style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            cursor: 'pointer', marginBottom: 12, width: 'fit-content',
+            background: 'transparent', border: 'none', color: '#fff',
+            display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer',
+            padding: '4px 0', marginBottom: 10, fontSize: 14, fontWeight: 500,
+            fontFamily: 'inherit',
           }}
         >
-          <svg width={20} height={20} viewBox="0 0 24 24" fill="none"
-            stroke="rgba(255,255,255,0.55)" strokeWidth={2.5}>
-            <polyline points="15 18 9 12 15 6" />
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
-          <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)' }}>Volver</span>
-        </div>
-        <div style={{
+          Volver
+        </button>
+        <h1 style={{
           fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
-          fontSize: 32, color: '#fff', letterSpacing: 2, lineHeight: 1,
+          fontSize: 36, margin: 0, lineHeight: 1,
+          letterSpacing: '0.04em', color: '#fff',
         }}>
           REFERIDOS
-        </div>
-        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 4 }}>
-          Invita amigos y gana puntos
-        </div>
-      </div>
+        </h1>
+        <p style={{ fontSize: 13, color: '#8a8aa3', margin: '4px 0 0' }}>
+          Invita amigos · Ganan ustedes dos
+        </p>
+      </motion.div>
 
-      <div style={{ padding: '20px 16px 100px', overflowY: 'auto' }}>
+      {/* ── Scroll area ── */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px 100px', position: 'relative', zIndex: 1 }}>
 
-        {/* Code card */}
+        {/* Code hero card */}
         <motion.div
-          {...fadeUp(0.05)}
-          className="cfiel-card"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
           style={{
-            borderRadius: 24,
-            padding: '24px 20px',
-            marginBottom: 16,
-            position: 'relative',
-            overflow: 'hidden',
+            position: 'relative', overflow: 'hidden',
+            borderRadius: 22, padding: 20, marginBottom: 14,
+            background: `
+              radial-gradient(circle at 100% 0%, rgba(139,92,246,0.30) 0%, transparent 50%),
+              radial-gradient(circle at 0% 100%, rgba(99,102,241,0.25) 0%, transparent 55%),
+              linear-gradient(135deg, #1a1530 0%, #100f1f 100%)
+            `,
+            border: '1.5px solid rgba(129,140,248,0.35)',
+            boxShadow: '0 16px 48px rgba(99,102,241,0.2)',
           }}
         >
-          <div style={{
-            position: 'absolute', top: -40, right: -40,
-            width: 140, height: 140,
-            background: 'radial-gradient(circle, rgba(99,102,241,0.18), transparent)',
-            borderRadius: '50%', pointerEvents: 'none',
-          }} />
+          {/* decorative circles */}
+          <svg style={{ position: 'absolute', top: -10, right: -20, opacity: 0.45, pointerEvents: 'none' }} width="140" height="140" viewBox="0 0 140 140" fill="none">
+            {[0, 1, 2, 3].map(i => (
+              <circle key={i} cx="100" cy="40" r={20 + i * 14}
+                stroke="rgba(165,180,252,0.25)" strokeWidth="0.8"
+                strokeDasharray={i % 2 ? '2 6' : '0'}
+              />
+            ))}
+          </svg>
 
           <div style={{
-            fontSize: 10, fontWeight: 600,
-            color: 'rgba(255,255,255,0.4)',
-            letterSpacing: '1.5px', textTransform: 'uppercase',
-            marginBottom: 10,
+            fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
+            fontSize: 11, letterSpacing: '0.32em', color: '#8a8aa3',
+            marginBottom: 6,
           }}>
-            Tu código de invitación
+            TU CÓDIGO DE INVITACIÓN
           </div>
 
           <div style={{
             fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
-            fontSize: 44, letterSpacing: 4,
-            color: '#6366F1',
-            lineHeight: 1,
-            marginBottom: 6,
+            fontSize: 38, margin: '0 0 4px',
+            background: 'linear-gradient(90deg, #fff 0%, #818CF8 70%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            letterSpacing: '0.06em',
+            filter: 'drop-shadow(0 0 18px rgba(99,102,241,0.4))',
           }}>
-            {loading ? '———————' : codigo}
+            {loading ? '————————' : codigo}
           </div>
 
-          <div style={{
-            fontSize: 11, color: 'rgba(255,255,255,0.4)',
-            marginBottom: 20,
-          }}>
-            Tu amigo recibe +200 pts · Tú ganas +250 pts
-          </div>
+          <p style={{ fontSize: 12, color: '#8a8aa3', margin: '0 0 14px' }}>
+            Tu amigo recibe{' '}
+            <span style={{ color: '#818CF8', fontWeight: 600 }}>+200 pts</span>
+            {' · '}Tú ganas{' '}
+            <span style={{ color: '#818CF8', fontWeight: 600 }}>+250 pts</span>
+          </p>
 
-          {/* WhatsApp button */}
+          {/* WhatsApp */}
           <button
             onClick={shareWhatsApp}
             style={{
-              width: '100%',
-              background: '#25D366',
-              border: 'none',
-              borderRadius: 14,
-              padding: '13px 16px',
-              marginBottom: 10,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              cursor: 'pointer',
-              color: '#fff', fontSize: 14, fontWeight: 700,
-              fontFamily: 'inherit',
+              width: '100%', height: 50, borderRadius: 14, marginBottom: 8,
+              background: 'linear-gradient(180deg, #25D366 0%, #1DA851 100%)',
+              color: '#fff', border: 'none', cursor: 'pointer',
+              fontSize: 15, fontWeight: 600, fontFamily: 'inherit',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              boxShadow: '0 8px 24px rgba(37,211,102,0.35), inset 0 1px 0 rgba(255,255,255,0.2)',
             }}
           >
-            <svg width={18} height={18} viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
             </svg>
             Compartir por WhatsApp
           </button>
 
-          {/* Copy button */}
+          {/* Copy */}
           <button
             onClick={copyCodigo}
             style={{
-              width: '100%',
-              background: copied ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.07)',
-              border: `0.5px solid ${copied ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.13)'}`,
-              borderRadius: 14,
-              padding: '12px 16px',
+              width: '100%', height: 46, borderRadius: 14,
+              background: 'rgba(255,255,255,0.04)',
+              border: `1px solid ${copied ? 'rgba(74,222,128,0.4)' : 'rgba(255,255,255,0.10)'}`,
+              color: copied ? '#4ADE80' : '#fff',
+              cursor: 'pointer', fontFamily: 'inherit',
+              fontSize: 14, fontWeight: 500,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              cursor: 'pointer',
-              color: copied ? '#6366F1' : 'rgba(255,255,255,0.7)',
-              fontSize: 13, fontWeight: 600,
-              fontFamily: 'inherit',
-              transition: 'all 0.2s',
+              transition: 'all 0.2s ease',
             }}
           >
-            {copied ? '✓ ¡Código copiado!' : 'Copiar código'}
+            {copied ? (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                Copiado al portapapeles
+              </>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                Copiar código
+              </>
+            )}
           </button>
         </motion.div>
 
         {/* Stats */}
         <motion.div
-          {...fadeUp(0.12)}
-          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 20 }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.08 }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 14 }}
         >
-          {STATS.map(({ label, value }) => (
-            <div
-              key={label}
-              className="cfiel-card"
-              style={{
-                borderRadius: 16,
-                padding: '14px 10px',
-                textAlign: 'center',
-              }}
-            >
+          {stats.map(s => (
+            <div key={s.label} style={{
+              padding: '14px 10px', borderRadius: 16, textAlign: 'center',
+              background: 'rgba(99,102,241,0.06)',
+              border: '1px solid rgba(99,102,241,0.18)',
+            }}>
               <div style={{
                 fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
-                fontSize: 30, letterSpacing: 1,
-                color: '#818CF8',
-                lineHeight: 1,
-                marginBottom: 4,
+                fontSize: 36, lineHeight: 1, letterSpacing: '0.02em',
+                color: s.value !== '0' && s.value !== '—' ? '#818CF8' : '#fff',
+                textShadow: s.value !== '0' && s.value !== '—'
+                  ? '0 0 14px rgba(99,102,241,0.5)' : 'none',
               }}>
-                {value}
+                {s.value}
               </div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.5px' }}>
-                {label}
+              <div style={{
+                fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
+                fontSize: 10, letterSpacing: '0.18em', color: '#8a8aa3', marginTop: 4,
+              }}>
+                {s.label}
               </div>
             </div>
           ))}
         </motion.div>
 
-        {/* List */}
-        <motion.div {...fadeUp(0.2)}>
+        {/* Friends section */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.14 }}
+        >
           <div style={{
-            fontSize: 10, fontWeight: 600,
-            color: 'rgba(255,255,255,0.28)',
-            letterSpacing: '1.2px', textTransform: 'uppercase',
-            marginBottom: 12,
+            fontSize: 11, fontWeight: 600, letterSpacing: '0.18em',
+            color: '#8a8aa3', textTransform: 'uppercase',
+            margin: '0 4px 10px',
           }}>
             Amigos invitados
           </div>
 
           {loading ? (
-            [1, 2, 3].map((i) => (
+            [1, 2, 3].map(i => (
               <div key={i} style={{
-                background: '#141414',
-                borderRadius: 14, padding: '14px 16px', marginBottom: 8,
                 display: 'flex', alignItems: 'center', gap: 12,
+                padding: '12px 0', borderBottom: '0.5px solid rgba(255,255,255,0.05)',
               }}>
-                <div style={{ width: 36, height: 36, background: '#1e1e1e', borderRadius: '50%', flexShrink: 0 }} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ width: 100, height: 12, background: '#1e1e1e', borderRadius: 4, marginBottom: 6 }} />
-                  <div style={{ width: 70, height: 10, background: '#1a1a1a', borderRadius: 4 }} />
+                <Sk w={38} h={38} r={19}/>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <Sk w="60%" h={12}/>
+                  <Sk w="40%" h={10}/>
                 </div>
+                <Sk w={50} h={20}/>
               </div>
             ))
-          ) : (data?.referidos ?? []).length === 0 ? (
+          ) : referidos.length === 0 ? (
             <div style={{
-              background: '#141414',
-              border: '0.5px solid rgba(255,255,255,0.07)',
-              borderRadius: 18,
-              padding: '40px 20px',
-              textAlign: 'center',
+              padding: '32px 20px', borderRadius: 18, textAlign: 'center',
+              background: 'rgba(255,255,255,0.02)',
+              border: '1px dashed rgba(99,102,241,0.18)',
             }}>
-              <div style={{ marginBottom: 10, opacity: 0.35, color: '#fff' }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <div style={{
+                width: 56, height: 56, borderRadius: 16,
+                background: 'rgba(99,102,241,0.10)',
+                border: '1px solid rgba(99,102,241,0.25)',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                color: '#8a8aa3', marginBottom: 12,
+              }}>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                   <circle cx="9" cy="7" r="4"/>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
               </div>
-              <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: '#fff', marginBottom: 4 }}>
                 Aún no has invitado amigos
               </div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', lineHeight: 1.55 }}>
+              <p style={{ fontSize: 12, color: '#8a8aa3', margin: 0, lineHeight: 1.55 }}>
                 Comparte tu código y gana{' '}
-                <span style={{ color: '#818CF8' }}>250 pts</span>{' '}
+                <span style={{ color: '#818CF8', fontWeight: 600 }}>250 pts</span>{' '}
                 por cada amigo que se registre
-              </div>
+              </p>
             </div>
           ) : (
-            (data?.referidos ?? []).map((r) => {
+            referidos.map(r => {
               const words = r.nombre.trim().split(' ');
-              const initials = words.slice(0, 2).map((w) => w[0] ?? '').join('').toUpperCase();
+              const initials = words.slice(0, 2).map(w => w[0] ?? '').join('').toUpperCase();
               const shortName = `${words[0]} ${words[1] ? words[1][0] + '.' : ''}`.trim();
-              const isRegistered = r.estado === 'registrado';
+              const registered = r.estado === 'registrado';
               return (
-                <div
-                  key={r.id}
-                  style={{
-                    background: '#141414',
-                    border: '0.5px solid rgba(255,255,255,0.07)',
-                    borderRadius: 14,
-                    padding: '12px 16px',
-                    marginBottom: 8,
-                    display: 'flex', alignItems: 'center', gap: 12,
-                  }}
-                >
+                <div key={r.id} style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  padding: '12px 0',
+                  borderBottom: '0.5px solid rgba(255,255,255,0.05)',
+                }}>
                   <div style={{
-                    width: 38, height: 38, flexShrink: 0,
-                    background: isRegistered ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.06)',
-                    border: `1px solid ${isRegistered ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.1)'}`,
-                    borderRadius: '50%',
+                    width: 38, height: 38, borderRadius: '50%', flexShrink: 0,
+                    background: registered ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.06)',
+                    border: `1px solid ${registered ? 'rgba(99,102,241,0.35)' : 'rgba(255,255,255,0.10)'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 13, fontWeight: 700,
-                    color: isRegistered ? '#6366F1' : 'rgba(255,255,255,0.4)',
+                    color: registered ? '#818CF8' : '#8a8aa3',
                   }}>
                     {initials}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#fff', marginBottom: 2 }}>
                       {shortName}
                     </div>
-                    <div style={{ fontSize: 11, color: isRegistered ? '#4CAF50' : 'rgba(255,255,255,0.35)' }}>
-                      {isRegistered ? 'Registrado ✓' : 'Pendiente…'}
+                    <div style={{ fontSize: 11, color: registered ? '#4ADE80' : '#8a8aa3' }}>
+                      {registered ? 'Registrado' : 'Pendiente'}
                     </div>
                   </div>
-                  {isRegistered && (
+                  {registered && (
                     <div style={{
                       fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
-                      fontSize: 20, letterSpacing: 1,
-                      color: '#6366F1', flexShrink: 0,
+                      fontSize: 18, letterSpacing: '0.02em',
+                      color: '#4ADE80', flexShrink: 0,
                     }}>
                       +{r.puntos_acreditados}
                     </div>
@@ -332,7 +354,7 @@ export default function ReferidosPage() {
         </motion.div>
       </div>
 
-      <BottomNav />
+      <BottomNav/>
     </div>
   );
 }
