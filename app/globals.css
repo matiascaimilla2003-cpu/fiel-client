@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 :root {
   --background: #0a0a14;
@@ -31,11 +31,12 @@
 
 html, body {
   height: 100%;
-  background: #0a0a14;
-  color: #ffffff;
+  background: var(--cfiel-bg);
+  color: var(--cfiel-text);
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 ::-webkit-scrollbar { display: none; }
@@ -154,26 +155,22 @@ input[type=number] { -moz-appearance: textfield; appearance: textfield; }
   to   { opacity: 1; transform: scale(1); }
 }
 
-html.light {
-  --bg-primary: #f5f5f7;
-  --bg-card: #ffffff;
-  --bg-card2: #f0f0f5;
-  --text-primary: #0a0a14;
-  --text-secondary: rgba(10,10,20,0.6);
-  --text-muted: rgba(10,10,20,0.35);
-  --border: rgba(99,102,241,0.15);
-  --indigo: #6366F1;
-  --indigo-light: #818CF8;
+html.dark, html:not(.light) {
+  --cfiel-bg: #0a0a14;
+  --cfiel-card: rgba(99,102,241,0.08);
+  --cfiel-card2: rgba(99,102,241,0.04);
+  --cfiel-text: #ffffff;
+  --cfiel-text2: rgba(255,255,255,0.6);
+  --cfiel-text3: rgba(255,255,255,0.35);
+  --cfiel-border: rgba(99,102,241,0.20);
 }
 
-html.dark {
-  --bg-primary: #0a0a14;
-  --bg-card: rgba(99,102,241,0.08);
-  --bg-card2: rgba(99,102,241,0.04);
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255,255,255,0.6);
-  --text-muted: rgba(255,255,255,0.35);
-  --border: rgba(99,102,241,0.20);
-  --indigo: #6366F1;
-  --indigo-light: #818CF8;
+html.light {
+  --cfiel-bg: #f0f0f7;
+  --cfiel-card: rgba(255,255,255,0.9);
+  --cfiel-card2: rgba(240,240,247,0.8);
+  --cfiel-text: #0a0a14;
+  --cfiel-text2: rgba(10,10,20,0.65);
+  --cfiel-text3: rgba(10,10,20,0.35);
+  --cfiel-border: rgba(99,102,241,0.15);
 }

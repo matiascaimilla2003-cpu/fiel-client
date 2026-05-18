@@ -149,7 +149,7 @@ export default function HomePage() {
 
   return (
     <div style={{
-      background: '#0a0a14',
+      background: 'var(--cfiel-bg)',
       minHeight: '100dvh',
       maxWidth: 430,
       margin: '0 auto',
@@ -176,12 +176,12 @@ export default function HomePage() {
         <div>
           {loading ? (
             <>
-              <div style={{ width: 150, height: 18, background: 'rgba(255,255,255,0.06)', borderRadius: 6, marginBottom: 6 }}/>
-              <div style={{ width: 110, height: 11, background: 'rgba(255,255,255,0.04)', borderRadius: 4 }}/>
+              <div style={{ width: 150, height: 18, background: 'var(--cfiel-card)', borderRadius: 6, marginBottom: 6 }}/>
+              <div style={{ width: 110, height: 11, background: 'var(--cfiel-card2)', borderRadius: 4 }}/>
             </>
           ) : (
             <>
-              <div style={{ fontSize: 20, fontWeight: 700, color: '#fff', letterSpacing: '-0.01em' }}>
+              <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--cfiel-text)', letterSpacing: '-0.01em' }}>
                 Hola, <span style={{ color: '#818CF8' }}>{USER.name || '…'}</span>
               </div>
               <div style={{ fontSize: 13, color: '#8a8aa3', marginTop: 2 }}>Bienvenido de vuelta</div>
@@ -195,9 +195,9 @@ export default function HomePage() {
             onClick={() => setModal('misiones')}
             style={{
               width: 40, height: 40, borderRadius: 14,
-              background: '#0f0f1a',
-              border: '1px solid rgba(255,255,255,0.06)',
-              color: '#fff',
+              background: 'var(--cfiel-card)',
+              border: '1px solid var(--cfiel-border)',
+              color: 'var(--cfiel-text)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', position: 'relative',
             }}
@@ -211,7 +211,7 @@ export default function HomePage() {
                 position: 'absolute', top: 8, right: 8,
                 width: 8, height: 8,
                 background: '#F87171',
-                border: '2px solid #0a0a14',
+                border: '2px solid var(--cfiel-bg)',
                 borderRadius: '50%',
               }}/>
             )}
@@ -290,13 +290,13 @@ export default function HomePage() {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontFamily: BEBAS, fontSize: 11, letterSpacing: '0.28em', color: '#818CF8', marginBottom: 2 }}>PROMO ACTIVA</div>
-              <div style={{ fontSize: 15, fontWeight: 600 }}>{promoActiva.titulo}</div>
+              <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--cfiel-text)' }}>{promoActiva.titulo}</div>
               {promoActiva.descripcion && (
                 <div style={{ fontSize: 12, color: '#8a8aa3', marginTop: 2 }}>{promoActiva.descripcion}</div>
               )}
               <div style={{ fontSize: 12, color: '#8a8aa3', marginTop: 2 }}>
                 Hasta el{' '}
-                <span style={{ color: '#fff' }}>
+                <span style={{ color: 'var(--cfiel-text)' }}>
                   {new Date(promoActiva.fecha_fin).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })}
                 </span>
               </div>
@@ -379,7 +379,7 @@ export default function HomePage() {
           </div>
 
           <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
-            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 2 }}>Trae un amigo</div>
+            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 2, color: '#fff' }}>Trae un amigo</div>
             <div style={{ fontSize: 12, color: '#8a8aa3' }}>
               {referidosCount !== null && referidosCount > 0 && (
                 <><span style={{ color: '#C4B5FD', fontWeight: 600 }}>{referidosCount} registrado{referidosCount !== 1 ? 's' : ''}</span> · </>

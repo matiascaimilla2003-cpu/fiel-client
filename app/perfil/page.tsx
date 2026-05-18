@@ -43,7 +43,7 @@ function desdeLabel(iso: string): string {
 }
 
 function Sk({ w, h, r = 8 }: { w: number | string; h: number; r?: number }) {
-  return <div style={{ width: w, height: h, background: '#1a1a1a', borderRadius: r, flexShrink: 0 }} />;
+  return <div style={{ width: w, height: h, background: 'var(--cfiel-card)', borderRadius: r, flexShrink: 0 }} />;
 }
 
 // ── ToggleSwitch ──
@@ -74,7 +74,7 @@ function ToggleSwitch({ on, onToggle, colorOn = '#6366F1' }: {
   );
 }
 
-// ── MembershipCard ──
+// ── MembershipCard ── (keeps dark-theme colors — it's a premium dark card always)
 function MembershipCard({ userName, memberSince, tier, tierColor, code }: {
   userName: string; memberSince: string; tier: string; tierColor: string; code: string;
 }) {
@@ -181,9 +181,9 @@ function TierProgress({ points, nivelIdx }: { points: number; nivelIdx: number }
       position: 'relative', borderRadius: 22, padding: 18, overflow: 'hidden',
       background: `
         radial-gradient(circle at 100% 0%, ${current.color}22 0%, transparent 50%),
-        linear-gradient(180deg, rgba(99,102,241,0.10), rgba(99,102,241,0.03))
+        linear-gradient(180deg, var(--cfiel-card), var(--cfiel-card2))
       `,
-      border: '1px solid rgba(99,102,241,0.20)',
+      border: '1px solid var(--cfiel-border)',
       animation: 'fadeUp 0.5s cubic-bezier(.2,.8,.2,1) 0.1s both',
     }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -195,7 +195,7 @@ function TierProgress({ points, nivelIdx }: { points: number; nivelIdx: number }
           }}>{current.id}</div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', lineHeight: 1 }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--cfiel-text)', lineHeight: 1 }}>
             {points.toLocaleString('es-CL')}{' '}
             <span style={{ fontSize: 12, color: '#8a8aa3', fontWeight: 500 }}>pts</span>
           </div>
@@ -255,8 +255,8 @@ function StatsGrid({ items }: { items: StatItem[] }) {
       {items.map((it, i) => (
         <div key={i} style={{
           position: 'relative', padding: '14px 14px', borderRadius: 16, overflow: 'hidden',
-          background: 'linear-gradient(180deg, rgba(99,102,241,0.08), rgba(99,102,241,0.02))',
-          border: '1px solid rgba(99,102,241,0.18)',
+          background: 'linear-gradient(180deg, var(--cfiel-card), var(--cfiel-card2))',
+          border: '1px solid var(--cfiel-border)',
         }}>
           <div style={{
             position: 'absolute', top: -16, right: -16, width: 60, height: 60,
@@ -293,8 +293,8 @@ function MenuRow({ icon, title, sub, badge, badgeColor, onClick }: {
       style={{
         display: 'flex', alignItems: 'center', gap: 12,
         padding: '12px 14px', borderRadius: 16, cursor: onClick ? 'pointer' : 'default',
-        background: 'linear-gradient(180deg, rgba(99,102,241,0.06), rgba(99,102,241,0.01))',
-        border: '1px solid rgba(99,102,241,0.12)',
+        background: 'linear-gradient(180deg, var(--cfiel-card), var(--cfiel-card2))',
+        border: '1px solid var(--cfiel-border)',
       }}
     >
       <div style={{
@@ -303,7 +303,7 @@ function MenuRow({ icon, title, sub, badge, badgeColor, onClick }: {
         color: '#818CF8', display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>{icon}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>{title}</div>
+        <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--cfiel-text)' }}>{title}</div>
         {sub && <div style={{ fontSize: 11, color: '#8a8aa3', marginTop: 2 }}>{sub}</div>}
       </div>
       {badge && (
@@ -882,7 +882,7 @@ export default function PerfilPage() {
 
   if (loading) {
     return (
-      <div style={{ background: '#0a0a14', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
+      <div style={{ background: 'var(--cfiel-bg)', minHeight: '100dvh', maxWidth: 430, margin: '0 auto' }}>
         <div style={{ padding: '20px 20px 90px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <Sk w={100} h={32} r={6} />
@@ -932,7 +932,7 @@ export default function PerfilPage() {
 
   return (
     <div style={{
-      background: '#0a0a14', minHeight: '100dvh', maxWidth: 430,
+      background: 'var(--cfiel-bg)', minHeight: '100dvh', maxWidth: 430,
       margin: '0 auto', position: 'relative', overflow: 'hidden',
     }}>
       <div style={{
@@ -947,7 +947,7 @@ export default function PerfilPage() {
         padding: '20px 20px 0', display: 'flex',
         alignItems: 'center', justifyContent: 'space-between', position: 'relative',
       }}>
-        <h1 style={{ fontFamily: BEBAS, fontSize: 32, margin: 0, letterSpacing: '0.04em', color: '#fff' }}>PERFIL</h1>
+        <h1 style={{ fontFamily: BEBAS, fontSize: 32, margin: 0, letterSpacing: '0.04em', color: 'var(--cfiel-text)' }}>PERFIL</h1>
         <button
           onClick={() => setModal('edit')}
           aria-label="Editar perfil"
@@ -1019,8 +1019,8 @@ export default function PerfilPage() {
           <div style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '12px 14px', borderRadius: 16,
-            background: 'linear-gradient(180deg, rgba(99,102,241,0.06), rgba(99,102,241,0.01))',
-            border: '1px solid rgba(99,102,241,0.12)',
+            background: 'linear-gradient(180deg, var(--cfiel-card), var(--cfiel-card2))',
+            border: '1px solid var(--cfiel-border)',
           }}>
             <div style={{
               width: 36, height: 36, borderRadius: 10, flexShrink: 0,
@@ -1045,7 +1045,7 @@ export default function PerfilPage() {
               )}
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>Apariencia</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--cfiel-text)' }}>Apariencia</div>
               <div style={{ fontSize: 11, color: '#8a8aa3', marginTop: 2 }}>
                 {isDark ? 'Modo oscuro' : 'Modo claro'}
               </div>
