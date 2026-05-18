@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const BEBAS = 'var(--font-bebas), "Bebas Neue", sans-serif';
@@ -14,6 +13,13 @@ const TIER_DATA: Record<string, {
   PLATA:   { color: '#B0B5C5', light: '#E0E5F0', shade: '#7E8497', accent: '#A0E8F0', next: 'ORO',     threshold: 500  },
   ORO:     { color: '#F5C16C', light: '#FFE3AA', shade: '#B88838', accent: '#FF8E5C', next: 'PLATINO', threshold: 1000 },
   PLATINO: { color: '#C7D2FE', light: '#FFFFFF', shade: '#818CF8', accent: '#F0A8E1', next: null,      threshold: 2000 },
+};
+
+const TIER_TEXT_COLOR: Record<string, string> = {
+  BRONCE:  '#CD7F32',
+  PLATA:   '#C0C0C0',
+  ORO:     '#D4A847',
+  PLATINO: '#E5E4E2',
 };
 
 const NUMBER_BG: Record<string, string> = {
@@ -107,7 +113,6 @@ interface PointsCardProps {
   points: number;
   tier: string;
   program: string;
-  code: string;
   onTap: () => void;
 }
 
@@ -127,7 +132,7 @@ const TWINKLES = [
   { x: '50%', y: '12%', size: 1.5, delay: 3.2 },
 ];
 
-function PointsCard({ points, tier, program, code, onTap }: PointsCardProps) {
+function PointsCard({ points, tier, program, onTap }: PointsCardProps) {
   const t = TIER_DATA[tier] ?? TIER_DATA.ORO;
   const nextTier = t.next ? TIER_DATA[t.next] : null;
   const needed = nextTier ? Math.max(0, nextTier.threshold - points) : 0;
@@ -246,10 +251,10 @@ function PointsCard({ points, tier, program, code, onTap }: PointsCardProps) {
         filter: 'blur(0.5px)',
       }}/>
 
-      {/* CFIEL embossed label */}
-      <div style={{ position: 'absolute', top: 12, right: 16, display: 'flex', alignItems: 'baseline', opacity: 0.85, zIndex: 2 }}>
-        <span style={{ fontFamily: BEBAS, fontSize: 12, color: '#6366F1', textShadow: `0.5px 0 0 ${ac}80, -0.5px 0 0 #6366F180, 0 1px 0 rgba(0,0,0,0.5)` }}>C</span>
-        <span style={{ fontFamily: BEBAS, fontSize: 12, color: '#fff', letterSpacing: '0.06em', textShadow: `0.5px 0 0 ${ac}55, -0.5px 0 0 ${tc}55, 0 1px 0 rgba(0,0,0,0.5)` }}>FIEL</span>
+      {/* CFIEL brand label */}
+      <div style={{ position: 'absolute', top: 12, right: 16, display: 'flex', alignItems: 'baseline', opacity: 0.90, zIndex: 2 }}>
+        <span style={{ fontFamily: BEBAS, fontSize: 18, color: '#6366F1', textShadow: `0.5px 0 0 ${ac}80, -0.5px 0 0 #6366F180, 0 1px 0 rgba(0,0,0,0.5)` }}>C</span>
+        <span style={{ fontFamily: BEBAS, fontSize: 18, color: '#fff', letterSpacing: '0.06em', textShadow: `0.5px 0 0 ${ac}55, -0.5px 0 0 ${tc}55, 0 1px 0 rgba(0,0,0,0.5)` }}>FIEL</span>
       </div>
 
       {/* Content */}
@@ -272,25 +277,8 @@ function PointsCard({ points, tier, program, code, onTap }: PointsCardProps) {
             }}>TP</div>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: BEBAS, fontSize: 10, letterSpacing: '0.28em', color: '#8a8aa3', lineHeight: 1 }}>PROGRAMA FIDELIDAD</div>
-            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 3, lineHeight: 1 }}>{program}</div>
+            <div style={{ fontFamily: BEBAS, fontSize: 28, lineHeight: 1, letterSpacing: '0.02em', color: '#fff', textShadow: `0 0 18px ${tc}44` }}>{program}</div>
           </div>
-        </div>
-
-        {/* Tier pill */}
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 5,
-          padding: '3px 9px 3px 7px', borderRadius: 100,
-          background: `linear-gradient(135deg, ${tc}30, ${ac}18)`,
-          border: `1px solid ${tc}90`,
-          fontFamily: BEBAS, fontSize: 10, letterSpacing: '0.16em',
-          color: t.light,
-          boxShadow: `0 0 14px ${tc}40, inset 0 1px 0 ${t.light}40`,
-          marginBottom: 6,
-          textShadow: `0 0 8px ${tc}80`,
-        }}>
-          <TierIcon tier={tier}/>
-          NIVEL {tier}
         </div>
 
         {/* Points hero */}
@@ -339,15 +327,18 @@ function PointsCard({ points, tier, program, code, onTap }: PointsCardProps) {
           </div>
         </div>
 
-        {/* Footer: ID + SIM chip */}
+        {/* Footer: nivel + VER QR */}
         <div style={{
           marginTop: 12, paddingTop: 10,
           borderTop: `1px dashed ${tc}55`,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
-          <div>
-            <div style={{ fontFamily: BEBAS, fontSize: 9, letterSpacing: '0.22em', color: '#5b5b75' }}>ID DE SOCIO</div>
-            <div style={{ fontSize: 12, fontFamily: 'monospace', color: '#fff', marginTop: 1, letterSpacing: '0.04em' }}>{code}</div>
+          <div style={{
+            fontFamily: BEBAS, fontSize: 22, letterSpacing: '0.06em', lineHeight: 1,
+            color: TIER_TEXT_COLOR[tier] ?? '#CD7F32',
+            textShadow: `0 0 12px ${TIER_TEXT_COLOR[tier] ?? '#CD7F32'}88`,
+          }}>
+            {tier}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: 9, color: t.light, fontWeight: 600, letterSpacing: '0.10em', textTransform: 'uppercase', textShadow: `0 0 6px ${tc}aa` }}>Ver QR</span>
@@ -379,17 +370,7 @@ interface Props {
 }
 
 export default function TarjetasCarousel({ puntos, nivel, empresa = 'Tío Polo', onQROpen }: Props) {
-  const [code, setCode] = useState('CFIEL-000000');
   const tier = nivel.toUpperCase();
-
-  useEffect(() => {
-    const stored =
-      localStorage.getItem('cfiel_codigo_referido') ??
-      localStorage.getItem('cfiel_user_id');
-    if (stored) {
-      setCode(stored.startsWith('CFIEL-') ? stored : `CFIEL-${stored.slice(0, 6).toUpperCase()}`);
-    }
-  }, []);
 
   return (
     <div style={{ marginBottom: 14 }}>
@@ -397,7 +378,6 @@ export default function TarjetasCarousel({ puntos, nivel, empresa = 'Tío Polo',
         points={puntos}
         tier={tier}
         program={empresa}
-        code={code}
         onTap={onQROpen}
       />
     </div>
