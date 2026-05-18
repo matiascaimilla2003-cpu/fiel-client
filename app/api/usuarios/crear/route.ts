@@ -89,11 +89,12 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('[CREAR] Body:', JSON.stringify(body));
 
-    const { nombre, telefono, fecha_nacimiento, codigo_referido } = body as {
+    const { nombre, telefono, fecha_nacimiento, codigo_referido, auth_id } = body as {
       nombre?: string;
       telefono?: string;
       fecha_nacimiento?: string;
       codigo_referido?: string;
+      auth_id?: string;
     };
 
     if (!nombre || !telefono) {
@@ -127,18 +128,21 @@ export async function POST(request: Request) {
       return Response.json({ usuario: existing });
     }
 
-    // Crear nuevo usuario — sin id explícito, Supabase genera el UUID
+    // Crear nuevo usuario — usa auth_id como id si viene (nuevo flujo), sino Supabase genera UUID
+    const insertPayload: Record<string, unknown> = {
+      nombre,
+      telefono,
+      fecha_nacimiento: fecha_nacimiento || null,
+      tenant_id: tenant.id,
+      puntos_total: 200,
+      nivel: 'bronce',
+      racha_dias: 0,
+    };
+    if (auth_id?.trim()) insertPayload.id = auth_id.trim();
+
     const { data: nuevo, error: insertError } = await supabaseAdmin
       .from('usuarios')
-      .insert({
-        nombre,
-        telefono,
-        fecha_nacimiento: fecha_nacimiento || null,
-        tenant_id: tenant.id,
-        puntos_total: 200,
-        nivel: 'bronce',
-        racha_dias: 0,
-      })
+      .insert(insertPayload)
       .select()
       .single();
 

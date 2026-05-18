@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
 import { getTheme, setTheme as applyTheme } from '@/lib/theme';
+import { supabase } from '@/lib/supabase';
 
 const BEBAS = 'var(--font-bebas), "Bebas Neue", sans-serif';
 
@@ -867,10 +868,12 @@ export default function PerfilPage() {
       .finally(() => setLoading(false));
   }, [router]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut().catch(() => {});
     localStorage.removeItem('cfiel_user_id');
     localStorage.removeItem('cfiel_nombre');
     localStorage.removeItem('cfiel_codigo_referido');
+    localStorage.removeItem('cfiel_telefono');
     router.replace('/');
   };
 

@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 // ── Estilos de input reutilizables ──────────────────────────
 
@@ -133,6 +134,23 @@ export default function RegistroPage() {
 
     setIsSubmitting(true);
     try {
+      // ── 1. Supabase Auth ──────────────────────────────────
+      const tel      = `56${telefono.replace(/\D/g, '')}`;
+      const email    = `${tel}@cfiel.app`;
+      const password = `cfiel_${tel}`;
+
+      let authId: string | null = null;
+
+      const { data: upData, error: upErr } = await supabase.auth.signUp({ email, password });
+      if (!upErr && upData.session?.user.id) {
+        authId = upData.session.user.id;
+      } else {
+        // Already registered or needs confirmation — sign in instead
+        const { data: inData } = await supabase.auth.signInWithPassword({ email, password });
+        authId = inData.session?.user.id ?? null;
+      }
+
+      // ── 2. Crear / recuperar usuario en tabla ─────────────
       const fechaNacimiento =
         anio && mes && dia
           ? `${anio}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
@@ -146,14 +164,17 @@ export default function RegistroPage() {
           telefono,
           fecha_nacimiento: fechaNacimiento,
           codigo_referido:  codigoReferido.trim() || undefined,
+          auth_id:          authId ?? undefined,
         }),
       });
 
       const data = await res.json();
       if (!data.usuario?.id) throw new Error(data.error ?? 'Sin respuesta del servidor');
 
-      localStorage.setItem('cfiel_user_id', data.usuario.id);
-      localStorage.setItem('cfiel_nombre',  data.usuario.nombre.split(' ')[0]);
+      // ── 3. Guardar en localStorage ────────────────────────
+      localStorage.setItem('cfiel_user_id',  data.usuario.id);
+      localStorage.setItem('cfiel_nombre',   data.usuario.nombre.split(' ')[0]);
+      localStorage.setItem('cfiel_telefono', tel);
     } catch (err) {
       console.error('[CFIEL] Error en registro:', err);
     } finally {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 import TarjetasCarousel from '@/components/TarjetasCarousel';
 import StreakCard from '@/components/StreakCard';
 import MisionCard from '@/components/MisionCard';
@@ -79,7 +80,42 @@ export default function HomePage() {
     let cancelled = false;
 
     const init = async () => {
-      const userId = localStorage.getItem('cfiel_user_id');
+      // ── 1. Verificar sesión de Supabase Auth ──────────────
+      const { data: { session } } = await supabase.auth.getSession();
+
+      let userId: string | null = localStorage.getItem('cfiel_user_id');
+
+      if (!userId) {
+        if (session?.user?.id) {
+          // Sesión activa — para usuarios nuevos auth.user.id = usuarios.id
+          userId = session.user.id;
+          localStorage.setItem('cfiel_user_id', session.user.id);
+        } else {
+          // Sin sesión ni ID local — intentar recuperar desde teléfono guardado
+          const tel = localStorage.getItem('cfiel_telefono');
+          if (tel) {
+            try {
+              const { data: inData } = await supabase.auth.signInWithPassword({
+                email: `${tel}@cfiel.app`,
+                password: `cfiel_${tel}`,
+              });
+              if (inData.session?.user.id) {
+                userId = inData.session.user.id;
+                localStorage.setItem('cfiel_user_id', userId);
+              }
+            } catch { /* sin bloquear */ }
+          }
+        }
+      } else if (!session) {
+        // Tiene ID local pero sin sesión — restaurar sesión en segundo plano
+        const tel = localStorage.getItem('cfiel_telefono');
+        if (tel) {
+          supabase.auth.signInWithPassword({
+            email: `${tel}@cfiel.app`,
+            password: `cfiel_${tel}`,
+          }).catch(() => {});
+        }
+      }
 
       if (!userId) {
         if (!cancelled) router.replace('/');
