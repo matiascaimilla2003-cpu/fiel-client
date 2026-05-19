@@ -8,11 +8,21 @@ const BEBAS = 'var(--font-bebas), "Bebas Neue", sans-serif';
 const TIER_DATA: Record<string, {
   color: string; light: string; shade: string; accent: string;
   next: string | null; threshold: number;
+  cardBg: string; cardBorder: string;
+  progressBar: string; pointsColor: string; pointsShadow: string;
 }> = {
-  BRONCE:  { color: '#B07A4A', light: '#E8B98A', shade: '#7E5430', accent: '#E89A4A', next: 'PLATA',   threshold: 0    },
-  PLATA:   { color: '#B0B5C5', light: '#E0E5F0', shade: '#7E8497', accent: '#A0E8F0', next: 'ORO',     threshold: 500  },
-  ORO:     { color: '#F5C16C', light: '#FFE3AA', shade: '#B88838', accent: '#FF8E5C', next: 'PLATINO', threshold: 1000 },
-  PLATINO: { color: '#C7D2FE', light: '#FFFFFF', shade: '#818CF8', accent: '#F0A8E1', next: null,      threshold: 2000 },
+  BRONCE:  { color: '#B07A4A', light: '#E8B98A', shade: '#7E5430', accent: '#E89A4A', next: 'PLATA',   threshold: 0,
+             cardBg: 'linear-gradient(135deg, #1a0f05, #0f0a05)', cardBorder: 'rgba(205,127,50,0.35)',
+             progressBar: '#CD7F32', pointsColor: '#CD7F32', pointsShadow: 'none' },
+  PLATA:   { color: '#B0B5C5', light: '#E0E5F0', shade: '#7E8497', accent: '#A0E8F0', next: 'ORO',     threshold: 500,
+             cardBg: 'linear-gradient(135deg, #111118, #0a0a12)', cardBorder: 'rgba(192,192,192,0.35)',
+             progressBar: 'linear-gradient(90deg, #888, #C0C0C0)', pointsColor: '#C0C0C0', pointsShadow: 'none' },
+  ORO:     { color: '#F5C16C', light: '#FFE3AA', shade: '#B88838', accent: '#FF8E5C', next: 'PLATINO', threshold: 2000,
+             cardBg: 'linear-gradient(135deg, #1a1205, #0f0d05)', cardBorder: 'rgba(212,168,71,0.35)',
+             progressBar: 'linear-gradient(90deg, #D4A847, #F0C96A)', pointsColor: '#D4A847', pointsShadow: 'none' },
+  PLATINO: { color: '#C7D2FE', light: '#FFFFFF', shade: '#818CF8', accent: '#F0A8E1', next: null,      threshold: 5000,
+             cardBg: 'linear-gradient(135deg, #0d0d1a, #060610)', cardBorder: 'rgba(139,92,246,0.4)',
+             progressBar: 'linear-gradient(90deg, #6366F1, #8B5CF6, #A78BFA)', pointsColor: '#ffffff', pointsShadow: '0 0 24px rgba(139,92,246,0.7)' },
 };
 
 const TIER_TEXT_COLOR: Record<string, string> = {
@@ -20,13 +30,6 @@ const TIER_TEXT_COLOR: Record<string, string> = {
   PLATA:   '#C0C0C0',
   ORO:     '#D4A847',
   PLATINO: '#E5E4E2',
-};
-
-const NUMBER_BG: Record<string, string> = {
-  BRONCE:  'linear-gradient(180deg, #FFFFFF 0%, #FFD8A8 35%, #E8B98A 65%, #B07A4A 100%)',
-  PLATA:   'linear-gradient(180deg, #FFFFFF 0%, #E8EBF2 35%, #C9CFDC 65%, #9CA3B5 100%)',
-  ORO:     'linear-gradient(180deg, #FFFFFF 0%, #FFEBC0 35%, #FFD089 65%, #DBA456 100%)',
-  PLATINO: 'linear-gradient(180deg, #FFFFFF 0%, #E4E9FF 35%, #C7D2FE 65%, #818CF8 100%)',
 };
 
 // ── Foil emblems per tier ────────────────────────────────────
@@ -155,10 +158,9 @@ function PointsCard({ points, tier, program, onTap }: PointsCardProps) {
         background: `
           radial-gradient(circle at 100% -10%, ${tc}40 0%, transparent 50%),
           radial-gradient(circle at -10% 30%, ${ac}30 0%, transparent 45%),
-          radial-gradient(circle at 110% 110%, rgba(99,102,241,0.30) 0%, transparent 55%),
-          linear-gradient(135deg, #1c1635 0%, #100f1f 50%, #0a0a18 100%)
+          ${t.cardBg}
         `,
-        border: `1.5px solid ${tc}66`,
+        border: `1.5px solid ${t.cardBorder}`,
         boxShadow: `0 16px 48px ${tc}30, 0 0 0 0.5px ${ac}30, inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(99,102,241,0.08)`,
         overflow: 'hidden',
         cursor: 'pointer',
@@ -185,6 +187,8 @@ function PointsCard({ points, tier, program, onTap }: PointsCardProps) {
         </filter>
         <rect width="100%" height="100%" filter={`url(#grain-${tier})`}/>
       </svg>
+
+      {tier === 'PLATINO' && <div className="platinum-shimmer" aria-hidden="true" />}
 
       {/* Holo sheen */}
       <div style={{
@@ -282,15 +286,14 @@ function PointsCard({ points, tier, program, onTap }: PointsCardProps) {
         </div>
 
         {/* Points hero */}
-        <div style={{ fontFamily: BEBAS, fontSize: 10, letterSpacing: '0.26em', color: '#8a8aa3' }}>
+        <div style={{ fontFamily: BEBAS, fontSize: 10, letterSpacing: '0.26em', color: 'rgba(255,255,255,0.5)' }}>
           PUNTOS ACUMULADOS
         </div>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
           <div style={{
             fontFamily: BEBAS, fontSize: 62, lineHeight: 0.9,
-            background: NUMBER_BG[tier] ?? NUMBER_BG.ORO,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            color: t.pointsColor,
+            textShadow: t.pointsShadow,
             filter: `drop-shadow(0 0 18px ${tc}60) drop-shadow(0 1px 1px ${t.shade}80)`,
             letterSpacing: '-0.01em',
           }}>{formatted}</div>
@@ -303,7 +306,7 @@ function PointsCard({ points, tier, program, onTap }: PointsCardProps) {
             <span style={{ fontSize: 11, color: '#8a8aa3' }}>
               {nextTier
                 ? <span>Faltan <span style={{ fontFamily: BEBAS, color: t.light, fontSize: 13 }}>{needed.toLocaleString('es-CL')} pts</span> para <span style={{ fontFamily: BEBAS, color: nextTier.color, letterSpacing: '0.1em', fontSize: 13, textShadow: `0 0 8px ${nextTier.color}aa` }}>{t.next}</span></span>
-                : <span>Estás en el <span style={{ fontFamily: BEBAS, color: tc, letterSpacing: '0.1em', fontSize: 13, textShadow: `0 0 8px ${tc}` }}>nivel máximo</span></span>
+                : <span style={{ fontFamily: BEBAS, color: '#A78BFA', letterSpacing: '0.12em', fontSize: 13, textShadow: '0 0 12px rgba(167,139,250,0.8)' }}>★ NIVEL MÁXIMO ★</span>
               }
             </span>
             <span style={{ fontFamily: BEBAS, fontSize: 13, color: nextTier ? nextTier.color : tc }}>{pct}%</span>
@@ -311,9 +314,7 @@ function PointsCard({ points, tier, program, onTap }: PointsCardProps) {
           <div style={{ height: 5, background: 'rgba(255,255,255,0.06)', borderRadius: 100, overflow: 'hidden', position: 'relative' }}>
             <div style={{
               position: 'absolute', inset: 0, width: `${pct}%`,
-              background: nextTier
-                ? `linear-gradient(90deg, ${tc} 0%, ${ac} 50%, ${nextTier.color} 100%)`
-                : `linear-gradient(90deg, ${tc} 0%, ${t.light} 50%, #fff 100%)`,
+              background: t.progressBar,
               borderRadius: 100,
               boxShadow: `0 0 10px ${tc}aa`,
             }}/>
