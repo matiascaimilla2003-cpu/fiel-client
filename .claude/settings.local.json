@@ -1,16 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --eslint --yes)",
-      "Bash(npm install *)",
-      "Bash(npx tsc *)",
-      "Bash(npm run *)",
-      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Matias Caimilla\\\\fiel-client\" -Recurse -ErrorAction SilentlyContinue)",
-      "Bash(Select-Object FullName)",
-      "Bash(Format-Table -AutoSize)",
-      "Bash(Get-ChildItem C:\\\\Users\\\\Matias Caimilla\\\\fiel-client\\\\app\\\\api\\\\usuarios *)",
-      "Bash(node *)",
-      "Bash(npx next *)"
+      "PowerShell(Head 30 *)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Matias Caimilla\\\\fiel-client\" -Recurse -Exclude node_modules | Where-Object { $_.PSIsContainer } | Select-Object -ExpandProperty FullName | Sort-Object)"
     ]
   }
 }

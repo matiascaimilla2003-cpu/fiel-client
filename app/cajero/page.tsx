@@ -69,6 +69,14 @@ const TIER_COLOR: Record<string, string> = {
 
 const TENANT_SLUG = 'tio-polo';
 
+interface TarjetaInfo {
+  usuario_id: string;
+  tenant_slug: string;
+  tenant_id: string;
+  puntos_total: number;
+  nivel: string;
+}
+
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -255,14 +263,46 @@ export default function CajeroPage() {
         setVentaPhase('error');
         return;
       }
-      const u = data.usuario as { nombre?: string; puntos_total?: number; nivel?: string } | undefined;
+      const u = data.usuario as {
+        nombre?: string; telefono?: string;
+        puntos_total?: number; nivel?: string;
+      } | undefined;
       if (!u || typeof u.nombre !== 'string') {
         setVentaError('Respuesta inesperada del servidor. Intenta de nuevo.');
         setVentaPhase('error');
         return;
       }
-      setVentaClient({ id: trimmedId, nombre: u.nombre, puntos_total: u.puntos_total ?? 0, nivel: u.nivel ?? 'bronce' });
-      setVentaPhase('ready');
+
+      // Find this tenant's card; auto-register if missing
+      const tarjetas = (data.tarjetas ?? []) as TarjetaInfo[];
+      const myCard = tarjetas.find((t) => t.tenant_slug === TENANT_SLUG);
+
+      if (myCard) {
+        setVentaClient({ id: myCard.usuario_id, nombre: u.nombre, puntos_total: myCard.puntos_total, nivel: myCard.nivel });
+        setVentaPhase('ready');
+      } else if (u.telefono) {
+        // First visit to this tenant — create a 0-pt record
+        const crearRes = await fetch('/api/usuarios/crear', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: u.nombre, telefono: u.telefono,
+            auth_id: trimmedId, tenant_slug: TENANT_SLUG,
+          }),
+        });
+        const crearData = await crearRes.json();
+        if (!crearRes.ok || !crearData.usuario) {
+          setVentaError('No se pudo registrar al cliente en este negocio.');
+          setVentaPhase('error');
+          return;
+        }
+        const nu = crearData.usuario as { id: string; nombre: string; puntos_total: number; nivel: string };
+        setVentaClient({ id: nu.id, nombre: nu.nombre, puntos_total: nu.puntos_total, nivel: nu.nivel });
+        setVentaPhase('ready');
+      } else {
+        setVentaError('No se pudo identificar al cliente en este negocio.');
+        setVentaPhase('error');
+      }
     } catch {
       setVentaError('Error de conexión. Verifica la red e intenta de nuevo.');
       setVentaPhase('error');
@@ -327,14 +367,53 @@ export default function CajeroPage() {
         return;
       }
 
-      const u = userData.usuario as { nombre?: string; puntos_total?: number; nivel?: string } | undefined;
+      const u = userData.usuario as {
+        nombre?: string; telefono?: string;
+        puntos_total?: number; nivel?: string;
+      } | undefined;
       if (!u || typeof u.nombre !== 'string') {
         setCanjeError('Respuesta inesperada del servidor. Intenta de nuevo.');
         setCanjePhase('error');
         return;
       }
 
-      setCanjeClient({ id: trimmedId, nombre: u.nombre, puntos_total: u.puntos_total ?? 0, nivel: u.nivel ?? 'bronce' });
+      // Find this tenant's card; auto-register if missing
+      const tarjetas = (userData.tarjetas ?? []) as TarjetaInfo[];
+      const myCard = tarjetas.find((t) => t.tenant_slug === TENANT_SLUG);
+      let clientId: string;
+      let clientPts: number;
+      let clientNivel: string;
+
+      if (myCard) {
+        clientId    = myCard.usuario_id;
+        clientPts   = myCard.puntos_total;
+        clientNivel = myCard.nivel;
+      } else if (u.telefono) {
+        const crearRes = await fetch('/api/usuarios/crear', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: u.nombre, telefono: u.telefono,
+            auth_id: trimmedId, tenant_slug: TENANT_SLUG,
+          }),
+        });
+        const crearData = await crearRes.json();
+        if (!crearRes.ok || !crearData.usuario) {
+          setCanjeError('No se pudo registrar al cliente en este negocio.');
+          setCanjePhase('error');
+          return;
+        }
+        const nu = crearData.usuario as { id: string; puntos_total: number; nivel: string };
+        clientId    = nu.id;
+        clientPts   = nu.puntos_total;
+        clientNivel = nu.nivel;
+      } else {
+        setCanjeError('No se pudo identificar al cliente en este negocio.');
+        setCanjePhase('error');
+        return;
+      }
+
+      setCanjeClient({ id: clientId, nombre: u.nombre, puntos_total: clientPts, nivel: clientNivel });
 
       if (benefRes.ok && Array.isArray(benefData.beneficios)) {
         setBeneficios(benefData.beneficios as Beneficio[]);

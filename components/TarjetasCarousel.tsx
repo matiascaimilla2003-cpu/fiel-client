@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, useMotionValue, animate, type PanInfo } from 'framer-motion';
 
 const BEBAS = 'var(--font-bebas), "Bebas Neue", sans-serif';
 
@@ -361,26 +362,153 @@ function PointsCard({ points, tier, program, onTap }: PointsCardProps) {
   );
 }
 
-// ── Public component ─────────────────────────────────────────
-interface Props {
-  puntos: number;
+// ── Public types ─────────────────────────────────────────────
+export interface TarjetaItem {
+  usuario_id: string;
+  tenant_id: string;
+  tenant_nombre: string;
+  tenant_slug: string;
+  puntos_total: number;
   nivel: 'bronce' | 'plata' | 'oro' | 'platino';
-  progreso: number;
-  empresa?: string;
-  onQROpen: () => void;
+  racha_dias: number;
 }
 
-export default function TarjetasCarousel({ puntos, nivel, empresa = 'Tío Polo', onQROpen }: Props) {
-  const tier = nivel.toUpperCase();
+interface Props {
+  tarjetas: TarjetaItem[];
+  onQROpen: (mode?: 'join') => void;
+  onActiveChange?: (tarjeta: TarjetaItem | null, index: number) => void;
+}
+
+// ── "Add business" card ───────────────────────────────────────
+function AgregarNegocioCard({ onTap }: { onTap: () => void }) {
+  return (
+    <motion.div
+      onTap={onTap}
+      whileTap={{ scale: 0.98 }}
+      style={{
+        width: '100%', borderRadius: 22, padding: '28px 20px',
+        background: 'rgba(99,102,241,0.06)',
+        border: '1.5px dashed rgba(99,102,241,0.28)',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        gap: 10, cursor: 'pointer',
+        userSelect: 'none' as const, minHeight: 180,
+      }}
+    >
+      <div style={{
+        width: 52, height: 52, borderRadius: '50%',
+        background: 'rgba(99,102,241,0.12)',
+        border: '1px solid rgba(99,102,241,0.24)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: '#818CF8',
+      }}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </div>
+      <div style={{
+        fontFamily: BEBAS, fontSize: 17, letterSpacing: '0.07em',
+        color: '#818CF8', textAlign: 'center',
+      }}>
+        ÚNETE A UN NUEVO NEGOCIO
+      </div>
+      <div style={{
+        fontSize: 11, color: 'rgba(255,255,255,0.32)',
+        textAlign: 'center', lineHeight: 1.4,
+      }}>
+        Muestra tu QR en caja para empezar
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Carousel ──────────────────────────────────────────────────
+const CARD_W   = 300;
+const CARD_GAP = 16;
+const STEP     = CARD_W + CARD_GAP;
+
+export default function TarjetasCarousel({ tarjetas, onQROpen, onActiveChange }: Props) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const x = useMotionValue(0);
+  const total = tarjetas.length + 1; // +1 for AgregarNegocioCard
+
+  useEffect(() => {
+    animate(x, -activeIndex * STEP, { type: 'spring', stiffness: 400, damping: 40 });
+    onActiveChange?.(tarjetas[activeIndex] ?? null, activeIndex);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeIndex]);
+
+  function handleDragEnd(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
+    const current = x.get();
+    let next: number;
+    if (info.offset.x < -50 || info.velocity.x < -400) {
+      next = Math.min(activeIndex + 1, total - 1);
+    } else if (info.offset.x > 50 || info.velocity.x > 400) {
+      next = Math.max(activeIndex - 1, 0);
+    } else {
+      next = Math.max(0, Math.min(Math.round(-current / STEP), total - 1));
+    }
+    if (next === activeIndex) {
+      animate(x, -activeIndex * STEP, { type: 'spring', stiffness: 400, damping: 40 });
+    } else {
+      setActiveIndex(next);
+    }
+  }
+
+  if (tarjetas.length === 0) {
+    return (
+      <div style={{ marginBottom: 14, padding: '0 16px' }}>
+        <AgregarNegocioCard onTap={() => onQROpen('join')} />
+      </div>
+    );
+  }
 
   return (
     <div style={{ marginBottom: 14 }}>
-      <PointsCard
-        points={puntos}
-        tier={tier}
-        program={empresa}
-        onTap={onQROpen}
-      />
+      <div style={{ overflow: 'hidden', width: '100%', userSelect: 'none' }}>
+        <motion.div
+          style={{ x, display: 'flex', gap: CARD_GAP, paddingLeft: 16, paddingRight: 16 }}
+          drag="x"
+          dragConstraints={{ left: -(total - 1) * STEP, right: 0 }}
+          dragElastic={0.1}
+          onDragEnd={handleDragEnd}
+        >
+          {tarjetas.map((tarjeta) => (
+            <div key={tarjeta.tenant_id} style={{ width: CARD_W, flexShrink: 0 }}>
+              <PointsCard
+                points={tarjeta.puntos_total}
+                tier={tarjeta.nivel.toUpperCase()}
+                program={tarjeta.tenant_nombre}
+                onTap={() => onQROpen()}
+              />
+            </div>
+          ))}
+          <div style={{ width: CARD_W, flexShrink: 0 }}>
+            <AgregarNegocioCard onTap={() => onQROpen('join')} />
+          </div>
+        </motion.div>
+      </div>
+
+      {total > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 12 }}>
+          {Array.from({ length: total }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIndex(i)}
+              aria-label={`Tarjeta ${i + 1}`}
+              style={{
+                width: i === activeIndex ? 20 : 6,
+                height: 6, borderRadius: 3,
+                background: i === activeIndex ? '#818CF8' : 'rgba(255,255,255,0.2)',
+                border: 'none', padding: 0, cursor: 'pointer',
+                transition: 'width 0.3s ease, background 0.3s ease',
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

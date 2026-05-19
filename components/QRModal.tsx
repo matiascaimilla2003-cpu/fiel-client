@@ -38,9 +38,10 @@ interface Props {
   onClose: () => void;
   userName?: string;
   userLevel?: string;
+  mode?: 'normal' | 'join';
 }
 
-export default function QRModal({ open, onClose, userName, userLevel }: Props) {
+export default function QRModal({ open, onClose, userName, userLevel, mode = 'normal' }: Props) {
   const [userId, setUserId] = useState('');
 
   useEffect(() => {
@@ -91,7 +92,7 @@ export default function QRModal({ open, onClose, userName, userLevel }: Props) {
               fontFamily: 'var(--font-bebas), "Bebas Neue", sans-serif',
               fontSize: 11, letterSpacing: '0.32em', color: '#8a8aa3',
             }}>
-              TU QR PERSONAL
+              {mode === 'join' ? 'QR DE ACCESO' : 'TU QR PERSONAL'}
             </div>
 
             <div style={{
@@ -174,7 +175,9 @@ export default function QRModal({ open, onClose, userName, userLevel }: Props) {
             </div>
 
             <p style={{ fontSize: 13, color: '#8a8aa3', textAlign: 'center', margin: '14px 0 0', lineHeight: 1.5 }}>
-              Muéstralo en caja para sumar puntos a cada compra
+              {mode === 'join'
+                ? 'Muestra este QR al cajero para unirte al programa de puntos de cualquier negocio CFIEL'
+                : 'Muéstralo en caja para sumar puntos a cada compra'}
             </p>
 
             <button

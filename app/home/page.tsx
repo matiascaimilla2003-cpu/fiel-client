@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import TarjetasCarousel from '@/components/TarjetasCarousel';
+import TarjetasCarousel, { type TarjetaItem } from '@/components/TarjetasCarousel';
 import StreakCard from '@/components/StreakCard';
 import MisionCard from '@/components/MisionCard';
 import QRModal from '@/components/QRModal';
@@ -16,7 +16,7 @@ const BEBAS = 'var(--font-bebas), "Bebas Neue", sans-serif';
 /* ── Tier helpers ── */
 function calcProgressPct(nivel: string, puntos: number): number {
   const ranges: Record<string, [number, number]> = {
-    bronce: [0, 500], plata: [500, 1000], oro: [1000, 2000], platino: [2000, 2000],
+    bronce: [0, 500], plata: [500, 2000], oro: [2000, 5000], platino: [5000, 5000],
   };
   const [min, max] = ranges[nivel] ?? [0, 500];
   if (max === min) return 100;
@@ -24,7 +24,7 @@ function calcProgressPct(nivel: string, puntos: number): number {
 }
 
 function calcPtsToNextLevel(nivel: string, puntos: number): number {
-  const next: Record<string, number> = { bronce: 500, plata: 1000, oro: 2000, platino: 0 };
+  const next: Record<string, number> = { bronce: 500, plata: 2000, oro: 5000, platino: 0 };
   return Math.max(0, (next[nivel] ?? 500) - puntos);
 }
 
@@ -70,7 +70,10 @@ type Modal = 'qr' | 'streak' | 'misiones' | null;
 export default function HomePage() {
   const router             = useRouter();
   const [modal, setModal]  = useState<Modal>(null);
+  const [qrMode, setQrMode] = useState<'normal' | 'join'>('normal');
   const [USER, setUser]    = useState<UserState>(EMPTY_USER);
+  const [tarjetas, setTarjetas] = useState<TarjetaItem[]>([]);
+  const [activeTarjeta, setActiveTarjeta] = useState<TarjetaItem | null>(null);
   const [misiones, setMisiones] = useState<Mision[]>([]);
   const [promoActiva, setPromoActiva] = useState<Promocion | null>(null);
   const [loading, setLoading]   = useState(true);
@@ -146,20 +149,29 @@ export default function HomePage() {
 
         if (userData?.usuario) {
           const u = userData.usuario;
-          const nivel = (u.nivel as string) ?? 'bronce';
-          setUser({
-            name:           u.nombre.split(' ')[0],
-            lastName:       u.nombre.split(' ')[1] ?? '',
-            points:         u.puntos_total,
+
+          // Tarjetas (all tenants)
+          const cards = (userData.tarjetas ?? []) as TarjetaItem[];
+          if (!cancelled) setTarjetas(cards);
+
+          // Use primary card data for the top-bar user info
+          const primary = cards[0];
+          const nivel = (primary?.nivel ?? (u.nivel as string) ?? 'bronce') as string;
+          const pts   = primary?.puntos_total ?? (u.puntos_total as number) ?? 0;
+          if (!cancelled) setUser({
+            name:           (u.nombre as string).split(' ')[0],
+            lastName:       (u.nombre as string).split(' ')[1] ?? '',
+            points:         pts,
             level:          nivel.charAt(0).toUpperCase() + nivel.slice(1),
-            streak:         u.racha_dias,
-            progressPct:    calcProgressPct(nivel, u.puntos_total),
-            ptsToNextLevel: calcPtsToNextLevel(nivel, u.puntos_total),
-            empresa:        (u.tenants as { nombre?: string } | null)?.nombre ?? '',
+            streak:         (u.racha_dias as number) ?? 0,
+            progressPct:    calcProgressPct(nivel, pts),
+            ptsToNextLevel: calcPtsToNextLevel(nivel, pts),
+            empresa:        primary?.tenant_nombre ?? (u.tenants as { nombre?: string } | null)?.nombre ?? '',
           });
 
-          if (u.tenant_id) {
-            const promoRes = await fetch(`/api/promociones/activas?tenant_id=${u.tenant_id}`).catch(() => null);
+          const tenantId = primary?.tenant_id ?? (u.tenant_id as string | undefined);
+          if (tenantId) {
+            const promoRes = await fetch(`/api/promociones/activas?tenant_id=${tenantId}`).catch(() => null);
             if (promoRes?.ok && !cancelled) {
               const promoData = await promoRes.json().catch(() => null);
               if (promoData?.promociones?.length > 0) {
@@ -278,13 +290,13 @@ export default function HomePage() {
         zIndex: 1,
       }}>
 
-        {/* Hero membership card */}
+        {/* Hero membership cards */}
         <TarjetasCarousel
-          puntos={USER.points}
-          nivel={(USER.level.toLowerCase() as 'bronce' | 'plata' | 'oro' | 'platino') || 'bronce'}
-          progreso={USER.progressPct}
-          empresa={USER.empresa || 'Tío Polo'}
-          onQROpen={() => setModal('qr')}
+          tarjetas={tarjetas}
+          onQROpen={(mode) => { setQrMode(mode ?? 'normal'); setModal('qr'); }}
+          onActiveChange={(t) => {
+            if (t) setActiveTarjeta(t);
+          }}
         />
 
         {/* Promo activa */}
@@ -432,7 +444,8 @@ export default function HomePage() {
         open={modal === 'qr'}
         onClose={() => setModal(null)}
         userName={`${USER.name} ${USER.lastName}`.trim()}
-        userLevel={USER.level}
+        userLevel={(activeTarjeta?.nivel ?? USER.level.toLowerCase())}
+        mode={qrMode}
       />
       <StreakModal
         open={modal === 'streak'}

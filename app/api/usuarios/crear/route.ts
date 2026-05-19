@@ -1,8 +1,8 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
 function calcularNivel(puntos: number): string {
-  if (puntos >= 2000) return 'platino';
-  if (puntos >= 1000) return 'oro';
+  if (puntos >= 5000) return 'platino';
+  if (puntos >= 2000) return 'oro';
   if (puntos >= 500) return 'plata';
   return 'bronce';
 }
@@ -89,23 +89,25 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('[CREAR] Body:', JSON.stringify(body));
 
-    const { nombre, telefono, fecha_nacimiento, codigo_referido, auth_id } = body as {
+    const { nombre, telefono, fecha_nacimiento, codigo_referido, auth_id, tenant_slug } = body as {
       nombre?: string;
       telefono?: string;
       fecha_nacimiento?: string;
       codigo_referido?: string;
       auth_id?: string;
+      tenant_slug?: string;
     };
 
     if (!nombre || !telefono) {
       return Response.json({ error: 'Faltan campos' }, { status: 400 });
     }
 
-    // Obtener tenant de Tío Polo
+    const slug = tenant_slug?.trim() || 'tio-polo';
+
     const { data: tenant, error: tenantError } = await supabaseAdmin
       .from('tenants')
       .select('id')
-      .eq('slug', 'tio-polo')
+      .eq('slug', slug)
       .single();
 
     console.log('[CREAR] Tenant:', tenant, 'Error:', tenantError);
@@ -114,7 +116,7 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Tenant no encontrado' }, { status: 404 });
     }
 
-    // Buscar si ya existe
+    // Already registered at this tenant?
     const { data: existing } = await supabaseAdmin
       .from('usuarios')
       .select('*')
@@ -122,23 +124,38 @@ export async function POST(request: Request) {
       .eq('tenant_id', tenant.id)
       .maybeSingle();
 
-    console.log('[CREAR] Existing:', existing);
-
     if (existing) {
-      return Response.json({ usuario: existing });
+      return Response.json({ usuario: existing, is_first_registration: false });
     }
 
-    // Crear nuevo usuario — usa auth_id como id si viene (nuevo flujo), sino Supabase genera UUID
+    // Is this the user's first registration across ALL tenants?
+    const { data: anyExisting } = await supabaseAdmin
+      .from('usuarios')
+      .select('id')
+      .eq('telefono', telefono)
+      .limit(1)
+      .maybeSingle();
+
+    const isFirst = !anyExisting;
+    const puntosInicial = isFirst ? 200 : 0;
+
     const insertPayload: Record<string, unknown> = {
       nombre,
       telefono,
       fecha_nacimiento: fecha_nacimiento || null,
       tenant_id: tenant.id,
-      puntos_total: 200,
-      nivel: 'bronce',
+      puntos_total: puntosInicial,
+      nivel: calcularNivel(puntosInicial),
       racha_dias: 0,
     };
-    if (auth_id?.trim()) insertPayload.id = auth_id.trim();
+
+    // First registration: set id = auth_id so QR continues to work.
+    // Subsequent tenants: Supabase generates a new UUID; store auth_id in column.
+    if (isFirst && auth_id?.trim()) {
+      insertPayload.id = auth_id.trim();
+    } else if (!isFirst && auth_id?.trim()) {
+      insertPayload.auth_id = auth_id.trim();
+    }
 
     const { data: nuevo, error: insertError } = await supabaseAdmin
       .from('usuarios')
@@ -152,31 +169,31 @@ export async function POST(request: Request) {
       return Response.json({ error: insertError.message }, { status: 500 });
     }
 
-    // Registrar bono de bienvenida en transacciones_puntos
-    const { error: txError } = await supabaseAdmin
-      .from('transacciones_puntos')
-      .insert({
-        usuario_id:  nuevo.id,
-        tenant_id:   tenant.id,
-        tipo:        'bono',
-        puntos:      200,
-        descripcion: 'Bono de bienvenida',
-      });
+    if (isFirst) {
+      const { error: txError } = await supabaseAdmin
+        .from('transacciones_puntos')
+        .insert({
+          usuario_id:  nuevo.id,
+          tenant_id:   tenant.id,
+          tipo:        'bono',
+          puntos:      200,
+          descripcion: 'Bono de bienvenida',
+        });
 
-    if (txError) {
-      console.error('[CREAR] Error al registrar transacción de bienvenida:', txError.message);
-    }
+      if (txError) {
+        console.error('[CREAR] Error al registrar bono de bienvenida:', txError.message);
+      }
 
-    // Aplicar código de referido si viene en la solicitud
-    if (codigo_referido?.trim()) {
-      try {
-        await aplicarReferido(codigo_referido.trim(), nuevo.id, tenant.id);
-      } catch (refErr) {
-        console.error('[CREAR] Error al aplicar referido (no bloquea):', refErr);
+      if (codigo_referido?.trim()) {
+        try {
+          await aplicarReferido(codigo_referido.trim(), nuevo.id, tenant.id);
+        } catch (refErr) {
+          console.error('[CREAR] Error al aplicar referido (no bloquea):', refErr);
+        }
       }
     }
 
-    return Response.json({ usuario: nuevo });
+    return Response.json({ usuario: nuevo, is_first_registration: isFirst });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('[CREAR] Error:', msg);

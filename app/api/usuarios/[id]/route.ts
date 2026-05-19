@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
+interface TenantRow { nombre: string; slug: string; }
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -14,13 +16,33 @@ export async function GET(
 
     const { data: usuario, error } = await supabaseAdmin
       .from('usuarios')
-      .select('*, tenants(nombre)')
+      .select('*, tenants(nombre, slug)')
       .eq('id', id.trim())
       .single();
 
     if (error || !usuario) {
       return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
     }
+
+    // All tenant cards that share the same phone number
+    const { data: rows } = await supabaseAdmin
+      .from('usuarios')
+      .select('id, tenant_id, puntos_total, nivel, racha_dias, tenants(nombre, slug)')
+      .eq('telefono', usuario.telefono as string)
+      .order('puntos_total', { ascending: false });
+
+    const tarjetas = (rows ?? []).map((row) => {
+      const t = row.tenants as TenantRow | null;
+      return {
+        usuario_id:    row.id           as string,
+        tenant_id:     row.tenant_id    as string,
+        tenant_nombre: t?.nombre        ?? '',
+        tenant_slug:   t?.slug          ?? '',
+        puntos_total:  row.puntos_total as number,
+        nivel:         row.nivel        as string,
+        racha_dias:    row.racha_dias   as number,
+      };
+    });
 
     const { data: transacciones } = await supabaseAdmin
       .from('transacciones_puntos')
@@ -33,6 +55,7 @@ export async function GET(
 
     return NextResponse.json({
       usuario: { ...usuario, codigo_referido },
+      tarjetas,
       transacciones: transacciones ?? [],
     });
   } catch {
